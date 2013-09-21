@@ -59,7 +59,6 @@ import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.signature.X509Data;
-import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
 
 public class RequestFactory {

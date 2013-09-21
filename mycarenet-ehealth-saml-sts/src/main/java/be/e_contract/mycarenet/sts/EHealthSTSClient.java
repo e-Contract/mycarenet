@@ -33,10 +33,8 @@ import javax.xml.ws.handler.Handler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensaml.Configuration;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.jaxws.sts.EHealthSamlStsService;
@@ -49,7 +47,7 @@ public class EHealthSTSClient {
 
 	private static final Log LOG = LogFactory.getLog(EHealthSTSClient.class);
 
-	private final Dispatch dispatch;
+	private final Dispatch<Source> dispatch;
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
@@ -82,9 +80,13 @@ public class EHealthSTSClient {
 		RequestFactory requestFactory = new RequestFactory();
 		Element requestElement = requestFactory.createRequest(authnCertificate,
 				hokPrivateKey, hokCertificate);
-		
-		
 
-		this.dispatch.invoke(new DOMSource(requestElement));
+		Source responseSource = this.dispatch.invoke(new DOMSource(
+				requestElement));
+		LOG.debug("response source type: "
+				+ responseSource.getClass().getName());
+		DOMSource responseDOMSource = (DOMSource) responseSource;
+		Node responseNode = responseDOMSource.getNode();
+		
 	}
 }
