@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:msg="urn:be:cin:mycarenet:1.0:async:types" xmlns:tns="urn:be:cin:mycarenet:1.0:async" targetNamespace="urn:be:cin:mycarenet:1.0:async" name="MyCarenetCareProviderWS">
+  <documentation>Copyright 2006 Certipost N.V. All rights reserved.
+Certipost N.V. proprietary/confidential. Use is subject to license terms.</documentation>
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <import namespace="urn:be:cin:mycarenet:1.0:async:types" schemaLocation="care-provider-types.xsd"/>
+    </schema>
+  </types>
+  <message name="FaultMessage">
+    <part name="fault" element="msg:Fault"/>
+  </message>
+  <message name="PostFileRequestMessage">
+    <part name="request" element="msg:PostFileRequest"/>
+  </message>
+  <message name="PostFileResultMessage">
+    <part name="result" element="msg:PostFileResult"/>
+  </message>
+  <message name="QueryDownloadableRequestMessage">
+    <part name="request" element="msg:QueryDownloadableRequest"/>
+  </message>
+  <message name="QueryDownloadableResultMessage">
+    <part name="result" element="msg:QueryDownloadableResult"/>
+  </message>
+  <message name="GetStatusRequestMessage">
+    <part name="request" element="msg:GetStatusRequest"/>
+  </message>
+  <message name="GetStatusResultMessage">
+    <part name="result" element="msg:GetStatusResult"/>
+  </message>
+  <message name="DownloadRequestMessage">
+    <part name="request" element="msg:DownloadRequest"/>
+  </message>
+  <message name="DownloadResultMessage">
+    <part name="result" element="msg:DownloadResult"/>
+  </message>
+  <message name="EchoRequestMessage">
+    <part name="request" element="msg:EchoRequest"/>
+  </message>
+  <message name="EchoResultMessage">
+    <part name="result" element="msg:EchoResult"/>
+  </message>
+  <portType name="CareProviderAsyncPortType">
+    <documentation>This web service port contains all care provider related operations. 
+A user is required to authenticate itself via WS-Security using a session key. 
+The session key can be registered via XKMS.</documentation>
+    <operation name="PostFile">
+      <documentation>This operation posts a request on the MyCarenet system. 
+The posted data will be processed asynchronously.</documentation>
+      <input message="tns:PostFileRequestMessage"/>
+      <output message="tns:PostFileResultMessage"/>
+      <fault name="fault" message="tns:FaultMessage"/>
+    </operation>
+    <operation name="QueryDownloadable">
+      <documentation>This operation queries the MyCarenet system for downloadable files.</documentation>
+      <input message="tns:QueryDownloadableRequestMessage"/>
+      <output message="tns:QueryDownloadableResultMessage"/>
+      <fault name="fault" message="tns:FaultMessage"/>
+    </operation>
+    <operation name="GetStatus">
+      <documentation>This operation retrieves the status of a certain post made earlier.</documentation>
+      <input message="tns:GetStatusRequestMessage"/>
+      <output message="tns:GetStatusResultMessage"/>
+      <fault name="fault" message="tns:FaultMessage"/>
+    </operation>
+    <operation name="Download">
+      <documentation>This operation allows one to download the result file of the processing of a previous post.</documentation>
+      <input message="tns:DownloadRequestMessage"/>
+      <output message="tns:DownloadResultMessage"/>
+      <fault name="fault" message="tns:FaultMessage"/>
+    </operation>
+    <operation name="Echo">
+      <documentation>This operation is for testing the availability of the service.</documentation>
+      <input message="tns:EchoRequestMessage"/>
+      <output message="tns:EchoResultMessage"/>
+      <fault name="fault" message="tns:FaultMessage"/>
+    </operation>
+  </portType>
+  <binding name="CareProviderAsyncBinding" type="tns:CareProviderAsyncPortType">
+    <documentation>For binding we use SOAP 1.1 document/literal.</documentation>
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="PostFile">
+      <soap:operation soapAction="PostFile"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="QueryDownloadable">
+      <soap:operation soapAction="QueryDownloadable"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="GetStatus">
+      <soap:operation soapAction="GetStatus"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="Download">
+      <soap:operation soapAction="Download"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="Echo">
+      <soap:operation soapAction="Echo"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="MyCarenetCareProviderAsyncService">
+    <port name="CareProviderAsyncPort" binding="tns:CareProviderAsyncBinding">
+      <soap:address location="http://localhost:8080/mycarenet-ws/care-provider/async"/>
+    </port>
+  </service>
+</definitions>

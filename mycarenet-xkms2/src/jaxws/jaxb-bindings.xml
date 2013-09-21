@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+
+	<jxb:bindings schemaLocation="../wsdl/xkms2.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.jaxb.xkms2">
+				<jxb:javadoc><![CDATA[<body>JAXB XKMS2</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings schemaLocation="../wsdl/xmldsig-core-schema.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.jaxb.xmldsig">
+					<jxb:javadoc><![CDATA[<body>JAXB XML DSig</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+		<jxb:bindings schemaLocation="../wsdl/xenc-schema.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.jaxb.xenc">
+					<jxb:javadoc><![CDATA[<body>JAXB XML Enc</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>

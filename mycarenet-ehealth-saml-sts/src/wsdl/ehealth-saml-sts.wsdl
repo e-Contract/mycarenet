@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:be:ehealth:saml:sts:1.0"
+	xmlns:tns="urn:be:ehealth:saml:sts:1.0" xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"
+	name="EHealthSamlSTSWS">
+
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+			<import namespace="urn:oasis:names:tc:SAML:1.0:protocol"
+				schemaLocation="oasis-sstc-saml-schema-protocol-1.1.xsd" />
+		</schema>
+	</types>
+
+	<message name="AttributeQueryMessage">
+		<part name="request" element="samlp:Request" />
+	</message>
+
+	<message name="AttributeResponseMessage">
+		<part name="response" element="samlp:Response" />
+	</message>
+
+	<portType name="EHealthSamlStsPortType">
+		<operation name="AttributeQuery">
+			<input message="tns:AttributeQueryMessage" />
+			<output message="tns:AttributeResponseMessage" />
+		</operation>
+	</portType>
+
+	<binding name="EHealthSamlStsBinding" type="tns:EHealthSamlStsPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soattributeap/http" />
+		<operation name="AttributeQuery">
+			<soap:operation soapAction="AttributeQuery" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<service name="EHealthSamlStsService">
+		<port name="EHealthSamlStsPort" binding="tns:EHealthSamlStsBinding">
+			<soap:address location="http://localhost:8080/ehealth-saml-sts" />
+		</port>
+	</service>
+
+</definitions>
