@@ -48,6 +48,7 @@
 		<module>mycarenet-xkms2</module>
 		<module>mycarenet-ws</module>
 		<module>mycarenet-ehealth-saml-sts</module>
+		<module>mycarenet-ehealth-ehealthbox</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>
