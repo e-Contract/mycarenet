@@ -1,0 +1,10 @@
+syntax: glob
+target
+.project
+.classpath
+.settings
+*~
+*.NavData
+nb-configuration.xml
+
+syntax: regexp

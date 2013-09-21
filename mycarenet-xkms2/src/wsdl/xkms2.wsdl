@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+
+<definitions name="XMLKeyManagement" xmlns="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:s="http://www.w3.org/2000/10/XMLSchema"
+ xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns:xkms="http://www.w3.org/2002/03/xkms#"
+ xmlns:tns="http://www.w3.org/2002/03/xkms#"
+ targetNamespace="http://www.w3.org/2002/03/xkms#">
+
+<types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <import namespace="http://www.w3.org/2002/03/xkms#" schemaLocation="xkms2.xsd"/>
+    </schema>
+  </types>
+
+  <message name="RegisterRequest">
+    <part name="request" element="xkms:RegisterRequest"/>
+  </message>
+
+  <message name="RegisterResult">
+    <part name="result" element="xkms:RegisterResult"/>
+  </message>
+
+  <message name="RevokeRequest">
+    <part name="request" element="xkms:RevokeRequest"/>
+  </message>
+
+  <message name="RevokeResult">
+    <part name="result" element="xkms:RevokeResult"/>
+  </message>
+
+  <message name="ValidateRequest">
+    <part name="request" element="xkms:ValidateRequest"/>
+  </message>
+
+  <message name="ValidateResult">
+    <part name="result" element="xkms:ValidateResult"/>
+  </message>
+
+  <portType name="KeyServicePortType">
+    <operation name="Register">
+      <input message="tns:RegisterRequest"/>
+      <output message="tns:RegisterResult"/>
+      <fault message="tns:RegisterResult" name="fault"/>
+    </operation>
+    <operation name="Revoke">
+      <input message="tns:RevokeRequest"/>
+      <output message="tns:RevokeResult"/>
+      <fault message="tns:RevokeResult" name="fault"/>
+    </operation>
+    <operation name="Validate">
+      <input message="tns:ValidateRequest"/>
+      <output message="tns:ValidateResult"/>
+      <fault message="tns:ValidateResult" name="fault"/>
+    </operation>
+  </portType>
+
+  <binding name="KeyServiceSoapBinding" type="tns:KeyServicePortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+    <operation name="Register">
+      <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Register" style="document"/>
+      <input message="tns:RegisterRequest">
+        <soap:body parts="request" use="literal"/>
+      </input>
+      <output message="tns:RegisterResult">
+        <soap:body parts="result" use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="Revoke">
+      <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Revoke" style="document"/>
+      <input message="tns:RevokeRequest">
+        <soap:body parts="request" use="literal"/>
+      </input>
+      <output message="tns:RevokeResult">
+        <soap:body parts="result" use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="Validate">
+      <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Validate" style="document"/>
+      <input message="tns:ValidateRequest">
+        <soap:body parts="request" use="literal"/>
+      </input>
+      <output message="tns:ValidateResult">
+        <soap:body parts="result" use="literal"/>
+      </output>
+    </operation>
+
+  </binding>
+
+  <service name="XMLKeyManagementService">
+	<documentation>XKMS2</documentation>
+
+    <port name="KeyServiceSoapPort" binding="tns:KeyServiceSoapBinding">
+      <soap:address location="http://localhost:8080/xkms2/"/>
+    </port>
+
+  </service>
+
+</definitions>
