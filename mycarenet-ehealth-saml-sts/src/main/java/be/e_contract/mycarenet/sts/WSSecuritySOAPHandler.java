@@ -109,7 +109,6 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 				.getLocalPart(), soapConstants.getEnvelopeURI(), "Content"));
 		signParts.add(new WSEncryptionPart(bstId));
 		signParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
-		sign.addReferencesToSign(signParts, wsSecHeader);
 		List<Reference> referenceList = sign.addReferencesToSign(signParts,
 				wsSecHeader);
 		sign.computeSignature(referenceList, false, null);

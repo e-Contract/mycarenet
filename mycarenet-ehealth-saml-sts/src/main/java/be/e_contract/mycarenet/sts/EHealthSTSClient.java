@@ -33,8 +33,16 @@ import javax.xml.ws.handler.Handler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opensaml.Configuration;
+import org.opensaml.saml1.core.Assertion;
+import org.opensaml.saml1.core.Request;
+import org.opensaml.saml1.core.Response;
+import org.opensaml.saml1.core.Status;
+import org.opensaml.saml1.core.StatusCode;
+import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.io.Unmarshaller;
+import org.opensaml.xml.io.UnmarshallerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.jaxws.sts.EHealthSamlStsService;
@@ -71,22 +79,41 @@ public class EHealthSTSClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public void requestAssertion(X509Certificate authnCertificate,
+	public Assertion requestAssertion(X509Certificate authnCertificate,
 			PrivateKey authnPrivateKey, X509Certificate hokCertificate,
 			PrivateKey hokPrivateKey) throws Exception {
 		this.wsSecuritySOAPHandler.setCertificate(authnCertificate);
 		this.wsSecuritySOAPHandler.setPrivateKey(authnPrivateKey);
 
 		RequestFactory requestFactory = new RequestFactory();
-		Element requestElement = requestFactory.createRequest(authnCertificate,
+		Request request = requestFactory.createRequest(authnCertificate,
 				hokPrivateKey, hokCertificate);
+		Element requestElement = request.getDOM();
 
 		Source responseSource = this.dispatch.invoke(new DOMSource(
 				requestElement));
-		LOG.debug("response source type: "
-				+ responseSource.getClass().getName());
+
 		DOMSource responseDOMSource = (DOMSource) responseSource;
-		Node responseNode = responseDOMSource.getNode();
+		Element responseElement = (Element) responseDOMSource.getNode();
+		UnmarshallerFactory unmarshallerFactory = Configuration
+				.getUnmarshallerFactory();
+		Unmarshaller unmarshaller = unmarshallerFactory
+				.getUnmarshaller(responseElement);
+		XMLObject xmlObject = unmarshaller.unmarshall(responseElement);
+		Response response = (Response) xmlObject;
 		
+		if (false == request.getID().equals(response.getInResponseTo())) {
+			throw new IllegalStateException("incorrect InResponseTo");
+		}
+		
+		Status status = response.getStatus();
+		StatusCode statusCode = status.getStatusCode();
+		if (false == StatusCode.SUCCESS.equals(statusCode.getValue())) {
+			throw new IllegalStateException("SAMLP status code incorrect");
+		}
+		
+		List<Assertion> assertions = response.getAssertions();
+		Assertion assertion = assertions.get(0);
+		return assertion;
 	}
 }

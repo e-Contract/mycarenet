@@ -40,6 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml1.core.Request;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -82,12 +83,14 @@ public class RequestFactoryTest {
 
 		RequestFactory requestFactory = new RequestFactory();
 
-		Element request = requestFactory.createRequest(authnCertificate,
+		Request request = requestFactory.createRequest(authnCertificate,
 				eHealthPrivateKey, eHealthCertificate);
 
 		assertNotNull(request);
 
-		LOG.debug("request: " + toString(request));
+		Element requestElement = request.getDOM();
+
+		LOG.debug("request: " + toString(requestElement));
 	}
 
 	private String toString(Node node)

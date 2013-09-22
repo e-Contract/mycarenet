@@ -59,7 +59,6 @@ import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.signature.X509Data;
-import org.w3c.dom.Element;
 
 public class RequestFactory {
 
@@ -87,8 +86,7 @@ public class RequestFactory {
 		Request request = buildObject(Request.DEFAULT_ELEMENT_NAME,
 				Request.class);
 		request.setIssueInstant(new DateTime());
-		request.setID("request_"
-				+ UUID.randomUUID().toString().replace("-", ""));
+		request.setID("request-" + UUID.randomUUID().toString());
 		request.setVersion(SAMLVersion.VERSION_11);
 		return request;
 	}
@@ -100,9 +98,9 @@ public class RequestFactory {
 		return query;
 	}
 
-	private Subject createRequestSubject(AttributeQuery query,
+	private Subject createRequestSubject(AttributeQuery attributeQuery,
 			X509Certificate authnCertificate) {
-		Subject subject = createSubject(query);
+		Subject subject = createSubject(attributeQuery);
 		addNameIdentifier(subject, authnCertificate);
 		return subject;
 	}
@@ -116,33 +114,34 @@ public class RequestFactory {
 
 	private NameIdentifier addNameIdentifier(Subject subject,
 			X509Certificate authnCertificate) {
-		NameIdentifier name = createNameIdentifier(subject);
-		name.setFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName");
-		name.setNameQualifier(getPrincipalName(authnCertificate
+		NameIdentifier nameIdentifier = createNameIdentifier(subject);
+		nameIdentifier
+				.setFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName");
+		nameIdentifier.setNameQualifier(getPrincipalName(authnCertificate
 				.getIssuerX500Principal()));
-		name.setNameIdentifier(getPrincipalName(authnCertificate
+		nameIdentifier.setNameIdentifier(getPrincipalName(authnCertificate
 				.getSubjectX500Principal()));
-		return name;
+		return nameIdentifier;
 	}
 
 	private String getPrincipalName(X500Principal principal) {
 		return principal.getName("RFC1779");
 	}
 
-	private Subject createSubject(AttributeQuery query) {
+	private Subject createSubject(AttributeQuery attributeQuery) {
 		Subject subject = buildObject(Subject.DEFAULT_ELEMENT_NAME,
 				Subject.class);
-		query.setSubject(subject);
+		attributeQuery.setSubject(subject);
 		return subject;
 	}
 
 	private ConfirmationMethod createConfirmationMethod(
 			SubjectConfirmation subjectConfirmation) {
-		ConfirmationMethod method = buildObject(
+		ConfirmationMethod confirmationMethod = buildObject(
 				ConfirmationMethod.DEFAULT_ELEMENT_NAME,
 				ConfirmationMethod.class);
-		subjectConfirmation.getConfirmationMethods().add(method);
-		return method;
+		subjectConfirmation.getConfirmationMethods().add(confirmationMethod);
+		return confirmationMethod;
 	}
 
 	private KeyInfo createKeyInfo(SubjectConfirmation subjectConfirmation,
@@ -181,8 +180,9 @@ public class RequestFactory {
 				SubjectConfirmation.DEFAULT_ELEMENT_NAME,
 				SubjectConfirmation.class);
 		subject.setSubjectConfirmation(subjectConfirmation);
-		ConfirmationMethod method = createConfirmationMethod(subjectConfirmation);
-		method.setConfirmationMethod("urn:oasis:names:tc:SAML:1.0:cm:holder-of-key");
+		ConfirmationMethod confirmationMethod = createConfirmationMethod(subjectConfirmation);
+		confirmationMethod
+				.setConfirmationMethod("urn:oasis:names:tc:SAML:1.0:cm:holder-of-key");
 		createKeyInfo(subjectConfirmation, hokCertificate);
 		return subjectConfirmation;
 	}
@@ -199,16 +199,16 @@ public class RequestFactory {
 		XSAnyBuilder proxyBuilder = new XSAnyBuilder();
 		QName oqname = new QName("urn:oasis:names:tc:SAML:1.0:assertion",
 				"SubjectConfirmationData", "saml1");
-		XSAny confirmData = (XSAny) proxyBuilder.buildObject(oqname);
-		subjectConfirmation.setSubjectConfirmationData(confirmData);
+		XSAny subjectConfirmationData = (XSAny) proxyBuilder
+				.buildObject(oqname);
+		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
 
 		Assertion assertion = buildObject(Assertion.DEFAULT_ELEMENT_NAME,
 				Assertion.class);
-		assertion.setID("assertion_"
-				+ UUID.randomUUID().toString().replace("-", ""));
+		assertion.setID("assertion-" + UUID.randomUUID().toString());
 		assertion.setIssueInstant(new DateTime());
 
-		confirmData.getUnknownXMLObjects().add(assertion);
+		subjectConfirmationData.getUnknownXMLObjects().add(assertion);
 		assertion.setIssuer(getPrincipalName(authnCertificate
 				.getSubjectX500Principal()));
 		Conditions conditions = createConditions(assertion);
@@ -227,19 +227,20 @@ public class RequestFactory {
 		return attributeStatement;
 	}
 
-	private Subject createAssertionSubject(AttributeStatement stmt,
+	private Subject createAssertionSubject(
+			AttributeStatement attributeStatement,
 			X509Certificate authnCertificate) {
 		Subject subject = buildObject(Subject.DEFAULT_ELEMENT_NAME,
 				Subject.class);
 		addNameIdentifier(subject, authnCertificate);
-		stmt.setSubject(subject);
+		attributeStatement.setSubject(subject);
 		return subject;
 	}
 
-	private Attribute createAttribute(AttributeStatement stmt) {
+	private Attribute createAttribute(AttributeStatement attributeStatement) {
 		Attribute attribute = buildObject(Attribute.DEFAULT_ELEMENT_NAME,
 				Attribute.class);
-		stmt.getAttributes().add(attribute);
+		attributeStatement.getAttributes().add(attribute);
 		return attribute;
 	}
 
@@ -247,20 +248,20 @@ public class RequestFactory {
 		return (XSString) stringBuilder.buildObject(name, XSString.TYPE_NAME);
 	}
 
-	private XSString createAttributeValue(Attribute attr) {
-		XSString val = buildString(AttributeValue.DEFAULT_ELEMENT_NAME);
-		attr.getAttributeValues().add(val);
-		return val;
+	private XSString createAttributeValue(Attribute attribute) {
+		XSString attributeValue = buildString(AttributeValue.DEFAULT_ELEMENT_NAME);
+		attribute.getAttributeValues().add(attributeValue);
+		return attributeValue;
 	}
 
-	private Attribute createAttribute(AttributeStatement stmt, String name,
-			String namespace, String value) {
-		Attribute attr = createAttribute(stmt);
-		attr.setAttributeName(name);
-		attr.setAttributeNamespace(namespace);
-		XSString attrVal = createAttributeValue(attr);
-		attrVal.setValue(value);
-		return attr;
+	private Attribute createAttribute(AttributeStatement attributeStatement,
+			String name, String namespace, String value) {
+		Attribute attribute = createAttribute(attributeStatement);
+		attribute.setAttributeName(name);
+		attribute.setAttributeNamespace(namespace);
+		XSString attributeValue = createAttributeValue(attribute);
+		attributeValue.setValue(value);
+		return attribute;
 	}
 
 	private String getUserId(X509Certificate signingCertificate) {
@@ -283,61 +284,64 @@ public class RequestFactory {
 		return userId;
 	}
 
-	private void createAttributes(AttributeStatement stmt,
+	private void createAttributes(AttributeStatement attributeStatement,
 			X509Certificate authnCertificate) {
-		createAttribute(stmt,
+		createAttribute(attributeStatement,
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
 				"urn:be:fgov:identification-namespace",
 				getUserId(authnCertificate));
 	}
 
-	private AttributeDesignator createAttributeDesignator(AttributeQuery query) {
-		AttributeDesignator designator = buildObject(
+	private AttributeDesignator createAttributeDesignator(
+			AttributeQuery attributeQuery) {
+		AttributeDesignator attributeDesignator = buildObject(
 				AttributeDesignator.DEFAULT_ELEMENT_NAME,
 				AttributeDesignator.class);
-		query.getAttributeDesignators().add(designator);
-		return designator;
+		attributeQuery.getAttributeDesignators().add(attributeDesignator);
+		return attributeDesignator;
 	}
 
-	private AttributeDesignator createAttributeDesignator(AttributeQuery query,
-			String name, String namespace) {
-		AttributeDesignator designator = createAttributeDesignator(query);
-		designator.setAttributeName(name);
-		designator.setAttributeNamespace(namespace);
-		return designator;
+	private AttributeDesignator createAttributeDesignator(
+			AttributeQuery attributeQuery, String name, String namespace) {
+		AttributeDesignator attributeDesignator = createAttributeDesignator(attributeQuery);
+		attributeDesignator.setAttributeName(name);
+		attributeDesignator.setAttributeNamespace(namespace);
+		return attributeDesignator;
 	}
 
-	private void createAttributeDesignators(AttributeQuery query) {
-		createAttributeDesignator(query,
+	private void createAttributeDesignators(AttributeQuery attributeQuery) {
+		createAttributeDesignator(attributeQuery,
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
 				"urn:be:fgov:identification-namespace");
 	}
 
 	private BasicX509Credential getSigningCredentials(PrivateKey hokPrivateKey,
 			X509Certificate hokCertificate) {
-		BasicX509Credential c = new BasicX509Credential();
-		c.setPrivateKey(hokPrivateKey);
-		c.setPublicKey(hokCertificate.getPublicKey());
-		c.setEntityCertificate(hokCertificate);
-		return c;
+		BasicX509Credential basicX509Credential = new BasicX509Credential();
+		basicX509Credential.setPrivateKey(hokPrivateKey);
+		basicX509Credential.setPublicKey(hokCertificate.getPublicKey());
+		basicX509Credential.setEntityCertificate(hokCertificate);
+		return basicX509Credential;
 	}
 
 	private Signature createSignature(Request request,
 			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
-		Signature sig = (Signature) xmlObjectBuilderFactory.getBuilder(
+		Signature signature = (Signature) xmlObjectBuilderFactory.getBuilder(
 				Signature.DEFAULT_ELEMENT_NAME).buildObject(
 				Signature.DEFAULT_ELEMENT_NAME);
-		request.setSignature(sig);
-		sig.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
-		sig.setCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
-		sig.setSigningCredential(getSigningCredentials(hokPrivateKey,
+		request.setSignature(signature);
+		signature
+				.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+		signature
+				.setCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
+		signature.setSigningCredential(getSigningCredentials(hokPrivateKey,
 				hokCertificate));
 		KeyInfo keyInfo = createKeyInfo(hokCertificate);
-		sig.setKeyInfo(keyInfo);
-		return sig;
+		signature.setKeyInfo(keyInfo);
+		return signature;
 	}
 
-	public Element createRequest(X509Certificate authnCertificate,
+	public Request createRequest(X509Certificate authnCertificate,
 			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
 		Request request = createRequest();
 		AttributeQuery attributeQuery = createQuery(request);
@@ -347,26 +351,27 @@ public class RequestFactory {
 				subjectRequest, hokCertificate);
 		Assertion assertion = createAssertion(subjectConfirmation,
 				authnCertificate);
-		AttributeStatement stmt = createAttributeStatement(assertion);
-		createAssertionSubject(stmt, authnCertificate);
-		createAttributes(stmt, authnCertificate);
+		AttributeStatement attributeStatement = createAttributeStatement(assertion);
+		createAssertionSubject(attributeStatement, authnCertificate);
+		createAttributes(attributeStatement, authnCertificate);
 		createAttributeDesignators(attributeQuery);
 
-		Signature sig = createSignature(request, hokPrivateKey, hokCertificate);
-
+		Signature signature = createSignature(request, hokPrivateKey,
+				hokCertificate);
 		Marshaller marshaller = Configuration.getMarshallerFactory()
 				.getMarshaller(request);
-		Element requestElement;
 		try {
-			requestElement = marshaller.marshall(request);
+			// signObject requires a DOM marshalling first
+			marshaller.marshall(request);
 		} catch (MarshallingException e) {
 			throw new RuntimeException(e);
 		}
 		try {
-			Signer.signObject(sig);
+			Signer.signObject(signature);
 		} catch (SignatureException e) {
 			throw new RuntimeException(e);
 		}
-		return requestElement;
+
+		return request;
 	}
 }
