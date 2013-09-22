@@ -18,6 +18,8 @@
 
 package test.integ.be.e_contract.mycarenet.sts;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -27,6 +29,7 @@ import java.util.Enumeration;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml1.core.Assertion;
 
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
@@ -45,8 +48,8 @@ public class EHealthSTSClientTest {
 	public void testClient() throws Exception {
 		EHealthSTSClient client = new EHealthSTSClient(
 				"https://services-int.ehealth.fgov.be/R2/IAM/Saml11TokenService/Legacy/v1");
-				//"https://services-acpt.ehealth.fgov.be/IAM/Saml11TokenService/Legacy/v1");
-				
+		// "https://services-acpt.ehealth.fgov.be/IAM/Saml11TokenService/Legacy/v1");
+
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
@@ -67,7 +70,10 @@ public class EHealthSTSClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		client.requestAssertion(authnCertificate, authnPrivateKey,
-				eHealthCertificate, eHealthPrivateKey);
+		Assertion assertion = client.requestAssertion(authnCertificate,
+				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
+
+		assertNotNull(assertion);
+		assertNotNull(assertion.getDOM());
 	}
 }
