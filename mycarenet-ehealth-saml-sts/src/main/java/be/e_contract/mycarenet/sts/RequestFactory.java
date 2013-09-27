@@ -213,7 +213,7 @@ public class RequestFactory {
 				.getSubjectX500Principal()));
 		Conditions conditions = createConditions(assertion);
 		DateTime now = new DateTime();
-		DateTime inOneHourFromNow = now.plusHours(12);
+		DateTime inOneHourFromNow = now.plusHours(24);
 		conditions.setNotBefore(now);
 		conditions.setNotOnOrAfter(inOneHourFromNow);
 		return assertion;
@@ -290,6 +290,9 @@ public class RequestFactory {
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
 				"urn:be:fgov:identification-namespace",
 				getUserId(authnCertificate));
+		createAttribute(attributeStatement, "urn:be:fgov:person:ssin",
+				"urn:be:fgov:identification-namespace",
+				getUserId(authnCertificate));
 	}
 
 	private AttributeDesignator createAttributeDesignator(
@@ -313,6 +316,11 @@ public class RequestFactory {
 		createAttributeDesignator(attributeQuery,
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
 				"urn:be:fgov:identification-namespace");
+		createAttributeDesignator(attributeQuery, "urn:be:fgov:person:ssin",
+				"urn:be:fgov:identification-namespace");
+		createAttributeDesignator(attributeQuery,
+				"urn:be:fgov:person:ssin:nurse:boolean",
+				"urn:be:fgov:certified-namespace:ehealth");
 	}
 
 	private BasicX509Credential getSigningCredentials(PrivateKey hokPrivateKey,

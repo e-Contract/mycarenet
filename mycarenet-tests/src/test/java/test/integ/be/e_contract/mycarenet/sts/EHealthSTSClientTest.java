@@ -47,8 +47,7 @@ public class EHealthSTSClientTest {
 	@Test
 	public void testClient() throws Exception {
 		EHealthSTSClient client = new EHealthSTSClient(
-				"https://services-int.ehealth.fgov.be/R2/IAM/Saml11TokenService/Legacy/v1");
-		// "https://services-acpt.ehealth.fgov.be/IAM/Saml11TokenService/Legacy/v1");
+				"https://wwwacc.ehealth.fgov.be/sts_1_1/SecureTokenService");
 
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
