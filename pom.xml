@@ -225,6 +225,11 @@
 				<artifactId>bcpkix-jdk15on</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>3.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
