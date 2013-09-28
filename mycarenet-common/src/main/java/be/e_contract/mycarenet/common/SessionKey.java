@@ -57,6 +57,8 @@ public class SessionKey {
 
 	private static final int KEY_SIZE = 1024;
 
+	private static final String DEFAULT_NAME = "CN=MyCarenetSessionKey, O=MyCareNet, C=BE";
+
 	private final KeyPair keyPair;
 
 	private Date notBefore;
@@ -65,7 +67,13 @@ public class SessionKey {
 
 	private X509Certificate certificate;
 
+	private String name = DEFAULT_NAME;
+
 	public SessionKey() {
+		this(KEY_SIZE);
+	}
+
+	public SessionKey(int keySize) {
 		KeyPairGenerator keyPairGenerator;
 		try {
 			keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -74,10 +82,10 @@ public class SessionKey {
 		}
 		SecureRandom random = new SecureRandom();
 		try {
-			keyPairGenerator.initialize(new RSAKeyGenParameterSpec(KEY_SIZE,
+			keyPairGenerator.initialize(new RSAKeyGenParameterSpec(keySize,
 					RSAKeyGenParameterSpec.F4), random);
 		} catch (InvalidAlgorithmParameterException e) {
-			throw new RuntimeException("unsupported key size: " + KEY_SIZE);
+			throw new RuntimeException("unsupported key size: " + keySize);
 		}
 		this.keyPair = keyPairGenerator.generateKeyPair();
 	}
@@ -129,6 +137,10 @@ public class SessionKey {
 			throw new RuntimeException("certificate decoding error: "
 					+ e.getMessage(), e);
 		}
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public byte[] getModulus() {
@@ -197,8 +209,7 @@ public class SessionKey {
 	}
 
 	private void generateCertificate() {
-		X500Name name = new X500Name(
-				"CN=MyCarenetSessionKey, O=MyCareNet, C=BE");
+		X500Name name = new X500Name(this.name);
 		BigInteger serial = BigInteger.valueOf(1);
 		SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo
 				.getInstance(this.keyPair.getPublic().getEncoded());
