@@ -21,17 +21,25 @@ package test.integ.be.e_contract.mycarenet.sts;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
+import java.io.StringWriter;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.saml1.core.Assertion;
+import org.w3c.dom.Element;
 
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
@@ -74,14 +82,23 @@ public class EHealthSTSClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		Assertion assertion = client.requestAssertion(authnCertificate,
+		Element assertionElement = client.requestAssertion(authnCertificate,
 				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
 
-		assertNotNull(assertion);
-		assertNotNull(assertion.getDOM());
+		assertNotNull(assertionElement);
 
-		LOG.debug("assertion: " + client.toString(assertion));
+		LOG.debug("assertion: " + toString(assertionElement));
 
-		LOG.debug("not after: " + client.getNotAfter(assertion));
+		LOG.debug("not after: " + client.getNotAfter(assertionElement));
+	}
+
+	private String toString(Element element) throws TransformerException {
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		StringWriter writer = new StringWriter();
+		transformer.transform(new DOMSource(element), new StreamResult(writer));
+		return writer.toString();
 	}
 }

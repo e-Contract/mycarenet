@@ -32,7 +32,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -40,9 +39,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.saml1.core.Request;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.sts.RequestFactory;
@@ -83,24 +80,21 @@ public class RequestFactoryTest {
 
 		RequestFactory requestFactory = new RequestFactory();
 
-		Request request = requestFactory.createRequest(authnCertificate,
+		Element requestElement = requestFactory.createRequest(authnCertificate,
 				eHealthPrivateKey, eHealthCertificate);
 
-		assertNotNull(request);
-
-		Element requestElement = request.getDOM();
+		assertNotNull(requestElement);
 
 		LOG.debug("request: " + toString(requestElement));
 	}
 
-	private String toString(Node node)
-			throws TransformerFactoryConfigurationError, TransformerException {
-		StringWriter stringWriter = new StringWriter();
-		Transformer transformer = TransformerFactory.newInstance()
-				.newTransformer();
+	private String toString(Element element) throws TransformerException {
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		transformer.transform(new DOMSource(node), new StreamResult(
-				stringWriter));
-		return stringWriter.toString();
+		StringWriter writer = new StringWriter();
+		transformer.transform(new DOMSource(element), new StreamResult(writer));
+		return writer.toString();
 	}
 }

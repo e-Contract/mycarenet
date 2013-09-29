@@ -21,8 +21,10 @@ package be.e_contract.mycarenet.sts;
 import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
 import java.util.List;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -40,17 +42,8 @@ import javax.xml.ws.handler.Handler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
-import org.opensaml.Configuration;
-import org.opensaml.saml1.core.Assertion;
-import org.opensaml.saml1.core.Conditions;
-import org.opensaml.saml1.core.Request;
-import org.opensaml.saml1.core.Response;
-import org.opensaml.saml1.core.Status;
-import org.opensaml.saml1.core.StatusCode;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.io.Unmarshaller;
-import org.opensaml.xml.io.UnmarshallerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.jaxws.sts.EHealthSamlStsService;
@@ -87,67 +80,58 @@ public class EHealthSTSClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public Assertion requestAssertion(X509Certificate authnCertificate,
+	public Element requestAssertion(X509Certificate authnCertificate,
 			PrivateKey authnPrivateKey, X509Certificate hokCertificate,
 			PrivateKey hokPrivateKey) throws Exception {
 		this.wsSecuritySOAPHandler.setCertificate(authnCertificate);
 		this.wsSecuritySOAPHandler.setPrivateKey(authnPrivateKey);
 
 		RequestFactory requestFactory = new RequestFactory();
-		Request request = requestFactory.createRequest(authnCertificate,
+		Element requestElement = requestFactory.createRequest(authnCertificate,
 				hokPrivateKey, hokCertificate);
-		Element requestElement = request.getDOM();
 
 		Source responseSource = this.dispatch.invoke(new DOMSource(
 				requestElement));
 
 		DOMSource responseDOMSource = (DOMSource) responseSource;
 		Element responseElement = (Element) responseDOMSource.getNode();
-		UnmarshallerFactory unmarshallerFactory = Configuration
-				.getUnmarshallerFactory();
-		Unmarshaller unmarshaller = unmarshallerFactory
-				.getUnmarshaller(responseElement);
-		XMLObject xmlObject = unmarshaller.unmarshall(responseElement);
-		Response response = (Response) xmlObject;
 
-		if (false == request.getID().equals(response.getInResponseTo())) {
-			throw new IllegalStateException("incorrect InResponseTo");
+		NodeList assertionNodeList = responseElement.getElementsByTagNameNS(
+				"urn:oasis:names:tc:SAML:1.0:assertion", "Assertion");
+		if (assertionNodeList.getLength() == 0) {
+			LOG.error("no assertion in response");
+			return null;
 		}
-
-		Status status = response.getStatus();
-		StatusCode statusCode = status.getStatusCode();
-		if (false == StatusCode.SUCCESS.equals(statusCode.getValue())) {
-			throw new IllegalStateException("SAMLP status code incorrect");
-		}
-
-		List<Assertion> assertions = response.getAssertions();
-		Assertion assertion = assertions.get(0);
-		return assertion;
+		return (Element) assertionNodeList.item(0);
 	}
 
-	public String toString(Assertion assertion) {
-		Element assertionElement = assertion.getDOM();
+	public DateTime getNotAfter(Element assertionElement) {
+		NodeList conditionsNodeList = assertionElement.getElementsByTagNameNS(
+				"urn:oasis:names:tc:SAML:1.0:assertion", "Conditions");
+		Element conditionsElement = (Element) conditionsNodeList.item(0);
+		String notOnOrAfterAttributeValue = conditionsElement
+				.getAttribute("NotOnOrAfter");
+		Calendar calendar = DatatypeConverter
+				.parseDateTime(notOnOrAfterAttributeValue);
+		return new DateTime(calendar.getTime());
+	}
+
+	public String toString(Element node) {
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
 		} catch (TransformerConfigurationException e) {
-			throw new RuntimeException("DOM error: " + e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		StringWriter stringWriter = new StringWriter();
 		try {
-			transformer.transform(new DOMSource(assertionElement),
-					new StreamResult(stringWriter));
+			transformer.transform(new DOMSource(node), new StreamResult(
+					stringWriter));
 		} catch (TransformerException e) {
-			throw new RuntimeException(
-					"DOM transform error: " + e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		return stringWriter.toString();
-	}
-
-	public DateTime getNotAfter(Assertion assertion) {
-		Conditions conditions = assertion.getConditions();
-		return conditions.getNotOnOrAfter();
 	}
 }
