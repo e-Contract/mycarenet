@@ -29,7 +29,7 @@
 
 	<binding name="EHealthSamlStsBinding" type="tns:EHealthSamlStsPortType">
 		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soattributeap/http" />
+			transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="AttributeQuery">
 			<soap:operation soapAction="AttributeQuery" />
 			<input>
