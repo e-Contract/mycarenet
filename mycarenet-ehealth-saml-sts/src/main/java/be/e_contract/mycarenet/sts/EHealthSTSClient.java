@@ -59,7 +59,7 @@ public class EHealthSTSClient {
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
-	public EHealthSTSClient(String location) throws Exception {
+	public EHealthSTSClient(String location) {
 		EHealthSamlStsService service = EHealthSamlStsServiceFactory
 				.newInstance();
 
