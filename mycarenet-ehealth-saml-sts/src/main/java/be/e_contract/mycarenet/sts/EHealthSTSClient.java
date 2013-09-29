@@ -31,10 +31,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.Binding;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.handler.Handler;
@@ -42,6 +42,7 @@ import javax.xml.ws.handler.Handler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -70,7 +71,7 @@ public class EHealthSTSClient {
 				Service.Mode.PAYLOAD);
 
 		this.dispatch.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+				Dispatch.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = dispatch.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
@@ -93,8 +94,7 @@ public class EHealthSTSClient {
 		Source responseSource = this.dispatch.invoke(new DOMSource(
 				requestElement));
 
-		DOMSource responseDOMSource = (DOMSource) responseSource;
-		Element responseElement = (Element) responseDOMSource.getNode();
+		Element responseElement = toElement(responseSource);
 
 		NodeList assertionNodeList = responseElement.getElementsByTagNameNS(
 				"urn:oasis:names:tc:SAML:1.0:assertion", "Assertion");
@@ -103,6 +103,29 @@ public class EHealthSTSClient {
 			return null;
 		}
 		return (Element) assertionNodeList.item(0);
+	}
+
+	private Element toElement(Source source) {
+		if (source instanceof DOMSource) {
+			DOMSource domSource = (DOMSource) source;
+			return (Element) domSource.getNode();
+		}
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		DOMResult domResult = new DOMResult();
+		try {
+			transformer.transform(source, domResult);
+		} catch (TransformerException e) {
+			throw new RuntimeException(e);
+		}
+		Document document = (Document) domResult.getNode();
+		return (Element) document.getDocumentElement();
 	}
 
 	public DateTime getNotAfter(Element assertionElement) {

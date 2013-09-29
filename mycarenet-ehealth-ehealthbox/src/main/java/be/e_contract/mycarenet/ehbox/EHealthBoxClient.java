@@ -23,12 +23,18 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
@@ -91,8 +97,30 @@ public class EHealthBoxClient {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 		Source responseSource = this.dispatch.invoke(new DOMSource(request));
-		DOMSource responseDOMSource = (DOMSource) responseSource;
-		Element responseElement = (Element) responseDOMSource.getNode();
+		Element responseElement = toElement(responseSource);
 		return responseElement;
+	}
+
+	private Element toElement(Source source) {
+		if (source instanceof DOMSource) {
+			DOMSource domSource = (DOMSource) source;
+			return (Element) domSource.getNode();
+		}
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		DOMResult domResult = new DOMResult();
+		try {
+			transformer.transform(source, domResult);
+		} catch (TransformerException e) {
+			throw new RuntimeException(e);
+		}
+		Document document = (Document) domResult.getNode();
+		return (Element) document.getDocumentElement();
 	}
 }
