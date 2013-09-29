@@ -18,13 +18,19 @@
 
 package be.e_contract.mycarenet.sts;
 
+import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
@@ -33,8 +39,10 @@ import javax.xml.ws.handler.Handler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.saml1.core.Assertion;
+import org.opensaml.saml1.core.Conditions;
 import org.opensaml.saml1.core.Request;
 import org.opensaml.saml1.core.Response;
 import org.opensaml.saml1.core.Status;
@@ -101,19 +109,45 @@ public class EHealthSTSClient {
 				.getUnmarshaller(responseElement);
 		XMLObject xmlObject = unmarshaller.unmarshall(responseElement);
 		Response response = (Response) xmlObject;
-		
+
 		if (false == request.getID().equals(response.getInResponseTo())) {
 			throw new IllegalStateException("incorrect InResponseTo");
 		}
-		
+
 		Status status = response.getStatus();
 		StatusCode statusCode = status.getStatusCode();
 		if (false == StatusCode.SUCCESS.equals(statusCode.getValue())) {
 			throw new IllegalStateException("SAMLP status code incorrect");
 		}
-		
+
 		List<Assertion> assertions = response.getAssertions();
 		Assertion assertion = assertions.get(0);
 		return assertion;
+	}
+
+	public String toString(Assertion assertion) {
+		Element assertionElement = assertion.getDOM();
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new RuntimeException("DOM error: " + e.getMessage(), e);
+		}
+		StringWriter stringWriter = new StringWriter();
+		try {
+			transformer.transform(new DOMSource(assertionElement),
+					new StreamResult(stringWriter));
+		} catch (TransformerException e) {
+			throw new RuntimeException(
+					"DOM transform error: " + e.getMessage(), e);
+		}
+		return stringWriter.toString();
+	}
+
+	public DateTime getNotAfter(Assertion assertion) {
+		Conditions conditions = assertion.getConditions();
+		return conditions.getNotOnOrAfter();
 	}
 }

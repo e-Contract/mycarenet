@@ -92,11 +92,12 @@ public class EHealthBoxClientTest {
 		assertNotNull(assertion);
 		assertNotNull(assertion.getDOM());
 
+		String assertionString = client.toString(assertion);
+
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
-		eHealthBoxClient.getBoxInfo(eHealthPrivateKey,
-				toString(assertion.getDOM()));
+		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
 
 	@Test
@@ -175,11 +176,12 @@ public class EHealthBoxClientTest {
 		assertNotNull(assertion);
 		assertNotNull(assertion.getDOM());
 
+		String assertionString = client.toString(assertion);
+
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
-		eHealthBoxClient.getBoxInfo(eHealthPrivateKey,
-				toString(assertion.getDOM()));
+		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
 
 	private String toString(Node node) throws Exception {
