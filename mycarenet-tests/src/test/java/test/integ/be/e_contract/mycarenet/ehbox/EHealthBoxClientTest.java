@@ -39,7 +39,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.saml1.core.Assertion;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -86,11 +85,10 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		Assertion assertion = client.requestAssertion(authnCertificate,
+		Element assertion = client.requestAssertion(authnCertificate,
 				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
 
 		assertNotNull(assertion);
-		assertNotNull(assertion.getDOM());
 
 		String assertionString = client.toString(assertion);
 
@@ -126,11 +124,10 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		Assertion assertion = client.requestAssertion(authnCertificate,
+		Element assertion = client.requestAssertion(authnCertificate,
 				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
 
 		assertNotNull(assertion);
-		assertNotNull(assertion.getDOM());
 
 		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2\"/>";
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
@@ -146,7 +143,7 @@ public class EHealthBoxClientTest {
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
 		eHealthBoxClient.invoke(requestElement, eHealthPrivateKey,
-				toString(assertion.getDOM()));
+				toString(assertion));
 	}
 
 	@Test
@@ -170,13 +167,12 @@ public class EHealthBoxClientTest {
 		X509Certificate eHealthCertificate = sessionKey.getCertificate();
 		PrivateKey eHealthPrivateKey = sessionKey.getPrivate();
 
-		Assertion assertion = client.requestAssertion(authnCertificate,
+		Element assertionElement = client.requestAssertion(authnCertificate,
 				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
 
-		assertNotNull(assertion);
-		assertNotNull(assertion.getDOM());
+		assertNotNull(assertionElement);
 
-		String assertionString = client.toString(assertion);
+		String assertionString = client.toString(assertionElement);
 
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(

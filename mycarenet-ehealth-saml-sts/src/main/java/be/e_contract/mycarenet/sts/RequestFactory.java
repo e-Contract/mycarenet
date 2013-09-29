@@ -18,255 +18,201 @@
 
 package be.e_contract.mycarenet.sts;
 
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.crypto.MarshalException;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.DigestMethod;
+import javax.xml.crypto.dsig.Reference;
+import javax.xml.crypto.dsig.SignatureMethod;
+import javax.xml.crypto.dsig.SignedInfo;
+import javax.xml.crypto.dsig.Transform;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.dom.DOMSignContext;
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLObject;
-import org.opensaml.common.SAMLObjectBuilder;
-import org.opensaml.common.SAMLVersion;
-import org.opensaml.saml1.core.Assertion;
-import org.opensaml.saml1.core.Attribute;
-import org.opensaml.saml1.core.AttributeDesignator;
-import org.opensaml.saml1.core.AttributeQuery;
-import org.opensaml.saml1.core.AttributeStatement;
-import org.opensaml.saml1.core.AttributeValue;
-import org.opensaml.saml1.core.Conditions;
-import org.opensaml.saml1.core.ConfirmationMethod;
-import org.opensaml.saml1.core.NameIdentifier;
-import org.opensaml.saml1.core.Request;
-import org.opensaml.saml1.core.Subject;
-import org.opensaml.saml1.core.SubjectConfirmation;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.schema.XSAny;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.schema.impl.XSAnyBuilder;
-import org.opensaml.xml.schema.impl.XSStringBuilder;
-import org.opensaml.xml.security.x509.BasicX509Credential;
-import org.opensaml.xml.signature.KeyInfo;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureException;
-import org.opensaml.xml.signature.Signer;
-import org.opensaml.xml.signature.X509Data;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import be.e_contract.mycarenet.jaxb.saml.AssertionType;
+import be.e_contract.mycarenet.jaxb.saml.AttributeDesignatorType;
+import be.e_contract.mycarenet.jaxb.saml.AttributeStatementType;
+import be.e_contract.mycarenet.jaxb.saml.AttributeType;
+import be.e_contract.mycarenet.jaxb.saml.ConditionsType;
+import be.e_contract.mycarenet.jaxb.saml.NameIdentifierType;
+import be.e_contract.mycarenet.jaxb.saml.ObjectFactory;
+import be.e_contract.mycarenet.jaxb.saml.SubjectConfirmationType;
+import be.e_contract.mycarenet.jaxb.saml.SubjectType;
+import be.e_contract.mycarenet.jaxb.samlp.AttributeQueryType;
+import be.e_contract.mycarenet.jaxb.samlp.RequestType;
+import be.e_contract.mycarenet.jaxb.xmldsig.KeyInfoType;
+import be.e_contract.mycarenet.jaxb.xmldsig.X509DataType;
+
+/**
+ * Factory for SAML Request.
+ * <p/>
+ * We don't use OpenSAML here as this conflicts with the JBoss CXF runtime.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class RequestFactory {
 
-	private static final XMLObjectBuilderFactory xmlObjectBuilderFactory;
-	private static final XSStringBuilder stringBuilder;
+	private final ObjectFactory samlObjectFactory;
+	private final be.e_contract.mycarenet.jaxb.samlp.ObjectFactory samlpObjectFactory;
+	private final be.e_contract.mycarenet.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory;
+	private final Marshaller marshaller;
+	private final DocumentBuilder documentBuilder;
+	private final DatatypeFactory datatypeFactory;
 
-	static {
+	public RequestFactory() {
+		this.samlObjectFactory = new ObjectFactory();
+		this.samlpObjectFactory = new be.e_contract.mycarenet.jaxb.samlp.ObjectFactory();
+		this.xmldsigObjectFactory = new be.e_contract.mycarenet.jaxb.xmldsig.ObjectFactory();
+
 		try {
-			DefaultBootstrap.bootstrap();
-		} catch (ConfigurationException e) {
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(be.e_contract.mycarenet.jaxb.samlp.ObjectFactory.class);
+			this.marshaller = jaxbContext.createMarshaller();
+		} catch (JAXBException e) {
+			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+		}
+
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
+				.newInstance();
+		documentBuilderFactory.setNamespaceAware(true);
+		try {
+			this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException("DOM error: " + e.getMessage(), e);
+		}
+
+		try {
+			this.datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
 			throw new RuntimeException(e);
 		}
-		xmlObjectBuilderFactory = Configuration.getBuilderFactory();
-		stringBuilder = (XSStringBuilder) Configuration.getBuilderFactory()
-				.getBuilder(XSString.TYPE_NAME);
 	}
 
-	private <T extends SAMLObject> T buildObject(QName name, Class<T> clazz) {
-		SAMLObjectBuilder samlObjectBuilder = (SAMLObjectBuilder) xmlObjectBuilderFactory
-				.getBuilder(name);
-		return (T) samlObjectBuilder.buildObject();
-	}
-
-	private Request createRequest() {
-		Request request = buildObject(Request.DEFAULT_ELEMENT_NAME,
-				Request.class);
-		request.setIssueInstant(new DateTime());
-		request.setID("request-" + UUID.randomUUID().toString());
-		request.setVersion(SAMLVersion.VERSION_11);
+	private RequestType createRequest() {
+		RequestType request = this.samlpObjectFactory.createRequestType();
+		String requestId = "request-" + UUID.randomUUID().toString();
+		request.setRequestID(requestId);
+		request.setMajorVersion(BigInteger.ONE);
+		request.setMinorVersion(BigInteger.ONE);
+		DateTime now = new DateTime();
+		request.setIssueInstant(toXMLGregorianCalendar(now));
 		return request;
 	}
 
-	private AttributeQuery createQuery(Request request) {
-		AttributeQuery query = buildObject(AttributeQuery.DEFAULT_ELEMENT_NAME,
-				AttributeQuery.class);
-		request.setQuery(query);
-		return query;
+	private AttributeQueryType createAttributeQuery(RequestType request) {
+		AttributeQueryType attributeQuery = this.samlpObjectFactory
+				.createAttributeQueryType();
+		request.setAttributeQuery(attributeQuery);
+		return attributeQuery;
 	}
 
-	private Subject createRequestSubject(AttributeQuery attributeQuery,
-			X509Certificate authnCertificate) {
-		Subject subject = createSubject(attributeQuery);
-		addNameIdentifier(subject, authnCertificate);
-		return subject;
-	}
-
-	private NameIdentifier createNameIdentifier(Subject subject) {
-		NameIdentifier name = buildObject(NameIdentifier.DEFAULT_ELEMENT_NAME,
-				NameIdentifier.class);
-		subject.setNameIdentifier(name);
-		return name;
-	}
-
-	private NameIdentifier addNameIdentifier(Subject subject,
-			X509Certificate authnCertificate) {
-		NameIdentifier nameIdentifier = createNameIdentifier(subject);
-		nameIdentifier
-				.setFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName");
-		nameIdentifier.setNameQualifier(getPrincipalName(authnCertificate
-				.getIssuerX500Principal()));
-		nameIdentifier.setNameIdentifier(getPrincipalName(authnCertificate
-				.getSubjectX500Principal()));
-		return nameIdentifier;
-	}
-
-	private String getPrincipalName(X500Principal principal) {
-		return principal.getName("RFC1779");
-	}
-
-	private Subject createSubject(AttributeQuery attributeQuery) {
-		Subject subject = buildObject(Subject.DEFAULT_ELEMENT_NAME,
-				Subject.class);
+	private SubjectType createSubject(AttributeQueryType attributeQuery) {
+		SubjectType subject = this.samlObjectFactory.createSubjectType();
 		attributeQuery.setSubject(subject);
 		return subject;
 	}
 
-	private ConfirmationMethod createConfirmationMethod(
-			SubjectConfirmation subjectConfirmation) {
-		ConfirmationMethod confirmationMethod = buildObject(
-				ConfirmationMethod.DEFAULT_ELEMENT_NAME,
-				ConfirmationMethod.class);
-		subjectConfirmation.getConfirmationMethods().add(confirmationMethod);
-		return confirmationMethod;
-	}
-
-	private KeyInfo createKeyInfo(SubjectConfirmation subjectConfirmation,
+	private NameIdentifierType createNameIdentifier(SubjectType subject,
 			X509Certificate authnCertificate) {
-		KeyInfo keyInfo = createKeyInfo(authnCertificate);
-		subjectConfirmation.setKeyInfo(keyInfo);
-		return keyInfo;
+		NameIdentifierType nameIdentifier = this.samlObjectFactory
+				.createNameIdentifierType();
+		nameIdentifier
+				.setFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName");
+		nameIdentifier.setNameQualifier(authnCertificate
+				.getIssuerX500Principal().getName("RFC1779"));
+		nameIdentifier.setValue(authnCertificate.getSubjectX500Principal()
+				.getName("RFC1779"));
+		subject.getContent().add(
+				this.samlObjectFactory.createNameIdentifier(nameIdentifier));
+		return nameIdentifier;
 	}
 
-	private KeyInfo createKeyInfo(X509Certificate certificate) {
-		KeyInfo keyInfo = (KeyInfo) Configuration.getBuilderFactory()
-				.getBuilder(KeyInfo.DEFAULT_ELEMENT_NAME)
-				.buildObject(KeyInfo.DEFAULT_ELEMENT_NAME);
-		X509Data data = (X509Data) Configuration.getBuilderFactory()
-				.getBuilder(X509Data.DEFAULT_ELEMENT_NAME)
-				.buildObject(X509Data.DEFAULT_ELEMENT_NAME);
-		org.opensaml.xml.signature.X509Certificate cert = (org.opensaml.xml.signature.X509Certificate) Configuration
-				.getBuilderFactory()
-				.getBuilder(
-						org.opensaml.xml.signature.X509Certificate.DEFAULT_ELEMENT_NAME)
-				.buildObject(
-						org.opensaml.xml.signature.X509Certificate.DEFAULT_ELEMENT_NAME);
-		try {
-			cert.setValue(Base64.encode(certificate.getEncoded()));
-		} catch (CertificateEncodingException e) {
-			throw new RuntimeException(e);
-		}
-		data.getX509Certificates().add(cert);
-		keyInfo.getX509Datas().add(data);
-		return keyInfo;
-	}
-
-	private SubjectConfirmation createSubjectConfirmation(Subject subject,
-			X509Certificate hokCertificate) {
-		SubjectConfirmation subjectConfirmation = buildObject(
-				SubjectConfirmation.DEFAULT_ELEMENT_NAME,
-				SubjectConfirmation.class);
-		subject.setSubjectConfirmation(subjectConfirmation);
-		ConfirmationMethod confirmationMethod = createConfirmationMethod(subjectConfirmation);
-		confirmationMethod
-				.setConfirmationMethod("urn:oasis:names:tc:SAML:1.0:cm:holder-of-key");
-		createKeyInfo(subjectConfirmation, hokCertificate);
+	private SubjectConfirmationType createSubjectConfirmation(
+			SubjectType subject) {
+		SubjectConfirmationType subjectConfirmation = this.samlObjectFactory
+				.createSubjectConfirmationType();
+		subjectConfirmation.getConfirmationMethod().add(
+				"urn:oasis:names:tc:SAML:1.0:cm:holder-of-key");
+		subject.getContent().add(
+				this.samlObjectFactory
+						.createSubjectConfirmation(subjectConfirmation));
 		return subjectConfirmation;
 	}
 
-	private Conditions createConditions(Assertion assertion) {
-		Conditions conditions = buildObject(Conditions.DEFAULT_ELEMENT_NAME,
-				Conditions.class);
-		assertion.setConditions(conditions);
-		return conditions;
+	private XMLGregorianCalendar toXMLGregorianCalendar(DateTime date) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTime(date.toDate());
+		calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return this.datatypeFactory.newXMLGregorianCalendar(calendar);
 	}
 
-	private Assertion createAssertion(SubjectConfirmation subjectConfirmation,
+	private void createSubject(AttributeStatementType attributeStatement,
 			X509Certificate authnCertificate) {
-		XSAnyBuilder proxyBuilder = new XSAnyBuilder();
-		QName oqname = new QName("urn:oasis:names:tc:SAML:1.0:assertion",
-				"SubjectConfirmationData", "saml1");
-		XSAny subjectConfirmationData = (XSAny) proxyBuilder
-				.buildObject(oqname);
-		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-
-		Assertion assertion = buildObject(Assertion.DEFAULT_ELEMENT_NAME,
-				Assertion.class);
-		assertion.setID("assertion-" + UUID.randomUUID().toString());
-		assertion.setIssueInstant(new DateTime());
-
-		subjectConfirmationData.getUnknownXMLObjects().add(assertion);
-		assertion.setIssuer(getPrincipalName(authnCertificate
-				.getSubjectX500Principal()));
-		Conditions conditions = createConditions(assertion);
-		DateTime now = new DateTime();
-		DateTime inOneHourFromNow = now.plusHours(24);
-		conditions.setNotBefore(now);
-		conditions.setNotOnOrAfter(inOneHourFromNow);
-		return assertion;
-	}
-
-	private AttributeStatement createAttributeStatement(Assertion assertion) {
-		AttributeStatement attributeStatement = buildObject(
-				AttributeStatement.DEFAULT_ELEMENT_NAME,
-				AttributeStatement.class);
-		assertion.getAttributeStatements().add(attributeStatement);
-		return attributeStatement;
-	}
-
-	private Subject createAssertionSubject(
-			AttributeStatement attributeStatement,
-			X509Certificate authnCertificate) {
-		Subject subject = buildObject(Subject.DEFAULT_ELEMENT_NAME,
-				Subject.class);
-		addNameIdentifier(subject, authnCertificate);
+		SubjectType subject = this.samlObjectFactory.createSubjectType();
 		attributeStatement.setSubject(subject);
-		return subject;
+		createNameIdentifier(subject, authnCertificate);
 	}
 
-	private Attribute createAttribute(AttributeStatement attributeStatement) {
-		Attribute attribute = buildObject(Attribute.DEFAULT_ELEMENT_NAME,
-				Attribute.class);
-		attributeStatement.getAttributes().add(attribute);
-		return attribute;
-	}
-
-	private XSString buildString(QName name) {
-		return (XSString) stringBuilder.buildObject(name, XSString.TYPE_NAME);
-	}
-
-	private XSString createAttributeValue(Attribute attribute) {
-		XSString attributeValue = buildString(AttributeValue.DEFAULT_ELEMENT_NAME);
-		attribute.getAttributeValues().add(attributeValue);
-		return attributeValue;
-	}
-
-	private Attribute createAttribute(AttributeStatement attributeStatement,
-			String name, String namespace, String value) {
-		Attribute attribute = createAttribute(attributeStatement);
-		attribute.setAttributeName(name);
+	private void createAttribute(AttributeStatementType attributeStatement,
+			String namespace, String name, String value) {
+		AttributeType attribute = this.samlObjectFactory.createAttributeType();
+		attributeStatement.getAttribute().add(attribute);
 		attribute.setAttributeNamespace(namespace);
-		XSString attributeValue = createAttributeValue(attribute);
-		attributeValue.setValue(value);
-		return attribute;
+		attribute.setAttributeName(name);
+		attribute.getAttributeValue().add(value);
 	}
 
-	private String getUserId(X509Certificate signingCertificate) {
-		X500Principal userPrincipal = signingCertificate
-				.getSubjectX500Principal();
+	private void createAttributeStatement(AssertionType assertion,
+			X509Certificate authnCertificate) {
+		AttributeStatementType attributeStatement = this.samlObjectFactory
+				.createAttributeStatementType();
+		assertion.getStatementOrSubjectStatementOrAuthenticationStatement()
+				.add(attributeStatement);
+		createSubject(attributeStatement, authnCertificate);
+		createAttribute(attributeStatement,
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
+				getUserIdentifier(authnCertificate));
+		createAttribute(attributeStatement,
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin", getUserIdentifier(authnCertificate));
+	}
+
+	private String getUserIdentifier(X509Certificate certificate) {
+		X500Principal userPrincipal = certificate.getSubjectX500Principal();
 		String name = userPrincipal.toString();
 		int serialNumberBeginIdx = name.indexOf("SERIALNUMBER=");
 		if (-1 == serialNumberBeginIdx) {
@@ -284,102 +230,157 @@ public class RequestFactory {
 		return userId;
 	}
 
-	private void createAttributes(AttributeStatement attributeStatement,
+	private void createConditions(AssertionType assertion) {
+		ConditionsType conditions = this.samlObjectFactory
+				.createConditionsType();
+		DateTime notBefore = new DateTime();
+		conditions.setNotBefore(toXMLGregorianCalendar(notBefore));
+		DateTime notAfter = notBefore.plusHours(24);
+		conditions.setNotOnOrAfter(toXMLGregorianCalendar(notAfter));
+		assertion.setConditions(conditions);
+	}
+
+	private AssertionType createAssertion(X509Certificate authnCertificate) {
+		AssertionType assertion = this.samlObjectFactory.createAssertionType();
+		String assertionId = "assertion-" + UUID.randomUUID().toString();
+		assertion.setAssertionID(assertionId);
+		assertion.setMajorVersion(BigInteger.ONE);
+		assertion.setMinorVersion(BigInteger.ONE);
+		DateTime now = new DateTime();
+		assertion.setIssueInstant(toXMLGregorianCalendar(now));
+		assertion.setIssuer(authnCertificate.getSubjectX500Principal().getName(
+				"RFC1779"));
+		createConditions(assertion);
+		createAttributeStatement(assertion, authnCertificate);
+		return assertion;
+	}
+
+	private void createSubjectConfirmationData(
+			SubjectConfirmationType subjectConfirmation,
 			X509Certificate authnCertificate) {
-		createAttribute(attributeStatement,
-				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
-				"urn:be:fgov:identification-namespace",
-				getUserId(authnCertificate));
-		createAttribute(attributeStatement, "urn:be:fgov:person:ssin",
-				"urn:be:fgov:identification-namespace",
-				getUserId(authnCertificate));
+		Document document = this.documentBuilder.newDocument();
+		document.appendChild(document.createElementNS(
+				"urn:oasis:names:tc:SAML:1.0:assertion",
+				"SubjectConfirmationData"));
+		AssertionType assertion = createAssertion(authnCertificate);
+		try {
+			this.marshaller.marshal(
+					this.samlObjectFactory.createAssertion(assertion),
+					document.getDocumentElement());
+		} catch (JAXBException e) {
+			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+		}
+		subjectConfirmation.setSubjectConfirmationData(document
+				.getDocumentElement());
 	}
 
-	private AttributeDesignator createAttributeDesignator(
-			AttributeQuery attributeQuery) {
-		AttributeDesignator attributeDesignator = buildObject(
-				AttributeDesignator.DEFAULT_ELEMENT_NAME,
-				AttributeDesignator.class);
-		attributeQuery.getAttributeDesignators().add(attributeDesignator);
-		return attributeDesignator;
-	}
-
-	private AttributeDesignator createAttributeDesignator(
-			AttributeQuery attributeQuery, String name, String namespace) {
-		AttributeDesignator attributeDesignator = createAttributeDesignator(attributeQuery);
-		attributeDesignator.setAttributeName(name);
-		attributeDesignator.setAttributeNamespace(namespace);
-		return attributeDesignator;
-	}
-
-	private void createAttributeDesignators(AttributeQuery attributeQuery) {
-		createAttributeDesignator(attributeQuery,
-				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
-				"urn:be:fgov:identification-namespace");
-		createAttributeDesignator(attributeQuery, "urn:be:fgov:person:ssin",
-				"urn:be:fgov:identification-namespace");
-		createAttributeDesignator(attributeQuery,
-				"urn:be:fgov:person:ssin:nurse:boolean",
-				"urn:be:fgov:certified-namespace:ehealth");
-	}
-
-	private BasicX509Credential getSigningCredentials(PrivateKey hokPrivateKey,
+	private void createX509Data(KeyInfoType keyInfo,
 			X509Certificate hokCertificate) {
-		BasicX509Credential basicX509Credential = new BasicX509Credential();
-		basicX509Credential.setPrivateKey(hokPrivateKey);
-		basicX509Credential.setPublicKey(hokCertificate.getPublicKey());
-		basicX509Credential.setEntityCertificate(hokCertificate);
-		return basicX509Credential;
-	}
-
-	private Signature createSignature(Request request,
-			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
-		Signature signature = (Signature) xmlObjectBuilderFactory.getBuilder(
-				Signature.DEFAULT_ELEMENT_NAME).buildObject(
-				Signature.DEFAULT_ELEMENT_NAME);
-		request.setSignature(signature);
-		signature
-				.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
-		signature
-				.setCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
-		signature.setSigningCredential(getSigningCredentials(hokPrivateKey,
-				hokCertificate));
-		KeyInfo keyInfo = createKeyInfo(hokCertificate);
-		signature.setKeyInfo(keyInfo);
-		return signature;
-	}
-
-	public Request createRequest(X509Certificate authnCertificate,
-			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
-		Request request = createRequest();
-		AttributeQuery attributeQuery = createQuery(request);
-		Subject subjectRequest = createRequestSubject(attributeQuery,
-				authnCertificate);
-		SubjectConfirmation subjectConfirmation = createSubjectConfirmation(
-				subjectRequest, hokCertificate);
-		Assertion assertion = createAssertion(subjectConfirmation,
-				authnCertificate);
-		AttributeStatement attributeStatement = createAttributeStatement(assertion);
-		createAssertionSubject(attributeStatement, authnCertificate);
-		createAttributes(attributeStatement, authnCertificate);
-		createAttributeDesignators(attributeQuery);
-
-		Signature signature = createSignature(request, hokPrivateKey,
-				hokCertificate);
-		Marshaller marshaller = Configuration.getMarshallerFactory()
-				.getMarshaller(request);
+		X509DataType x509Data = this.xmldsigObjectFactory.createX509DataType();
+		keyInfo.getContent().add(
+				this.xmldsigObjectFactory.createX509Data(x509Data));
 		try {
-			// signObject requires a DOM marshalling first
-			marshaller.marshall(request);
-		} catch (MarshallingException e) {
+			x509Data.getX509IssuerSerialOrX509SKIOrX509SubjectName().add(
+					this.xmldsigObjectFactory
+							.createX509DataTypeX509Certificate(hokCertificate
+									.getEncoded()));
+		} catch (CertificateEncodingException e) {
 			throw new RuntimeException(e);
 		}
-		try {
-			Signer.signObject(signature);
-		} catch (SignatureException e) {
-			throw new RuntimeException(e);
-		}
+	}
 
-		return request;
+	private void createKeyInfo(SubjectConfirmationType subjectConfirmation,
+			X509Certificate hokCertificate) {
+		KeyInfoType keyInfo = this.xmldsigObjectFactory.createKeyInfoType();
+		subjectConfirmation.setKeyInfo(keyInfo);
+		createX509Data(keyInfo, hokCertificate);
+	}
+
+	private void createAttributeDesignator(AttributeQueryType attributeQuery,
+			String namespace, String name) {
+		AttributeDesignatorType attributeDesignator = this.samlObjectFactory
+				.createAttributeDesignatorType();
+		attributeDesignator.setAttributeNamespace(namespace);
+		attributeDesignator.setAttributeName(name);
+		attributeQuery.getAttributeDesignator().add(attributeDesignator);
+	}
+
+	private void signRequest(Element requestElement, PrivateKey privateKey,
+			X509Certificate certificate) throws NoSuchAlgorithmException,
+			InvalidAlgorithmParameterException, MarshalException,
+			XMLSignatureException {
+		DOMSignContext domSignContext = new DOMSignContext(privateKey,
+				requestElement, requestElement.getFirstChild());
+		XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory
+				.getInstance("DOM");
+
+		String requestId = requestElement.getAttribute("RequestID");
+		requestElement.setIdAttribute("RequestID", true);
+
+		List<Transform> transforms = new LinkedList<Transform>();
+		transforms.add(xmlSignatureFactory.newTransform(Transform.ENVELOPED,
+				(TransformParameterSpec) null));
+		transforms.add(xmlSignatureFactory.newTransform(
+				CanonicalizationMethod.EXCLUSIVE,
+				(C14NMethodParameterSpec) null));
+		Reference reference = xmlSignatureFactory.newReference("#" + requestId,
+				xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null),
+				transforms, null, null);
+
+		SignedInfo signedInfo = xmlSignatureFactory.newSignedInfo(
+				xmlSignatureFactory.newCanonicalizationMethod(
+						CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null), xmlSignatureFactory
+						.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
+				Collections.singletonList(reference));
+
+		KeyInfoFactory keyInfoFactory = xmlSignatureFactory.getKeyInfoFactory();
+		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections
+				.singletonList(keyInfoFactory.newX509Data(Collections
+						.singletonList(certificate))));
+
+		XMLSignature xmlSignature = xmlSignatureFactory.newXMLSignature(
+				signedInfo, keyInfo);
+		xmlSignature.sign(domSignContext);
+	}
+
+	public Element createRequest(X509Certificate authnCertificate,
+			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
+		RequestType request = createRequest();
+		AttributeQueryType attributeQuery = createAttributeQuery(request);
+		SubjectType subject = createSubject(attributeQuery);
+		createNameIdentifier(subject, authnCertificate);
+		SubjectConfirmationType subjectConfirmation = createSubjectConfirmation(subject);
+		createSubjectConfirmationData(subjectConfirmation, authnCertificate);
+		createKeyInfo(subjectConfirmation, hokCertificate);
+		createAttributeDesignator(attributeQuery,
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin");
+		createAttributeDesignator(attributeQuery,
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin");
+		createAttributeDesignator(attributeQuery,
+				"urn:be:fgov:certified-namespace:ehealth",
+				"urn:be:fgov:person:ssin:nurse:boolean");
+
+		Element requestElement = toDOM(request);
+		try {
+			signRequest(requestElement, hokPrivateKey, hokCertificate);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					"XML signature error: " + e.getMessage(), e);
+		}
+		return requestElement;
+	}
+
+	private Element toDOM(RequestType request) {
+		Document document = this.documentBuilder.newDocument();
+		try {
+			this.marshaller.marshal(
+					this.samlpObjectFactory.createRequest(request), document);
+		} catch (JAXBException e) {
+			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+		}
+		return document.getDocumentElement();
 	}
 }
