@@ -27,6 +27,8 @@ import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml1.core.Assertion;
@@ -36,6 +38,9 @@ import be.e_contract.mycarenet.sts.EHealthSTSClient;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class EHealthSTSClientTest {
+
+	private static final Log LOG = LogFactory
+			.getLog(EHealthSTSClientTest.class);
 
 	private Config config;
 
@@ -74,5 +79,9 @@ public class EHealthSTSClientTest {
 
 		assertNotNull(assertion);
 		assertNotNull(assertion.getDOM());
+
+		LOG.debug("assertion: " + client.toString(assertion));
+
+		LOG.debug("not after: " + client.getNotAfter(assertion));
 	}
 }

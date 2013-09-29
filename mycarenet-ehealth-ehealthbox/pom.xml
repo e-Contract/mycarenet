@@ -8,7 +8,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<name>MyCareNet eHealthox Client</name>
+	<name>MyCareNet eHealthBox Client</name>
 	<groupId>be.e_contract.mycarenet</groupId>
 	<artifactId>mycarenet-ehealth-ehealthbox</artifactId>
 	<build>
