@@ -83,13 +83,15 @@ public class EHealthSTSClient {
 
 	public Element requestAssertion(X509Certificate authnCertificate,
 			PrivateKey authnPrivateKey, X509Certificate hokCertificate,
-			PrivateKey hokPrivateKey) throws Exception {
+			PrivateKey hokPrivateKey, List<Attribute> attributes,
+			List<AttributeDesignator> attributeDesignators) throws Exception {
 		this.wsSecuritySOAPHandler.setCertificate(authnCertificate);
 		this.wsSecuritySOAPHandler.setPrivateKey(authnPrivateKey);
 
 		RequestFactory requestFactory = new RequestFactory();
-		Element requestElement = requestFactory.createRequest(authnCertificate,
-				hokPrivateKey, hokCertificate);
+		Element requestElement = requestFactory
+				.createRequest(authnCertificate, hokPrivateKey, hokCertificate,
+						attributes, attributeDesignators);
 
 		Source responseSource = this.dispatch.invoke(new DOMSource(
 				requestElement));

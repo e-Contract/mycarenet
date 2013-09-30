@@ -27,6 +27,8 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -42,6 +44,8 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 import test.integ.be.e_contract.mycarenet.Config;
+import be.e_contract.mycarenet.sts.Attribute;
+import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.RequestFactory;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
@@ -80,8 +84,26 @@ public class RequestFactoryTest {
 
 		RequestFactory requestFactory = new RequestFactory();
 
+		List<Attribute> attributes = new LinkedList<Attribute>();
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin"));
+
+		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:certified-namespace:ehealth",
+				"urn:be:fgov:person:ssin:nurse:boolean"));
+
 		Element requestElement = requestFactory.createRequest(authnCertificate,
-				eHealthPrivateKey, eHealthCertificate);
+				eHealthPrivateKey, eHealthCertificate, attributes,
+				attributeDesignators);
 
 		assertNotNull(requestElement);
 
