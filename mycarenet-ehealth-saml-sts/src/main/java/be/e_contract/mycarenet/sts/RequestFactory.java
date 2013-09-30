@@ -196,19 +196,23 @@ public class RequestFactory {
 	}
 
 	private void createAttributeStatement(AssertionType assertion,
-			X509Certificate authnCertificate) {
+			X509Certificate authnCertificate, List<Attribute> attributes) {
 		AttributeStatementType attributeStatement = this.samlObjectFactory
 				.createAttributeStatementType();
 		assertion.getStatementOrSubjectStatementOrAuthenticationStatement()
 				.add(attributeStatement);
 		createSubject(attributeStatement, authnCertificate);
-		createAttribute(attributeStatement,
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin",
-				getUserIdentifier(authnCertificate));
-		createAttribute(attributeStatement,
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin", getUserIdentifier(authnCertificate));
+
+		for (Attribute attribute : attributes) {
+			String attributeValue;
+			if (attribute.isInjectNRNValue()) {
+				attributeValue = getUserIdentifier(authnCertificate);
+			} else {
+				attributeValue = attribute.getValue();
+			}
+			createAttribute(attributeStatement, attribute.getNamespace(),
+					attribute.getName(), attributeValue);
+		}
 	}
 
 	private String getUserIdentifier(X509Certificate certificate) {
@@ -240,7 +244,8 @@ public class RequestFactory {
 		assertion.setConditions(conditions);
 	}
 
-	private AssertionType createAssertion(X509Certificate authnCertificate) {
+	private AssertionType createAssertion(X509Certificate authnCertificate,
+			List<Attribute> attributes) {
 		AssertionType assertion = this.samlObjectFactory.createAssertionType();
 		String assertionId = "assertion-" + UUID.randomUUID().toString();
 		assertion.setAssertionID(assertionId);
@@ -251,18 +256,18 @@ public class RequestFactory {
 		assertion.setIssuer(authnCertificate.getSubjectX500Principal().getName(
 				"RFC1779"));
 		createConditions(assertion);
-		createAttributeStatement(assertion, authnCertificate);
+		createAttributeStatement(assertion, authnCertificate, attributes);
 		return assertion;
 	}
 
 	private void createSubjectConfirmationData(
 			SubjectConfirmationType subjectConfirmation,
-			X509Certificate authnCertificate) {
+			X509Certificate authnCertificate, List<Attribute> attributes) {
 		Document document = this.documentBuilder.newDocument();
 		document.appendChild(document.createElementNS(
 				"urn:oasis:names:tc:SAML:1.0:assertion",
 				"SubjectConfirmationData"));
-		AssertionType assertion = createAssertion(authnCertificate);
+		AssertionType assertion = createAssertion(authnCertificate, attributes);
 		try {
 			this.marshaller.marshal(
 					this.samlObjectFactory.createAssertion(assertion),
@@ -345,23 +350,23 @@ public class RequestFactory {
 	}
 
 	public Element createRequest(X509Certificate authnCertificate,
-			PrivateKey hokPrivateKey, X509Certificate hokCertificate) {
+			PrivateKey hokPrivateKey, X509Certificate hokCertificate,
+			List<Attribute> attributes,
+			List<AttributeDesignator> attributeDesignators) {
 		RequestType request = createRequest();
 		AttributeQueryType attributeQuery = createAttributeQuery(request);
 		SubjectType subject = createSubject(attributeQuery);
 		createNameIdentifier(subject, authnCertificate);
 		SubjectConfirmationType subjectConfirmation = createSubjectConfirmation(subject);
-		createSubjectConfirmationData(subjectConfirmation, authnCertificate);
+		createSubjectConfirmationData(subjectConfirmation, authnCertificate,
+				attributes);
 		createKeyInfo(subjectConfirmation, hokCertificate);
-		createAttributeDesignator(attributeQuery,
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin");
-		createAttributeDesignator(attributeQuery,
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin");
-		createAttributeDesignator(attributeQuery,
-				"urn:be:fgov:certified-namespace:ehealth",
-				"urn:be:fgov:person:ssin:nurse:boolean");
+
+		for (AttributeDesignator attributeDesignator : attributeDesignators) {
+			createAttributeDesignator(attributeQuery,
+					attributeDesignator.getNamespace(),
+					attributeDesignator.getName());
+		}
 
 		Element requestElement = toDOM(request);
 		try {
