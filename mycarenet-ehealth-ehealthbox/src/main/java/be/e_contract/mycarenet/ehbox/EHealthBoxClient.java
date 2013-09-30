@@ -53,7 +53,7 @@ public class EHealthBoxClient {
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
-	public EHealthBoxClient(String location) throws Exception {
+	public EHealthBoxClient(String location) {
 		EhBoxConsultationService service = EhBoxConsultationServiceFactory
 				.newInstance();
 		this.ehBoxConsultationPort = service.getEhBoxConsultationPort();
