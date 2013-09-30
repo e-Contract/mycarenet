@@ -36,6 +36,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +53,9 @@ import be.e_contract.mycarenet.sts.EHealthSTSClient;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class EHealthBoxClientTest {
+
+	private static final Log LOG = LogFactory
+			.getLog(EHealthBoxClientTest.class);
 
 	private Config config;
 
@@ -144,6 +149,47 @@ public class EHealthBoxClientTest {
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
 		eHealthBoxClient.invoke(requestElement, eHealthPrivateKey,
 				toString(assertion));
+	}
+
+	@Test
+	public void testGetBoxInfoViaString() throws Exception {
+		// STS
+		EHealthSTSClient client = new EHealthSTSClient(
+				"https://wwwacc.ehealth.fgov.be/sts_1_1/SecureTokenService");
+
+		Security.addProvider(new BeIDProvider());
+		KeyStore keyStore = KeyStore.getInstance("BeID");
+		keyStore.load(null);
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
+				"Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore
+				.getCertificate("Authentication");
+
+		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
+		FileInputStream fileInputStream = new FileInputStream(
+				this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config
+				.getEHealthPKCS12Password().toCharArray());
+		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
+		String alias = aliasesEnum.nextElement();
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
+				.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
+				alias, this.config.getEHealthPKCS12Password().toCharArray());
+
+		Element assertion = client.requestAssertion(authnCertificate,
+				authnPrivateKey, eHealthCertificate, eHealthPrivateKey);
+
+		assertNotNull(assertion);
+
+		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2\"/>";
+
+		// eHealthBox
+		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
+				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
+		String result = eHealthBoxClient.invoke(request, eHealthPrivateKey,
+				toString(assertion));
+		LOG.debug("result: " + result);
 	}
 
 	@Test

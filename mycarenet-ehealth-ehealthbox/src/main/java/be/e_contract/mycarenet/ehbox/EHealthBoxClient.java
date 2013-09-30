@@ -18,10 +18,13 @@
 
 package be.e_contract.mycarenet.ehbox;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -29,11 +32,15 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,6 +53,8 @@ import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
 
 public class EHealthBoxClient {
+
+	private static final Log LOG = LogFactory.getLog(EHealthBoxClient.class);
 
 	private final EhBoxConsultationPortType ehBoxConsultationPort;
 
@@ -99,6 +108,36 @@ public class EHealthBoxClient {
 		Source responseSource = this.dispatch.invoke(new DOMSource(request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
+	}
+
+	public String invoke(String request, PrivateKey hokPrivateKey,
+			String samlAssertion) {
+		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
+		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+		Source responseSource = this.dispatch.invoke(new StreamSource(
+				new StringReader(request)));
+		LOG.debug("response Source type: "
+				+ responseSource.getClass().getName());
+		return toString(responseSource);
+	}
+
+	private String toString(Source source) {
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
+		try {
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
+			throw new RuntimeException(e);
+		}
+		return stringWriter.toString();
 	}
 
 	private Element toElement(Source source) {
