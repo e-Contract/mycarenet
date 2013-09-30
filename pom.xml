@@ -56,7 +56,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jaxws.version>2.2.7</jaxws.version>
 		<cxf.version>2.6.6</cxf.version>
-		<bouncycastle.version>1.47</bouncycastle.version>
+		<bouncycastle.version>1.49</bouncycastle.version>
 	</properties>
 	<build>
 		<pluginManagement>
@@ -196,7 +196,7 @@
 			<dependency>
 				<groupId>be.fedict.commons-eid</groupId>
 				<artifactId>commons-eid-bom</artifactId>
-				<version>0.2.1</version>
+				<version>0.5.1</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
