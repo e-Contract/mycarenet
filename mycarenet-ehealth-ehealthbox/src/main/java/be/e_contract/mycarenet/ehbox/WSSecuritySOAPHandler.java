@@ -48,8 +48,6 @@ import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.util.WSSecurityUtil;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.xml.ConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -67,15 +65,6 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 	private String samlAssertion;
 
 	private final DocumentBuilder documentBuilder;
-
-	static {
-		try {
-			DefaultBootstrap.bootstrap();
-		} catch (ConfigurationException e) {
-			throw new RuntimeException("OpenSAML bootstrap error: "
-					+ e.getMessage(), e);
-		}
-	}
 
 	public WSSecuritySOAPHandler() {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
