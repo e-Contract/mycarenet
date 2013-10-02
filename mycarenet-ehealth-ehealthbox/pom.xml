@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>be.e_contract</groupId>
@@ -17,7 +18,7 @@
 				<artifactId>jaxws-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>saml-wsimport</id>
+						<id>ehbox-wsimport</id>
 						<goals>
 							<goal>wsimport</goal>
 						</goals>
@@ -26,7 +27,7 @@
 							<xdebug>true</xdebug>
 							<extension>true</extension>
 							<wsdlFiles>
-								<wsdlFile>ehealthbox_consultation_v2.wsdl</wsdlFile>
+								<wsdlFile>ehBoxConsultation-v3.wsdl</wsdlFile>
 							</wsdlFiles>
 							<bindingFiles>
 								<bindingFile>jaxws-bindings.xml</bindingFile>

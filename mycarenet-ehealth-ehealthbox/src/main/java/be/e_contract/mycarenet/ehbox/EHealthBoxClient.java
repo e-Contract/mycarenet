@@ -68,7 +68,7 @@ public class EHealthBoxClient {
 		this.ehBoxConsultationPort = service.getEhBoxConsultationPort();
 
 		QName portQName = new QName(
-				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2",
+				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3",
 				"ehBoxConsultationPort");
 		this.dispatch = service.createDispatch(portQName, Source.class,
 				Service.Mode.PAYLOAD);

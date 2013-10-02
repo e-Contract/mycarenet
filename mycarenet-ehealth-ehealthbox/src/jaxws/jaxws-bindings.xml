@@ -6,7 +6,7 @@
 	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
 
 	<jaxws:bindings
-		node="wsdl:definitions[@targetNamespace='urn:be:fgov:ehealth:ehbox:consultation:protocol:v2']">
+		node="wsdl:definitions[@targetNamespace='urn:be:fgov:ehealth:ehbox:consultation:protocol:v3']">
 		<jaxws:package name="be.e_contract.mycarenet.ehbox.jaxws.consultation">
 			<jaxws:javadoc>JAX-WS eHealthBox Consultation</jaxws:javadoc>
 		</jaxws:package>

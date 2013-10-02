@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ehboxp="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3" xmlns:err="urn:be:fgov:ehealth:errors:service:v1" xmlns:mon="urn:be:fgov:ehealth:ehbox:monitoring:protocol:v3" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3" schemaLocation="ehealth-ehBox-consultation-schema-protocol-3_0.xsd"/>
+      <xsd:import namespace="urn:be:fgov:ehealth:errors:service:v1" schemaLocation="ehealth-errors-schema-service-1_0.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetBoxInfoRequestMessage">
+    <wsdl:part element="ehboxp:GetBoxInfoRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetBoxInfoResponseMessage">
+    <wsdl:part element="ehboxp:GetBoxInfoResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessagesListRequestMessage">
+    <wsdl:part element="ehboxp:GetMessagesListRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessagesListResponseMessage">
+    <wsdl:part element="ehboxp:GetMessagesListResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetAllEhboxesMessagesListRequestMessage">
+    <wsdl:part element="ehboxp:GetAllEhboxesMessagesListRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetAllEhboxesMessagesListResponseMessage">
+    <wsdl:part element="ehboxp:GetAllEhboxesMessagesListResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetFullMessageRequestMessage">
+    <wsdl:part element="ehboxp:GetFullMessageRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetFullMessageResponseMessage">
+    <wsdl:part element="ehboxp:GetFullMessageResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="MoveMessageRequestMessage">
+    <wsdl:part element="ehboxp:MoveMessageRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="DeleteMessageRequestMessage">
+    <wsdl:part element="ehboxp:DeleteMessageRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="MoveMessageResponseMessage">
+    <wsdl:part element="ehboxp:MoveMessageResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="DeleteMessageResponseMessage">
+    <wsdl:part element="ehboxp:DeleteMessageResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessageHistoryRequestMessage">
+    <wsdl:part element="ehboxp:GetHistoryRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessageHistoryResponseMessage">
+    <wsdl:part element="ehboxp:GetHistoryResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessageAcknowledgmentsStatusRequestMessage">
+    <wsdl:part element="ehboxp:GetMessageAcknowledgmentsStatusRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetMessageAcknowledgmentsStatusResponseMessage">
+    <wsdl:part element="ehboxp:GetMessageAcknowledgmentsStatusResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="InsertOoORequestMessage">
+    <wsdl:part element="ehboxp:InsertOoORequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="InsertOoOResponseMessage">
+    <wsdl:part element="ehboxp:InsertOoOResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="DeleteOoORequestMessage">
+    <wsdl:part element="ehboxp:DeleteOoORequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="DeleteOoOResponseMessage">
+    <wsdl:part element="ehboxp:DeleteOoOResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetOoOListRequestMessage">
+    <wsdl:part element="ehboxp:GetOoOListRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetOoOListResponseMessage">
+    <wsdl:part element="ehboxp:GetOoOListResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SystemError">
+    <wsdl:part element="err:SystemError" name="fault"/>
+  </wsdl:message>
+  <wsdl:message name="BusinessError">
+    <wsdl:part element="err:BusinessError" name="fault"/>
+  </wsdl:message>
+  <wsdl:portType name="ehBoxConsultationPortType">
+    <wsdl:operation name="getBoxInfo">
+      <wsdl:input message="ehboxp:GetBoxInfoRequestMessage"/>
+      <wsdl:output message="ehboxp:GetBoxInfoResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMessagesList">
+      <wsdl:input message="ehboxp:GetMessagesListRequestMessage"/>
+      <wsdl:output message="ehboxp:GetMessagesListResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAllEhboxesMessagesList">
+      <wsdl:input message="ehboxp:GetAllEhboxesMessagesListRequestMessage"/>
+      <wsdl:output message="ehboxp:GetAllEhboxesMessagesListResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getFullMessage">
+      <wsdl:input message="ehboxp:GetFullMessageRequestMessage"/>
+      <wsdl:output message="ehboxp:GetFullMessageResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="moveMessage">
+      <wsdl:input message="ehboxp:MoveMessageRequestMessage"/>
+      <wsdl:output message="ehboxp:MoveMessageResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteMessage">
+      <wsdl:input message="ehboxp:DeleteMessageRequestMessage"/>
+      <wsdl:output message="ehboxp:DeleteMessageResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMessageHistory">
+      <wsdl:input message="ehboxp:GetMessageHistoryRequestMessage"/>
+      <wsdl:output message="ehboxp:GetMessageHistoryResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMessageAcknowledgmentsStatus">
+      <wsdl:input message="ehboxp:GetMessageAcknowledgmentsStatusRequestMessage"/>
+      <wsdl:output message="ehboxp:GetMessageAcknowledgmentsStatusResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="insertOoO">
+      <wsdl:input message="ehboxp:InsertOoORequestMessage"/>
+      <wsdl:output message="ehboxp:InsertOoOResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="deleteOoO">
+      <wsdl:input message="ehboxp:DeleteOoORequestMessage"/>
+      <wsdl:output message="ehboxp:DeleteOoOResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getOoOList">
+      <wsdl:input message="ehboxp:GetOoOListRequestMessage"/>
+      <wsdl:output message="ehboxp:GetOoOListResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ehBoxConsultationBinding" type="ehboxp:ehBoxConsultationPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getBoxInfo">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getBoxInfo"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMessagesList">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getMessagesList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getAllEhboxesMessagesList">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getAllEhboxesMessagesList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFullMessage">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getFullMessage"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="moveMessage">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:moveMessage"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteMessage">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:deleteMessage"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMessageHistory">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getMessageHistory"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMessageAcknowledgmentsStatus">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getMessageAcknowledgmentsStatus"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="insertOoO">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:insertOoO"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteOoO">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:deleteOoO"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOoOList">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:consultation:protocol:v3:getOoOList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ehBoxConsultationService">
+    <wsdl:port binding="ehboxp:ehBoxConsultationBinding" name="ehBoxConsultationPort">
+      <soap:address location="https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

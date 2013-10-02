@@ -32,9 +32,9 @@ public class EhBoxConsultationServiceFactory {
 
 	public static EhBoxConsultationService newInstance() {
 		URL wsdlLocation = EhBoxConsultationServiceFactory.class
-				.getResource("/ehealthbox_consultation_v2.wsdl");
+				.getResource("/ehBoxConsultation-v3.wsdl");
 		QName serviceName = new QName(
-				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2",
+				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3",
 				"ehBoxConsultationService");
 		EhBoxConsultationService service = new EhBoxConsultationService(
 				wsdlLocation, serviceName);
