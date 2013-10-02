@@ -121,7 +121,7 @@ public class EHealthBoxClientTest {
 
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
-				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
+				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
 
@@ -174,7 +174,7 @@ public class EHealthBoxClientTest {
 
 		assertNotNull(assertion);
 
-		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2\"/>";
+		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\"/>";
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
 				.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
@@ -186,7 +186,7 @@ public class EHealthBoxClientTest {
 
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
-				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
+				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.invoke(requestElement, eHealthPrivateKey,
 				toString(assertion));
 	}
@@ -240,11 +240,11 @@ public class EHealthBoxClientTest {
 
 		assertNotNull(assertion);
 
-		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v2\"/>";
+		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\"/>";
 
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
-				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
+				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		String result = eHealthBoxClient.invoke(request, eHealthPrivateKey,
 				toString(assertion));
 		LOG.debug("result: " + result);
@@ -303,7 +303,7 @@ public class EHealthBoxClientTest {
 
 		// eHealthBox
 		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
-				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v2");
+				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
 
