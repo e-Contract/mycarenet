@@ -4,7 +4,7 @@
 	<name>Java MyCareNet Project</name>
 	<groupId>be.e_contract</groupId>
 	<artifactId>mycarenet</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.4.0</version>
 	<packaging>pom</packaging>
 	<inceptionYear>2012</inceptionYear>
 	<organization>
@@ -28,7 +28,7 @@
 	</licenses>
 	<scm>
 		<connection>scm:hg:https://code.google.com/p/mycarenet/</connection>
-		<tag>HEAD</tag>
+		<tag>mycarenet-0.4.0</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
