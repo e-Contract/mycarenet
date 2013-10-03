@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:core="urn:be:fgov:ehealth:commons:core:v1" xmlns:ehboxc="urn:be:fgov:ehealth:ehbox:core:v3" xmlns:ehboxp="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" xmlns:protocol="urn:be:fgov:ehealth:commons:protocol:v1" xmlns:swaref="http://ws-i.org/profiles/basic/1.1/xsd" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" version="3.0">
+  <xs:import namespace="urn:be:fgov:ehealth:commons:protocol:v1" schemaLocation="ehealth-commons-schema-protocol-1_6.xsd"/>
+  <xs:import namespace="urn:be:fgov:ehealth:commons:core:v1" schemaLocation="ehealth-commons-schema-core-1_6.xsd"/>
+  <xs:import namespace="urn:be:fgov:ehealth:ehbox:core:v3" schemaLocation="ehealth-ehBox-schema-core-3_0.xsd"/>
+  <xs:import namespace="http://ws-i.org/profiles/basic/1.1/xsd" schemaLocation="swaref-3_0.xsd"/>
+  <xs:complexType name="DestinationContextType">
+    <xs:complexContent>
+      <xs:extension base="ehboxc:EhboxIdentifierType">
+        <xs:sequence minOccurs="0">
+          <xs:element minOccurs="0" name="Mandate" type="ehboxc:MandateType">
+            <xs:annotation>
+              <xs:documentation>V1 Mandate system</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="OoOProcessed" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PublicationContentType">
+    <xs:annotation>
+      <xs:documentation>Contains all elements relative to the content of the message</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Document" type="ehboxp:PublicationDocumentType"/>
+      <xs:element minOccurs="0" name="FreeInformations" type="ehboxc:FreeInformationsType"/>
+      <xs:element minOccurs="0" name="EncryptableINSSPatient" type="xs:base64Binary">
+        <xs:annotation>
+          <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content. Anyway it must be converted to base64Binary</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Annex" type="ehboxp:PublicationAnnexType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ContentSpecificationType">
+    <xs:annotation>
+      <xs:documentation>ContentSpecification for publication</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="ehboxc:ContentSpecificationType">
+        <xs:sequence>
+          <xs:annotation>
+            <xs:documentation>Allows you to specify separatly the desired acknowledgments</xs:documentation>
+          </xs:annotation>
+          <xs:element default="false" name="PublicationReceipt" type="xs:boolean"/>
+          <xs:element default="false" name="ReceivedReceipt" type="xs:boolean"/>
+          <xs:element default="false" name="ReadReceipt" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ContentContextType">
+    <xs:sequence>
+      <xs:element name="Content" type="ehboxp:PublicationContentType"/>
+      <xs:element name="ContentSpecification" type="ehboxp:ContentSpecificationType"/>
+      <xs:element maxOccurs="50" minOccurs="0" name="CustomMeta" type="ehboxc:CustomMetaType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PublicationAnnexType">
+    <xs:annotation>
+      <xs:documentation>Specifies content of an Annex</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="EncryptableTitle" type="xs:base64Binary">
+        <xs:annotation>
+          <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="EncryptableBinaryContent" type="swaref:swaRef">
+          <xs:annotation>
+            <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content. Anyway it must be converted to base64Binary</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="EncryptableTextContent" type="xs:base64Binary">
+          <xs:annotation>
+            <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content. Anyway it must be converted to base64Binary</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="DownloadFileName">
+        <xs:annotation>
+          <xs:documentation>This is not encrypted</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MimeType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" name="Digest" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PublicationDocumentType">
+    <xs:annotation>
+      <xs:documentation>Specifies content of a Document message</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Title">
+        <xs:annotation>
+          <xs:documentation>This is not encrypted</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="400"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="EncryptableBinaryContent" type="swaref:swaRef">
+          <xs:annotation>
+            <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content. Anyway it must be converted to base64Binary</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="EncryptableTextContent" type="xs:base64Binary">
+          <xs:annotation>
+            <xs:documentation>If IsEncrypted == True, this MUST contain encrypted content. Anyway it must be converted to base64Binary</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="DownloadFileName">
+        <xs:annotation>
+          <xs:documentation>This is not encrypted</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MimeType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" name="Digest" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PublicationMessageType">
+    <xs:annotation>
+      <xs:documentation>Publish a new encrypted or non-encrypted message</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="0" name="BoxId" type="ehboxc:BoxIdType">
+        <xs:annotation>
+          <xs:documentation>Use another of my ehBoxes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" name="DestinationContext" type="ehboxp:DestinationContextType">
+        <xs:annotation>
+          <xs:documentation>Recipients</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ContentContext" type="ehboxp:ContentContextType">
+        <xs:annotation>
+          <xs:documentation>Message content and details</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Meta" type="ehboxc:MetaType">
+        <xs:annotation>
+          <xs:documentation>System Meta's defined by eHealth</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="CopyMailTo">
+        <xs:annotation>
+          <xs:documentation>Send an email notification to</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="80"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="PublicationId" type="ehboxc:PublicationIdType"/>
+  </xs:complexType>
+  <xs:element name="SendMessageRequest" type="ehboxp:PublicationMessageType"/>
+  <xs:element name="SendMessageResponse">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="protocol:ResponseType">
+          <xs:sequence minOccurs="0">
+            <xs:element maxOccurs="unbounded" name="Recipient">
+              <xs:annotation>
+                <xs:documentation>Recipients</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:complexContent>
+                  <xs:extension base="ehboxc:EhboxIdentifierType">
+                    <xs:sequence minOccurs="0">
+                      <xs:element name="AbsentFrom" type="xs:date"/>
+                      <xs:element name="AbsentTo" type="xs:date"/>
+                      <xs:element maxOccurs="unbounded" minOccurs="0" name="Substitute">
+                        <xs:annotation>
+                          <xs:documentation>Recipients</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:complexContent>
+                            <xs:extension base="ehboxc:EhboxIdentifierType"/>
+                          </xs:complexContent>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:extension>
+                </xs:complexContent>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="SentPublicationId" type="ehboxc:PublicationIdType"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

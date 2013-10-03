@@ -45,38 +45,51 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
-import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetBoxInfoRequestType;
-import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetBoxInfoResponseType;
-import be.e_contract.mycarenet.ehbox.jaxws.consultation.BusinessError;
-import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationPortType;
-import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService;
-import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
+import be.e_contract.mycarenet.ehbox.jaxb.publication.protocol.PublicationMessageType;
+import be.e_contract.mycarenet.ehbox.jaxb.publication.protocol.SendMessageResponse;
+import be.e_contract.mycarenet.ehbox.jaxws.publication.BusinessError;
+import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationPortType;
+import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationService;
+import be.e_contract.mycarenet.ehbox.jaxws.publication.SystemError;
 
-public class EHealthBoxClient {
+public class EHealthBoxPublicationClient {
 
-	private static final Log LOG = LogFactory.getLog(EHealthBoxClient.class);
+	private static final Log LOG = LogFactory
+			.getLog(EHealthBoxPublicationClient.class);
 
-	private final EhBoxConsultationPortType ehBoxConsultationPort;
+	private final EhBoxPublicationPortType ehBoxPublicationPort;
 
-	private final Dispatch<Source> dispatch;
+	private final Dispatch<Source> publicationDispatch;
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
-	public EHealthBoxClient(String location) {
-		EhBoxConsultationService service = EhBoxConsultationServiceFactory
+	public EHealthBoxPublicationClient(String location) {
+		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory
 				.newInstance();
-		this.ehBoxConsultationPort = service.getEhBoxConsultationPort();
+		this.ehBoxPublicationPort = publicationService
+				.getEhBoxPublicationPort();
 
-		QName portQName = new QName(
-				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3",
-				"ehBoxConsultationPort");
-		this.dispatch = service.createDispatch(portQName, Source.class,
-				Service.Mode.PAYLOAD);
+		QName publicationPortQName = new QName(
+				"urn:be:fgov:ehealth:ehbox:publication:protocol:v3",
+				"ehBoxPublicationPort");
+		this.publicationDispatch = publicationService.createDispatch(
+				publicationPortQName, Source.class, Service.Mode.PAYLOAD);
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
-		configureBindingProvider((BindingProvider) this.ehBoxConsultationPort,
+		configureBindingProvider((BindingProvider) this.ehBoxPublicationPort,
 				location);
-		configureBindingProvider(this.dispatch, location);
+		configureBindingProvider(this.publicationDispatch, location);
+	}
+
+	public SendMessageResponse publish(
+			PublicationMessageType publicationMessage,
+			PrivateKey hokPrivateKey, String samlAssertion)
+			throws BusinessError, SystemError {
+		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
+		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+		SendMessageResponse sendMessageResponse = this.ehBoxPublicationPort
+				.sendMessage(publicationMessage);
+		return sendMessageResponse;
 	}
 
 	private void configureBindingProvider(BindingProvider bindingProvider,
@@ -91,21 +104,12 @@ public class EHealthBoxClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public GetBoxInfoResponseType getBoxInfo(PrivateKey hokPrivateKey,
-			String samlAssertion) throws BusinessError, SystemError {
-		GetBoxInfoRequestType getBoxInfoRequest = new GetBoxInfoRequestType();
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
-		GetBoxInfoResponseType getBoxInfoResponse = this.ehBoxConsultationPort
-				.getBoxInfo(getBoxInfoRequest);
-		return getBoxInfoResponse;
-	}
-
 	public Element invoke(Element request, PrivateKey hokPrivateKey,
 			String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
-		Source responseSource = this.dispatch.invoke(new DOMSource(request));
+		Source responseSource = this.publicationDispatch.invoke(new DOMSource(
+				request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
 	}
@@ -114,8 +118,8 @@ public class EHealthBoxClient {
 			String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
-		Source responseSource = this.dispatch.invoke(new StreamSource(
-				new StringReader(request)));
+		Source responseSource = this.publicationDispatch
+				.invoke(new StreamSource(new StringReader(request)));
 		LOG.debug("response Source type: "
 				+ responseSource.getClass().getName());
 		return toString(responseSource);
