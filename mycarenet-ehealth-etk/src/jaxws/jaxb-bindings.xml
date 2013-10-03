@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jxb:bindings schemaLocation="../wsdl/ehealth-etkdepot-schema-protocol-1_0.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.etk.jaxb">
+				<jxb:javadoc><![CDATA[<body>JAXB ETK</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings schemaLocation="../wsdl/ehealth-commons-schema-core-1_0.xsd" node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.etk.jaxb.commons.core">
+					<jxb:javadoc><![CDATA[<body>JAXB Commons Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+		<jxb:bindings schemaLocation="../wsdl/ehealth-commons-schema-protocol-1_0.xsd" node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.etk.jaxb.commons.protocol">
+					<jxb:javadoc><![CDATA[<body>JAXB Commons Protocol</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>
