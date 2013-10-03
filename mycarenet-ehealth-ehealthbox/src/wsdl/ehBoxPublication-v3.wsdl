@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ehboxp="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" xmlns:err="urn:be:fgov:ehealth:errors:service:v1" xmlns:mon="urn:be:fgov:ehealth:ehbox:monitoring:protocol:v3" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" schemaLocation="ehealth-ehBox-publication-schema-protocol-3_0.xsd"/>
+      <xsd:import namespace="urn:be:fgov:ehealth:errors:service:v1" schemaLocation="ehealth-errors-schema-service-1_0.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="SendMessageRequestMessage">
+    <wsdl:part element="ehboxp:SendMessageRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SendMessageResponseMessage">
+    <wsdl:part element="ehboxp:SendMessageResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SystemError">
+    <wsdl:part element="err:SystemError" name="fault"/>
+  </wsdl:message>
+  <wsdl:message name="BusinessError">
+    <wsdl:part element="err:BusinessError" name="fault"/>
+  </wsdl:message>
+  <wsdl:portType name="ehBoxPublicationPortType">
+    <wsdl:operation name="sendMessage">
+      <wsdl:input message="ehboxp:SendMessageRequestMessage"/>
+      <wsdl:output message="ehboxp:SendMessageResponseMessage"/>
+      <wsdl:fault message="ehboxp:BusinessError" name="BusinessError"/>
+      <wsdl:fault message="ehboxp:SystemError" name="SystemError"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ehBoxPublicationBinding" type="ehboxp:ehBoxPublicationPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="sendMessage">
+      <soap:operation soapAction="urn:be:fgov:ehealth:ehbox:publication:protocol:v3:sendMessage"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="BusinessError">
+        <soap:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SystemError">
+        <soap:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ehBoxPublicationService">
+    <wsdl:port binding="ehboxp:ehBoxPublicationBinding" name="ehBoxPublicationPort">
+      <soap:address location="https://services-acpt.ehealth.fgov.be/ehBoxPublication/v3"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -50,7 +50,7 @@ import org.xml.sax.InputSource;
 
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.common.SessionKey;
-import be.e_contract.mycarenet.ehbox.EHealthBoxClient;
+import be.e_contract.mycarenet.ehbox.EHealthBoxConsultationClient;
 import be.e_contract.mycarenet.sts.Attribute;
 import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
@@ -120,7 +120,7 @@ public class EHealthBoxClientTest {
 		String assertionString = client.toString(assertion);
 
 		// eHealthBox
-		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
+		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
@@ -185,7 +185,7 @@ public class EHealthBoxClientTest {
 		Element requestElement = requestDocument.getDocumentElement();
 
 		// eHealthBox
-		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
+		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.invoke(requestElement, eHealthPrivateKey,
 				toString(assertion));
@@ -243,7 +243,7 @@ public class EHealthBoxClientTest {
 		String request = "<ehbox:GetBoxInfoRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\"/>";
 
 		// eHealthBox
-		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
+		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		String result = eHealthBoxClient.invoke(request, eHealthPrivateKey,
 				toString(assertion));
@@ -302,7 +302,7 @@ public class EHealthBoxClientTest {
 		String assertionString = client.toString(assertionElement);
 
 		// eHealthBox
-		EHealthBoxClient eHealthBoxClient = new EHealthBoxClient(
+		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
 	}
