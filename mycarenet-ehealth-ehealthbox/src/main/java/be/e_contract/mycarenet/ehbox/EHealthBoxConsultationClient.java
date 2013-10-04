@@ -51,6 +51,7 @@ import be.e_contract.mycarenet.ehbox.jaxws.consultation.BusinessError;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationPortType;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
+import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 public class EHealthBoxConsultationClient {
 

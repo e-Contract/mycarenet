@@ -46,6 +46,7 @@
 		<module>mycarenet-xkms</module>
 		<module>mycarenet-xkms2</module>
 		<module>mycarenet-ws</module>
+		<module>mycarenet-ehealth-common</module>
 		<module>mycarenet-ehealth-saml-sts</module>
 		<module>mycarenet-ehealth-ehealthbox</module>
 		<module>mycarenet-ehealth-etk</module>

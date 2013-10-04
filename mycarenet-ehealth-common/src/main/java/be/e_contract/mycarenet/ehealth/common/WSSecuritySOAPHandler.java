@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/.
  */
 
-package be.e_contract.mycarenet.ehbox;
+package be.e_contract.mycarenet.ehealth.common;
 
 import java.io.IOException;
 import java.io.StringReader;

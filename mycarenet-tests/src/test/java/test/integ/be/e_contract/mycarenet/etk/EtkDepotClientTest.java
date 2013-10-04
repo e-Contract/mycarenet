@@ -18,15 +18,41 @@
 
 package test.integ.be.e_contract.mycarenet.etk;
 
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Before;
 import org.junit.Test;
 
+import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.etk.EtkDepotClient;
+import be.fedict.commons.eid.client.BeIDCard;
+import be.fedict.commons.eid.client.BeIDCards;
+import be.fedict.commons.eid.client.FileType;
+import be.fedict.commons.eid.consumer.Identity;
+import be.fedict.commons.eid.consumer.tlv.TlvParser;
 
 public class EtkDepotClientTest {
 
+	private Config config;
+
+	@Before
+	public void setUp() throws Exception {
+		this.config = new Config();
+	}
+
 	@Test
 	public void testClient() throws Exception {
-		EtkDepotClient client = new EtkDepotClient();
-		// TODO
+		EtkDepotClient etkDepotClient = new EtkDepotClient(
+				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+
+		BeIDCards beIDCards = new BeIDCards();
+		BeIDCard beIDCard = beIDCards.getOneBeIDCard();
+		byte[] identityData = beIDCard.readFile(FileType.Identity);
+		Identity identity = TlvParser.parse(identityData, Identity.class);
+
+		String inss = identity.getNationalNumber();
+		byte[] etk = etkDepotClient.getEtk(inss);
+
+		assertNotNull(etk);
 	}
 }

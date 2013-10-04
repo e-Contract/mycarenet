@@ -18,6 +18,59 @@
 
 package be.e_contract.mycarenet.etk;
 
+import java.util.List;
+
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+
+import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.etk.jaxb.GetEtkRequest;
+import be.e_contract.mycarenet.etk.jaxb.GetEtkResponse;
+import be.e_contract.mycarenet.etk.jaxb.IdentifierType;
+import be.e_contract.mycarenet.etk.jaxb.ObjectFactory;
+import be.e_contract.mycarenet.etk.jaxb.SearchCriteriaType;
+import be.e_contract.mycarenet.etk.jaxws.EtkDepotPortType;
+import be.e_contract.mycarenet.etk.jaxws.EtkDepotService;
+
 public class EtkDepotClient {
 
+	private final EtkDepotPortType etkDepotPort;
+
+	private final ObjectFactory objectFactory;
+
+	public EtkDepotClient(String location) {
+		EtkDepotService service = EtkDepotServiceFactory.newInstance();
+		this.etkDepotPort = service.getEtkDepotPort();
+
+		configureBindingProvider((BindingProvider) this.etkDepotPort, location);
+
+		this.objectFactory = new ObjectFactory();
+	}
+
+	private void configureBindingProvider(BindingProvider bindingProvider,
+			String location) {
+		bindingProvider.getRequestContext().put(
+				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+
+		Binding binding = bindingProvider.getBinding();
+		List handlerChain = binding.getHandlerChain();
+		handlerChain.add(new LoggingHandler());
+		binding.setHandlerChain(handlerChain);
+	}
+
+	public byte[] getEtk(String inss) {
+		GetEtkRequest getEtkRequest = this.objectFactory.createGetEtkRequest();
+		SearchCriteriaType searchCriteria = this.objectFactory
+				.createSearchCriteriaType();
+		getEtkRequest.setSearchCriteria(searchCriteria);
+		IdentifierType identifier = this.objectFactory.createIdentifierType();
+		searchCriteria.getIdentifier().add(identifier);
+		identifier.setType("SSIN");
+		identifier.setValue(inss);
+		identifier.setApplicationID("");
+
+		GetEtkResponse getEtkResponse = this.etkDepotPort.getEtk(getEtkRequest);
+		byte[] etk = getEtkResponse.getETK();
+		return etk;
+	}
 }
