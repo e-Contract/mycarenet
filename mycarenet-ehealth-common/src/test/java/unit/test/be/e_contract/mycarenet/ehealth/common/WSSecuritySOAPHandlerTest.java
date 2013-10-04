@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/.
  */
 
-package unit.test.be.e_contract.mycarenet.ehbox;
+package unit.test.be.e_contract.mycarenet.ehealth.common;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.w3c.dom.Node;
 
-import be.e_contract.mycarenet.ehbox.WSSecuritySOAPHandler;
+import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 public class WSSecuritySOAPHandlerTest {
 

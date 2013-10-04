@@ -51,6 +51,7 @@ import be.e_contract.mycarenet.ehbox.jaxws.publication.BusinessError;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationPortType;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationService;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.SystemError;
+import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 public class EHealthBoxPublicationClient {
 
