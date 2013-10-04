@@ -20,6 +20,11 @@ package test.integ.be.e_contract.mycarenet.etk;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +37,8 @@ import be.fedict.commons.eid.consumer.Identity;
 import be.fedict.commons.eid.consumer.tlv.TlvParser;
 
 public class EtkDepotClientTest {
+
+	private static final Log LOG = LogFactory.getLog(EtkDepotClientTest.class);
 
 	private Config config;
 
@@ -54,5 +61,9 @@ public class EtkDepotClientTest {
 		byte[] etk = etkDepotClient.getEtk(inss);
 
 		assertNotNull(etk);
+
+		File tmpFile = File.createTempFile("etk-", ".der");
+		FileUtils.writeByteArrayToFile(tmpFile, etk);
+		LOG.debug("ETK file: " + tmpFile.getAbsolutePath());
 	}
 }
