@@ -50,6 +50,8 @@ public class EncryptionToken {
 	 * Parse the encryption certificate from the CMS data structure. No need to
 	 * check the CMS integrity as we just received it from the ETK anyway.
 	 * 
+	 * TODO: check authentication certificate validity here
+	 * 
 	 * @param encodedEncryptionToken
 	 * @return
 	 * @throws CMSException
