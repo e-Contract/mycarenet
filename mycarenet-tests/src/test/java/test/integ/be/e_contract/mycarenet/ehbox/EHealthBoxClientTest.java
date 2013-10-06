@@ -51,6 +51,8 @@ import org.xml.sax.InputSource;
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.ehbox.EHealthBoxConsultationClient;
+import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessageListResponseType;
+import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessageListResponseType.Message;
 import be.e_contract.mycarenet.sts.Attribute;
 import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
@@ -123,6 +125,17 @@ public class EHealthBoxClientTest {
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
+
+		GetMessageListResponseType messageList = eHealthBoxClient
+				.getMessagesList(eHealthPrivateKey, assertionString);
+		for (Message message : messageList.getMessage()) {
+			String messageId = message.getMessageId();
+			LOG.debug("message id: " + messageId);
+			eHealthBoxClient.getMessage(eHealthPrivateKey, assertionString,
+					messageId);
+			eHealthBoxClient.deleteMessage(eHealthPrivateKey, assertionString,
+					messageId);
+		}
 	}
 
 	@Test
