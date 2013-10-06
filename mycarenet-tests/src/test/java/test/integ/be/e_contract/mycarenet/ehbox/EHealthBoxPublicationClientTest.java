@@ -29,6 +29,7 @@ import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -124,6 +125,9 @@ public class EHealthBoxPublicationClientTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory
 				.createPublicationMessageType();
+		String publicationId = UUID.randomUUID().toString().substring(1, 13);
+		LOG.debug("publication id: " + publicationId);
+		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory
 				.createDestinationContextType();
