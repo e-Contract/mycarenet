@@ -23,6 +23,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.cms.CMSEnvelopedData;
@@ -35,9 +36,14 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.crypto.util.PrivateKeyFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
 public class Sealer {
@@ -67,24 +73,31 @@ public class Sealer {
 		CMSEnvelopedDataGenerator cmsEnvelopedDataGenerator = new CMSEnvelopedDataGenerator();
 		cmsEnvelopedDataGenerator
 				.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(
-						this.destinationCertificate).setProvider("BC"));
+						this.destinationCertificate)
+						.setProvider(BouncyCastleProvider.PROVIDER_NAME));
 		CMSTypedData cmsTypedData = new CMSProcessableByteArray(data);
 		CMSEnvelopedData cmsEnvelopedData = cmsEnvelopedDataGenerator.generate(
 				cmsTypedData, new JceCMSContentEncryptorBuilder(
-						CMSAlgorithm.AES128_CBC).setProvider("BC").build());
+						CMSAlgorithm.AES128_CBC).build());
 		return cmsEnvelopedData.getEncoded();
 	}
 
 	private byte[] sign(byte[] data) throws OperatorCreationException,
 			CertificateEncodingException, CMSException, IOException {
 		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
-		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA1withRSA")
-				.setProvider("BC").build(this.authenticationPrivateKey);
+		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
+				.find("SHA1withRSA");
+		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
+				.find(sigAlgId);
+		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
+				.createKey(this.authenticationPrivateKey.getEncoded());
+		ContentSigner contentSigner = new BcRSAContentSignerBuilder(sigAlgId,
+				digAlgId).build(privKeyParams);
 		cmsSignedDataGenerator
 				.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
 						new JcaDigestCalculatorProviderBuilder().setProvider(
-								"BC").build()).build(contentSigner,
-						this.authenticationCertificate));
+								BouncyCastleProvider.PROVIDER_NAME).build())
+						.build(contentSigner, this.authenticationCertificate));
 		cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(
 				this.authenticationCertificate.getEncoded()));
 		CMSTypedData cmsTypedData = new CMSProcessableByteArray(data);
