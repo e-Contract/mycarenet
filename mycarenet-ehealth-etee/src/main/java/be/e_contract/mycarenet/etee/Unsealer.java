@@ -25,6 +25,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +34,7 @@ import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.RecipientInformationStore;
 import org.bouncycastle.cms.SignerId;
@@ -41,6 +43,7 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.bc.BcRSAKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -48,7 +51,8 @@ import org.bouncycastle.util.Store;
 
 /**
  * eHealth end-to-end encryption unsealer implementation. This unsealer is
- * stateful as it keeps track of the sender certificate.
+ * stateful as it keeps track of the sender certificate. The unsealer already
+ * supports multiple recipients.
  * 
  * @author fcorneli
  * 
@@ -59,10 +63,19 @@ public class Unsealer {
 
 	private final PrivateKey decryptionPrivateKey;
 
+	private final X509Certificate decryptionCertificate;
+
 	private X509Certificate senderCertificate;
 
-	public Unsealer(PrivateKey decryptionPrivateKey) {
+	/**
+	 * @param decryptionPrivateKey
+	 * @param decryptionCertificate
+	 *            used for automatic recipient selection
+	 */
+	public Unsealer(PrivateKey decryptionPrivateKey,
+			X509Certificate decryptionCertificate) {
 		this.decryptionPrivateKey = decryptionPrivateKey;
+		this.decryptionCertificate = decryptionCertificate;
 	}
 
 	private byte[] getVerifiedContent(byte[] cmsData)
@@ -120,10 +133,13 @@ public class Unsealer {
 
 		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser
 				.getRecipientInfos();
+		RecipientId recipientId = new JceKeyTransRecipientId(
+				this.decryptionCertificate);
 		Collection<RecipientInformation> recipients = recipientInformationStore
-				.getRecipients();
-		RecipientInformation recipientInformation = recipients.iterator()
-				.next();
+				.getRecipients(recipientId);
+		Iterator<RecipientInformation> recipientsIterator = recipients
+				.iterator();
+		RecipientInformation recipientInformation = recipientsIterator.next();
 
 		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
 				.createKey(this.decryptionPrivateKey.getEncoded());
