@@ -82,7 +82,8 @@ public class SealerTest {
 		assertNotNull(sealedMessage);
 
 		Unsealer unsealer = new Unsealer(
-				eHealthKeyStore.getEncryptionPrivateKey());
+				eHealthKeyStore.getEncryptionPrivateKey(),
+				eHealthKeyStore.getEncryptionCertificate());
 
 		byte[] unsealedData = unsealer.unseal(sealedMessage);
 

@@ -63,7 +63,8 @@ public class UnsealerTest {
 				keyStorePassword);
 
 		Unsealer unsealer = new Unsealer(
-				eHealthKeyStore.getEncryptionPrivateKey());
+				eHealthKeyStore.getEncryptionPrivateKey(),
+				eHealthKeyStore.getEncryptionCertificate());
 
 		byte[] unsealedData = unsealer.unseal(sealedData);
 		LOG.debug("unsealed data: " + new String(unsealedData));
