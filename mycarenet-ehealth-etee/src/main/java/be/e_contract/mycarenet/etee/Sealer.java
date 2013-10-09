@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
 
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -50,40 +52,54 @@ public class Sealer {
 
 	private final PrivateKey authenticationPrivateKey;
 	private final X509Certificate authenticationCertificate;
-	private final X509Certificate destinationCertificate;
+	private final List<X509Certificate> destinationCertificates;
 
 	public Sealer(PrivateKey authenticationPrivateKey,
 			X509Certificate authenticationCertificate,
 			X509Certificate destinationCertificate) {
 		this.authenticationCertificate = authenticationCertificate;
 		this.authenticationPrivateKey = authenticationPrivateKey;
-		this.destinationCertificate = destinationCertificate;
+		this.destinationCertificates = Collections
+				.singletonList(destinationCertificate);
+	}
+
+	public Sealer(PrivateKey authenticationPrivateKey,
+			X509Certificate authenticationCertificate,
+			List<X509Certificate> destinationCertificates) {
+		this.authenticationCertificate = authenticationCertificate;
+		this.authenticationPrivateKey = authenticationPrivateKey;
+		this.destinationCertificates = destinationCertificates;
 	}
 
 	public byte[] seal(byte[] data) throws OperatorCreationException,
 			CertificateEncodingException, CMSException, IOException {
-		byte[] innerSignedData = sign(data);
+		byte[] innerSignedData = sign(data, false);
 		byte[] encryptedData = encrypt(innerSignedData);
-		byte[] outerSignedData = sign(encryptedData);
+		byte[] outerSignedData = sign(encryptedData, true);
 		return outerSignedData;
 	}
 
 	private byte[] encrypt(byte[] data) throws CertificateEncodingException,
 			CMSException, IOException {
 		CMSEnvelopedDataGenerator cmsEnvelopedDataGenerator = new CMSEnvelopedDataGenerator();
-		cmsEnvelopedDataGenerator
-				.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(
-						this.destinationCertificate)
-						.setProvider(BouncyCastleProvider.PROVIDER_NAME));
+		for (X509Certificate destinationCertificate : this.destinationCertificates) {
+			cmsEnvelopedDataGenerator
+					.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(
+							destinationCertificate)
+							.setProvider(BouncyCastleProvider.PROVIDER_NAME));
+		}
 		CMSTypedData cmsTypedData = new CMSProcessableByteArray(data);
 		CMSEnvelopedData cmsEnvelopedData = cmsEnvelopedDataGenerator.generate(
-				cmsTypedData, new JceCMSContentEncryptorBuilder(
-						CMSAlgorithm.AES128_CBC).build());
+				cmsTypedData,
+				new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC)
+						.setProvider(BouncyCastleProvider.PROVIDER_NAME)
+						.build());
 		return cmsEnvelopedData.getEncoded();
 	}
 
-	private byte[] sign(byte[] data) throws OperatorCreationException,
-			CertificateEncodingException, CMSException, IOException {
+	private byte[] sign(byte[] data, boolean includeCertificate)
+			throws OperatorCreationException, CertificateEncodingException,
+			CMSException, IOException {
 		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
 		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
 				.find("SHA1withRSA");
@@ -98,8 +114,10 @@ public class Sealer {
 						new JcaDigestCalculatorProviderBuilder().setProvider(
 								BouncyCastleProvider.PROVIDER_NAME).build())
 						.build(contentSigner, this.authenticationCertificate));
-		cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(
-				this.authenticationCertificate.getEncoded()));
+		if (includeCertificate) {
+			cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(
+					this.authenticationCertificate.getEncoded()));
+		}
 		CMSTypedData cmsTypedData = new CMSProcessableByteArray(data);
 		CMSSignedData cmsSignedData = cmsSignedDataGenerator.generate(
 				cmsTypedData, true);

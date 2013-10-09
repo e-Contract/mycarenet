@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -73,8 +75,11 @@ public class SealerTest {
 		X509Certificate destinationCertificate = eHealthKeyStore
 				.getEncryptionCertificate();
 
+		List<X509Certificate> destinationCertificates = new LinkedList<X509Certificate>();
+		destinationCertificates.add(destinationCertificate);
+		destinationCertificates.add(destinationCertificate);
 		Sealer sealer = new Sealer(authenticationPrivateKey,
-				authenticationCertificate, destinationCertificate);
+				authenticationCertificate, destinationCertificates);
 
 		byte[] message = "hello world".getBytes();
 
