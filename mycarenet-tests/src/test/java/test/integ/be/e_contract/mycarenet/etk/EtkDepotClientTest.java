@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 import be.e_contract.mycarenet.etk.EtkDepotClient;
+import be.e_contract.mycarenet.etk.IdentifierType;
 import be.fedict.commons.eid.client.BeIDCard;
 import be.fedict.commons.eid.client.BeIDCards;
 import be.fedict.commons.eid.client.FileType;
@@ -51,7 +52,7 @@ public class EtkDepotClientTest {
 		Identity identity = TlvParser.parse(identityData, Identity.class);
 
 		String inss = identity.getNationalNumber();
-		byte[] etk = etkDepotClient.getEtk(inss);
+		byte[] etk = etkDepotClient.getEtk(IdentifierType.SSIN, inss);
 
 		assertNotNull(etk);
 

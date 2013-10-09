@@ -26,7 +26,6 @@ import javax.xml.ws.BindingProvider;
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.etk.jaxb.GetEtkRequest;
 import be.e_contract.mycarenet.etk.jaxb.GetEtkResponse;
-import be.e_contract.mycarenet.etk.jaxb.IdentifierType;
 import be.e_contract.mycarenet.etk.jaxb.ObjectFactory;
 import be.e_contract.mycarenet.etk.jaxb.SearchCriteriaType;
 import be.e_contract.mycarenet.etk.jaxws.EtkDepotPortType;
@@ -58,15 +57,16 @@ public class EtkDepotClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public byte[] getEtk(String inss) {
+	public byte[] getEtk(IdentifierType identifierType, String identifierValue) {
 		GetEtkRequest getEtkRequest = this.objectFactory.createGetEtkRequest();
 		SearchCriteriaType searchCriteria = this.objectFactory
 				.createSearchCriteriaType();
 		getEtkRequest.setSearchCriteria(searchCriteria);
-		IdentifierType identifier = this.objectFactory.createIdentifierType();
+		be.e_contract.mycarenet.etk.jaxb.IdentifierType identifier = this.objectFactory
+				.createIdentifierType();
 		searchCriteria.getIdentifier().add(identifier);
-		identifier.setType("SSIN");
-		identifier.setValue(inss);
+		identifier.setType(identifierType.getValue());
+		identifier.setValue(identifierValue);
 		identifier.setApplicationID("");
 
 		GetEtkResponse getEtkResponse = this.etkDepotPort.getEtk(getEtkRequest);
