@@ -90,7 +90,8 @@ public class Unsealer {
 							certificateHolder.getEncoded()));
 
 			this.senderCertificate = certificate;
-			LOG.debug("signer certificate: " + certificate);
+			LOG.debug("signer certificate subject: "
+					+ certificate.getSubjectX500Principal());
 		}
 
 		/*
