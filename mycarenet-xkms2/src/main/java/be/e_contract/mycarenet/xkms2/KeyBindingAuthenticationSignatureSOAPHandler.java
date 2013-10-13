@@ -56,6 +56,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * XKMS 2.0 key binding authentication signature JAX-WS SOAP handler
+ * implementation.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class KeyBindingAuthenticationSignatureSOAPHandler implements
 		SOAPHandler<SOAPMessageContext> {
 
@@ -212,6 +219,14 @@ public class KeyBindingAuthenticationSignatureSOAPHandler implements
 		return null;
 	}
 
+	/**
+	 * Sets the signer identity.
+	 * 
+	 * @param authnPrivateKey
+	 *            the eID authentication private key.
+	 * @param authnCertificate
+	 *            the eID authentication certificate.
+	 */
 	public void setSigner(PrivateKey authnPrivateKey,
 			X509Certificate authnCertificate) {
 		this.authnPrivateKey = authnPrivateKey;

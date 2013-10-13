@@ -58,6 +58,15 @@ import be.e_contract.mycarenet.jaxws.xkms2.RegisterResult;
 import be.e_contract.mycarenet.jaxws.xkms2.RevokeResult;
 import be.e_contract.mycarenet.jaxws.xkms2.XMLKeyManagementService;
 
+/**
+ * Client for MyCareNet XKMS version 2.0 web service. A major disadvantage of
+ * the XKMS 2.0 protocol is that it also requires an authentication signature
+ * for the revocation process. Hence revoking a session key is easier via the
+ * XKMS 1.0 protocol.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class XKMS2Client {
 
 	private static final Log LOG = LogFactory.getLog(XKMS2Client.class);
@@ -80,6 +89,12 @@ public class XKMS2Client {
 
 	private final KeyBindingAuthenticationSignatureSOAPHandler keyBindingAuthenticationSignatureSOAPHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the MyCareNet XKMS 2.0 web service.
+	 */
 	public XKMS2Client(String location) {
 		XMLKeyManagementService service = XKMS2ServiceFactory.newInstance();
 		this.keyServicePort = service.getKeyServiceSoapPort();
@@ -108,6 +123,16 @@ public class XKMS2Client {
 
 	}
 
+	/**
+	 * Register the given session key.
+	 * 
+	 * @param sessionKey
+	 *            the session key to be registered.
+	 * @param authnPrivateKey
+	 *            the eID authentication private key.
+	 * @param authnCertificate
+	 *            the eID authentication certificate.
+	 */
 	public void registerSessionKey(SessionKey sessionKey,
 			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
 		LOG.debug("register session key");
@@ -159,6 +184,16 @@ public class XKMS2Client {
 		sessionKey.setValidity(notBefore, notAfter);
 	}
 
+	/**
+	 * Revoke the given MyCareNet session key.
+	 * 
+	 * @param sessionKey
+	 *            the session key to be revoked.
+	 * @param authnPrivateKey
+	 *            the eID authentication private key.
+	 * @param authnCertificate
+	 *            the eID authentication certificate.
+	 */
 	public void revokeSessionKey(SessionKey sessionKey,
 			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
 		LOG.debug("revoke session key");
