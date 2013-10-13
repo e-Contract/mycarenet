@@ -48,6 +48,13 @@ import org.apache.ws.security.util.WSSecurityUtil;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.common.WSSecurityCrypto;
 
+/**
+ * MyCareNet Asynchronous web service WS-Security implementation. The
+ * implementation is based on WSS4J.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory.getLog(SecuritySOAPHandler.class);
@@ -56,6 +63,14 @@ public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private final PackageLicenseKey packageLicenseKey;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param sessionKey
+	 *            the registered MyCareNet session key.
+	 * @param packageLicenseKey
+	 *            the MyCareNet package license key.
+	 */
 	public SecuritySOAPHandler(SessionKey sessionKey,
 			PackageLicenseKey packageLicenseKey) {
 		this.sessionKey = sessionKey;
