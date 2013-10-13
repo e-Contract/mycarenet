@@ -38,12 +38,28 @@ import be.e_contract.mycarenet.jaxws.async.CareProviderAsyncPortType;
 import be.e_contract.mycarenet.jaxws.async.FaultMessage;
 import be.e_contract.mycarenet.jaxws.async.MyCarenetCareProviderAsyncService;
 
+/**
+ * MyCareNet Asynchronous web service client.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class AsyncClient {
 
 	private final CareProviderAsyncPortType asyncPort;
 
 	private final PayloadLogicalHandler payloadLogicalHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the MyCareNet asynchronous web service.
+	 * @param sessionKey
+	 *            the registered MyCareNet session key.
+	 * @param packageLicenseKey
+	 *            the MyCareNet package license key.
+	 */
 	public AsyncClient(String location, SessionKey sessionKey,
 			PackageLicenseKey packageLicenseKey) {
 		MyCarenetCareProviderAsyncService service = MyCareNetAsyncServiceFactory
@@ -93,6 +109,11 @@ public class AsyncClient {
 		return this.asyncPort.download(downloadRequest);
 	}
 
+	/**
+	 * Returns the SOAP payload as a string.
+	 * 
+	 * @return
+	 */
 	public String getPayload() {
 		return this.payloadLogicalHandler.getPayload();
 	}
