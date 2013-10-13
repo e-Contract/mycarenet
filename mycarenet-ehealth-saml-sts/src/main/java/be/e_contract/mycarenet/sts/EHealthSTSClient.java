@@ -49,6 +49,12 @@ import org.w3c.dom.NodeList;
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.jaxws.sts.EHealthSamlStsService;
 
+/**
+ * The eHealth STS client.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EHealthSTSClient {
 
 	public static final String NAME_IDENTIFIER_X509_SUBJECT_NAME = "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName";
@@ -61,6 +67,12 @@ public class EHealthSTSClient {
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the eHealth STS web service.
+	 */
 	public EHealthSTSClient(String location) {
 		EHealthSamlStsService service = EHealthSamlStsServiceFactory
 				.newInstance();
@@ -81,6 +93,25 @@ public class EHealthSTSClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
+	/**
+	 * Requests an eHealth SAML assertion from the eHealth STS.
+	 * 
+	 * @param authnCertificate
+	 *            the eID authentication certificate.
+	 * @param authnPrivateKey
+	 *            the eID authentication private key.
+	 * @param hokCertificate
+	 *            the eHealth holder-of-key authentication certificate.
+	 * @param hokPrivateKey
+	 *            the eHealth holder-of-key authentication private key.
+	 * @param attributes
+	 *            the identity attributes.
+	 * @param attributeDesignators
+	 *            the required attributes.
+	 * @return the SAML assertion as DOM element.
+	 * @throws Exception
+	 *             in case something goes wrong.
+	 */
 	public Element requestAssertion(X509Certificate authnCertificate,
 			PrivateKey authnPrivateKey, X509Certificate hokCertificate,
 			PrivateKey hokPrivateKey, List<Attribute> attributes,
@@ -130,6 +161,13 @@ public class EHealthSTSClient {
 		return (Element) document.getDocumentElement();
 	}
 
+	/**
+	 * Returns the value of the NotOnOrAfter element within the given SAML
+	 * assertion.
+	 * 
+	 * @param assertionElement
+	 * @return
+	 */
 	public DateTime getNotAfter(Element assertionElement) {
 		NodeList conditionsNodeList = assertionElement.getElementsByTagNameNS(
 				"urn:oasis:names:tc:SAML:1.0:assertion", "Conditions");
@@ -141,7 +179,13 @@ public class EHealthSTSClient {
 		return new DateTime(calendar.getTime());
 	}
 
-	public String toString(Element node) {
+	/**
+	 * Converts a given DOM element to a String.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public String toString(Element element) {
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();
 		Transformer transformer;
@@ -152,7 +196,7 @@ public class EHealthSTSClient {
 		}
 		StringWriter stringWriter = new StringWriter();
 		try {
-			transformer.transform(new DOMSource(node), new StreamResult(
+			transformer.transform(new DOMSource(element), new StreamResult(
 					stringWriter));
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);

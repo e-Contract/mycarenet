@@ -9,7 +9,7 @@
 		node="/xs:schema">
 		<jxb:schemaBindings>
 			<jxb:package name="be.e_contract.mycarenet.jaxb.samlp">
-				<jxb:javadoc><![CDATA[<body>JAXB Async</body>]]></jxb:javadoc>
+				<jxb:javadoc><![CDATA[<body>JAXB SAML Protocol</body>]]></jxb:javadoc>
 			</jxb:package>
 		</jxb:schemaBindings>
 		<jxb:bindings schemaLocation="../wsdl/oasis-sstc-saml-schema-assertion-1.1.xsd" node="/xs:schema">

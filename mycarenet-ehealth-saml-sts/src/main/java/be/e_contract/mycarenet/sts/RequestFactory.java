@@ -349,6 +349,21 @@ public class RequestFactory {
 		xmlSignature.sign(domSignContext);
 	}
 
+	/**
+	 * Creates a SAML Request DOM element.
+	 * 
+	 * @param authnCertificate
+	 *            the eID authentication certificate.
+	 * @param hokPrivateKey
+	 *            the eHealth holder-of-key authentication private key.
+	 * @param hokCertificate
+	 *            the eHealth holder-of-key authentication certificate.
+	 * @param attributes
+	 *            the identity attributes.
+	 * @param attributeDesignators
+	 *            the required attributes.
+	 * @return a DOM element containing the signed SAML Request.
+	 */
 	public Element createRequest(X509Certificate authnCertificate,
 			PrivateKey hokPrivateKey, X509Certificate hokCertificate,
 			List<Attribute> attributes,
