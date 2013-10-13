@@ -48,6 +48,14 @@ import be.e_contract.mycarenet.jaxws.xkms.KeyServicePortType;
 import be.e_contract.mycarenet.jaxws.xkms.RegisterResult;
 import be.e_contract.mycarenet.jaxws.xkms.XMLKeyManagementService;
 
+/**
+ * MyCareNet XKMS client. This client is interesting for revoking MyCareNet
+ * session keys, as the XKMS version 1.0 protocol does not require an
+ * authentication signature for revoking the session key.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class XKMSClient {
 
 	private static final Log LOG = LogFactory.getLog(XKMSClient.class);
@@ -60,6 +68,12 @@ public class XKMSClient {
 
 	private final ProofOfPossessionSignatureSOAPHandler proofOfPossessionSignatureSOAPHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the MyCareNet XKMS web service.
+	 */
 	public XKMSClient(String location) {
 		XMLKeyManagementService service = XKMSServiceFactory.newInstance();
 		this.port = service.getKeyServiceSoapPort();
@@ -79,6 +93,11 @@ public class XKMSClient {
 		this.xmldsigObjectFactory = new be.e_contract.mycarenet.jaxb.xmldsig.ObjectFactory();
 	}
 
+	/**
+	 * Revoke the given session key.
+	 * 
+	 * @param sessionKey
+	 */
 	public void revokeSessionKey(SessionKey sessionKey) {
 		RegisterType register = this.objectFactory.createRegisterType();
 
