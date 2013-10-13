@@ -53,6 +53,13 @@ import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationService;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.SystemError;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
+/**
+ * The eHealthBox Publication web service client. This client implementation the
+ * eHealthBox Publication web service version 3.0.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EHealthBoxPublicationClient {
 
 	private static final Log LOG = LogFactory

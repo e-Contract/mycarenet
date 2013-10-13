@@ -61,6 +61,13 @@ import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
+/**
+ * The eHealthBox Consultation web service client. This client implementation
+ * the eHealthBox Consultation web service version 3.0.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EHealthBoxConsultationClient {
 
 	private static final Log LOG = LogFactory
@@ -76,6 +83,13 @@ public class EHealthBoxConsultationClient {
 
 	private final InboundAttachmentsSOAPHandler inboundAttachmentsSOAPHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the eHealthBox Consultation version 3.0 web
+	 *            service.
+	 */
 	public EHealthBoxConsultationClient(String location) {
 		EhBoxConsultationService consultationService = EhBoxConsultationServiceFactory
 				.newInstance();
@@ -109,6 +123,17 @@ public class EHealthBoxConsultationClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
+	/**
+	 * Gives back the eHealthBox information.
+	 * 
+	 * @param hokPrivateKey
+	 *            the eHealth holder-of-key authentication private key.
+	 * @param samlAssertion
+	 *            the eHealth SAML assertion as string.
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
 	public GetBoxInfoResponseType getBoxInfo(PrivateKey hokPrivateKey,
 			String samlAssertion) throws BusinessError, SystemError {
 		GetBoxInfoRequestType getBoxInfoRequest = this.objectFactory
