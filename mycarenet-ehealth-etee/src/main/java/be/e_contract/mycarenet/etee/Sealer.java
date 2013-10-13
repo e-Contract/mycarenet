@@ -48,6 +48,12 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
+/**
+ * eHealth end-to-end encryption sealer implementation.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class Sealer {
 
 	private final PrivateKey authenticationPrivateKey;
@@ -63,6 +69,16 @@ public class Sealer {
 				.singletonList(destinationCertificate);
 	}
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param authenticationPrivateKey
+	 *            the eHealth authentication private key of the sender.
+	 * @param authenticationCertificate
+	 *            the eHealth authentication certificate of the sender.
+	 * @param destinationCertificates
+	 *            the eHealth encryption certificates of the recipients.
+	 */
 	public Sealer(PrivateKey authenticationPrivateKey,
 			X509Certificate authenticationCertificate,
 			List<X509Certificate> destinationCertificates) {
@@ -71,6 +87,16 @@ public class Sealer {
 		this.destinationCertificates = destinationCertificates;
 	}
 
+	/**
+	 * Seals the given data.
+	 * 
+	 * @param data
+	 * @return
+	 * @throws OperatorCreationException
+	 * @throws CertificateEncodingException
+	 * @throws CMSException
+	 * @throws IOException
+	 */
 	public byte[] seal(byte[] data) throws OperatorCreationException,
 			CertificateEncodingException, CMSException, IOException {
 		byte[] innerSignedData = sign(data, false);

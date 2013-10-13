@@ -69,6 +69,7 @@ public class Unsealer {
 
 	/**
 	 * @param decryptionPrivateKey
+	 *            the eHealth encryption private key.
 	 * @param decryptionCertificate
 	 *            used for automatic recipient selection
 	 */
@@ -149,6 +150,16 @@ public class Unsealer {
 		return decryptedContent;
 	}
 
+	/**
+	 * Unseals the given sealed data blob.
+	 * 
+	 * @param data
+	 * @return
+	 * @throws CertificateException
+	 * @throws OperatorCreationException
+	 * @throws CMSException
+	 * @throws IOException
+	 */
 	public byte[] unseal(byte[] data) throws CertificateException,
 			OperatorCreationException, CMSException, IOException {
 		byte[] encryptedData = getVerifiedContent(data);
@@ -157,6 +168,12 @@ public class Unsealer {
 		return unsealedData;
 	}
 
+	/**
+	 * Gives back the eHealth authentication certificate of the sender of the
+	 * sealed data.
+	 * 
+	 * @return
+	 */
 	public X509Certificate getSenderCertificate() {
 		return this.senderCertificate;
 	}
