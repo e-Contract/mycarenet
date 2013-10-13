@@ -44,6 +44,15 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Selector;
 import org.bouncycastle.util.Store;
 
+/**
+ * Parser for the eHealth encryption token. This class does not perform any PKI
+ * validation. It simply parses the eHealth encryption token and verifies
+ * whether the eHealth authentication certificate issued the encryption
+ * certificate. Thus the encryption certificate is a proxy certificate.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EncryptionToken {
 
 	private static final Log LOG = LogFactory.getLog(EncryptionToken.class);
@@ -52,6 +61,11 @@ public class EncryptionToken {
 
 	private X509Certificate authenticationCertificate;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param encodedEncryptionToken
+	 */
 	public EncryptionToken(byte[] encodedEncryptionToken) {
 		try {
 			this.encryptionCertificate = parseEncryptionCertificate(encodedEncryptionToken);
@@ -177,10 +191,20 @@ public class EncryptionToken {
 		}
 	}
 
+	/**
+	 * Gives back the encryption certificate.
+	 * 
+	 * @return
+	 */
 	public X509Certificate getEncryptionCertificate() {
 		return this.encryptionCertificate;
 	}
 
+	/**
+	 * Gives back the authentication certificate.
+	 * 
+	 * @return
+	 */
 	public X509Certificate getAuthenticationCertificate() {
 		return this.authenticationCertificate;
 	}
