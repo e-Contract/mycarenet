@@ -27,6 +27,12 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+/**
+ * A JAX-WS SOAP handler that catches the inbound SOAP attachments.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class InboundAttachmentsSOAPHandler implements
 		SOAPHandler<SOAPMessageContext> {
 
@@ -57,6 +63,11 @@ public class InboundAttachmentsSOAPHandler implements
 		return null;
 	}
 
+	/**
+	 * Gives back the captures inbound SOAP attachments.
+	 * 
+	 * @return
+	 */
 	public Map<String, DataHandler> getInboundMessageAttachments() {
 		return this.inboundMessageAttachments;
 	}

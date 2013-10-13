@@ -26,11 +26,17 @@ import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * A JAXB attachment unmarshaller. Can be used to inject SOAP attachments when
+ * unmarshalling via JAXB.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
+public class SOAPAttachmentUnmarshaller extends AttachmentUnmarshaller {
 
-public class SOAPAttachmentUnmarshaller extends
-		AttachmentUnmarshaller {
-	
-	private static final Log LOG = LogFactory.getLog(SOAPAttachmentUnmarshaller.class);
+	private static final Log LOG = LogFactory
+			.getLog(SOAPAttachmentUnmarshaller.class);
 
 	private final Map<String, DataHandler> messageAttachments;
 

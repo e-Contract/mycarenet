@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="MyCareNet eHealth STS Client">
+<project name="MyCareNet eHealthBox Client">
 	<body>
 		<menu name="Overview" inherit="top">
 			<item name="Introduction" href="index.html" />
