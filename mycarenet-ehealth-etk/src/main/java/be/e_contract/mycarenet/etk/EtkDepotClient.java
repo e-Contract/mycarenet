@@ -31,12 +31,24 @@ import be.e_contract.mycarenet.etk.jaxb.SearchCriteriaType;
 import be.e_contract.mycarenet.etk.jaxws.EtkDepotPortType;
 import be.e_contract.mycarenet.etk.jaxws.EtkDepotService;
 
+/**
+ * Client for the eHealth Encryption Token Key web service.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EtkDepotClient {
 
 	private final EtkDepotPortType etkDepotPort;
 
 	private final ObjectFactory objectFactory;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the eHealth Encryption Token web service.
+	 */
 	public EtkDepotClient(String location) {
 		EtkDepotService service = EtkDepotServiceFactory.newInstance();
 		this.etkDepotPort = service.getEtkDepotPort();
@@ -57,6 +69,13 @@ public class EtkDepotClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
+	/**
+	 * Gives back the eHealth Encryption Token Key for the given identifier.
+	 * 
+	 * @param identifierType
+	 * @param identifierValue
+	 * @return
+	 */
 	public byte[] getEtk(IdentifierType identifierType, String identifierValue) {
 		GetEtkRequest getEtkRequest = this.objectFactory.createGetEtkRequest();
 		SearchCriteriaType searchCriteria = this.objectFactory
