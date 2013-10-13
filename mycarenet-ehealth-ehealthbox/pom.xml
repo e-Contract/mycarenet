@@ -37,19 +37,6 @@
 							<xnocompile>true</xnocompile>
 						</configuration>
 					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.sun.xml.ws</groupId>
-						<artifactId>jaxws-tools</artifactId>
-						<version>${jaxws.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.jvnet.jax-ws-commons</groupId>
-				<artifactId>jaxws-maven-plugin</artifactId>
-				<executions>
 					<execution>
 						<id>ehbox-publication-wsimport</id>
 						<goals>
