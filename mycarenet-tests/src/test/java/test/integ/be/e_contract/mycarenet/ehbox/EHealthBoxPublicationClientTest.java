@@ -31,6 +31,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
@@ -151,6 +154,107 @@ public class EHealthBoxPublicationClientTest {
 		publicationDocument.setDownloadFileName("test.txt");
 		byte[] message = "hello world".getBytes();
 		publicationDocument.setEncryptableTextContent(message);
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] digest = messageDigest.digest(message);
+		publicationDocument.setDigest(Base64.encodeBase64String(digest));
+
+		ContentSpecificationType contentSpecification = objectFactory
+				.createContentSpecificationType();
+		contentContext.setContentSpecification(contentSpecification);
+		contentSpecification.setContentType("DOCUMENT");
+
+		publicationClient.publish(publicationMessage, eHealthPrivateKey,
+				assertionString);
+	}
+
+	@Test
+	public void testPublishViaSOAPAttachment() throws Exception {
+		// STS
+		EHealthSTSClient client = new EHealthSTSClient(
+				"https://wwwacc.ehealth.fgov.be/sts_1_1/SecureTokenService");
+
+		Security.addProvider(new BeIDProvider());
+		KeyStore keyStore = KeyStore.getInstance("BeID");
+		keyStore.load(null);
+
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
+				"Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore
+				.getCertificate("Authentication");
+
+		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
+		FileInputStream fileInputStream = new FileInputStream(
+				this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config
+				.getEHealthPKCS12Password().toCharArray());
+		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
+		String alias = aliasesEnum.nextElement();
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
+				.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
+				alias, this.config.getEHealthPKCS12Password().toCharArray());
+
+		List<Attribute> attributes = new LinkedList<Attribute>();
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin"));
+
+		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:identification-namespace",
+				"urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator(
+				"urn:be:fgov:certified-namespace:ehealth",
+				"urn:be:fgov:person:ssin:nurse:boolean"));
+
+		Element assertion = client.requestAssertion(authnCertificate,
+				authnPrivateKey, eHealthCertificate, eHealthPrivateKey,
+				attributes, attributeDesignators);
+
+		assertNotNull(assertion);
+
+		String assertionString = client.toString(assertion);
+
+		// eHealthBox publication
+		EHealthBoxPublicationClient publicationClient = new EHealthBoxPublicationClient(
+				"https://services-acpt.ehealth.fgov.be/ehBoxPublication/v3");
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		PublicationMessageType publicationMessage = objectFactory
+				.createPublicationMessageType();
+		String publicationId = UUID.randomUUID().toString().substring(1, 13);
+		LOG.debug("publication id: " + publicationId);
+		publicationMessage.setPublicationId(publicationId);
+
+		DestinationContextType destinationContext = objectFactory
+				.createDestinationContextType();
+		publicationMessage.getDestinationContext().add(destinationContext);
+		destinationContext.setQuality("NURSE");
+		destinationContext.setType("INSS");
+		destinationContext.setId(getUserIdentifier(authnCertificate));
+
+		ContentContextType contentContext = objectFactory
+				.createContentContextType();
+		publicationMessage.setContentContext(contentContext);
+
+		PublicationContentType publicationContent = objectFactory
+				.createPublicationContentType();
+		contentContext.setContent(publicationContent);
+		PublicationDocumentType publicationDocument = objectFactory
+				.createPublicationDocumentType();
+		publicationContent.setDocument(publicationDocument);
+		publicationDocument.setTitle("test");
+		publicationDocument.setMimeType("application/octet-stream");
+		publicationDocument.setDownloadFileName("test.dat");
+		byte[] message = "hello world".getBytes();
+		DataSource dataSource = new ByteArrayDataSource(message,
+				"application/octet-stream");
+		DataHandler dataHandler = new DataHandler(dataSource);
+		publicationDocument.setEncryptableBinaryContent(dataHandler);
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		byte[] digest = messageDigest.digest(message);
 		publicationDocument.setDigest(Base64.encodeBase64String(digest));
