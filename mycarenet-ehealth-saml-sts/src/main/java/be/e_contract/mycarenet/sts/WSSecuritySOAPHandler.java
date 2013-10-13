@@ -47,6 +47,13 @@ import org.apache.ws.security.util.WSSecurityUtil;
 
 import be.e_contract.mycarenet.common.WSSecurityCrypto;
 
+/**
+ * WS-Security JAX-WS SOAP handler for the eHealth STS web service. The
+ * implementation used WSS4J to create the WS-Security header.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
@@ -56,10 +63,22 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private X509Certificate certificate;
 
+	/**
+	 * Sets the eID authentication private key used to sign according to
+	 * WS-Security.
+	 * 
+	 * @param privateKey
+	 */
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
 
+	/**
+	 * Sets the eID authentication certificate used to sign according to
+	 * WS-Security.
+	 * 
+	 * @param certificate
+	 */
 	public void setCertificate(X509Certificate certificate) {
 		this.certificate = certificate;
 	}

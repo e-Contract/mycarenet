@@ -21,20 +21,27 @@ package be.e_contract.mycarenet.sts;
 public class Attribute {
 
 	private final String namespace;
-	
+
 	private final String name;
-	
+
 	private final String value;
-	
+
 	private final boolean injectNRNValue;
-	
+
 	public Attribute(String namespace, String name, String value) {
 		this.namespace = namespace;
 		this.name = name;
 		this.value = value;
 		this.injectNRNValue = false;
 	}
-	
+
+	/**
+	 * Constructor for attribute. Because this constructor has no value, the STS
+	 * client will inject the national registration number as value.
+	 * 
+	 * @param namespace
+	 * @param name
+	 */
 	public Attribute(String namespace, String name) {
 		this.namespace = namespace;
 		this.name = name;
