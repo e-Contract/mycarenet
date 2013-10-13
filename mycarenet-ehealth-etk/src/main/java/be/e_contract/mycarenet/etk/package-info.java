@@ -16,34 +16,8 @@
  * http://www.gnu.org/licenses/.
  */
 
+/**
+ * eHealth Encryption Token Key web service client classes.
+ */
 package be.e_contract.mycarenet.etk;
 
-/**
- * Enumeration of the different identifier types recognized by the eHealth
- * Encryption Token Key web service.
- * 
- * @author Frank Cornelis
- * 
- */
-public enum IdentifierType {
-
-	NIHII("NIHII"),
-
-	NIHII_HOSPITAL("NIHII-HOSPITAL"),
-
-	CBE("CBE"),
-
-	NIHII_PHARMACY("NIHII-PHARMACY"),
-
-	SSIN("SSIN");
-
-	private final String value;
-
-	private IdentifierType(String value) {
-		this.value = value;
-	}
-
-	public String getValue() {
-		return this.value;
-	}
-}
