@@ -19,8 +19,10 @@
 package be.e_contract.mycarenet.common;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 import java.util.Set;
 
+import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
@@ -65,6 +67,13 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 		}
 		String message = outputStream.toString();
 		LOG.debug("SOAP message: " + message);
+		if (false == outboundProperty) {
+			Map<String, DataHandler> inboundMessageAttachments = (Map<String, DataHandler>) context
+					.get(MessageContext.INBOUND_MESSAGE_ATTACHMENTS);
+			Set<String> attachmentContentIds = inboundMessageAttachments
+					.keySet();
+			LOG.debug("attachment content ids: " + attachmentContentIds);
+		}
 	}
 
 	@Override

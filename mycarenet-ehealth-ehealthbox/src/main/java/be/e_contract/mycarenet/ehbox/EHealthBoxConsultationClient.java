@@ -22,7 +22,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.PrivateKey;
 import java.util.List;
+import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -72,6 +74,8 @@ public class EHealthBoxConsultationClient {
 
 	private final ObjectFactory objectFactory;
 
+	private final InboundAttachmentsSOAPHandler inboundAttachmentsSOAPHandler;
+
 	public EHealthBoxConsultationClient(String location) {
 		EhBoxConsultationService consultationService = EhBoxConsultationServiceFactory
 				.newInstance();
@@ -85,10 +89,10 @@ public class EHealthBoxConsultationClient {
 				consultationPortQName, Source.class, Service.Mode.PAYLOAD);
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
+		this.inboundAttachmentsSOAPHandler = new InboundAttachmentsSOAPHandler();
 		configureBindingProvider((BindingProvider) this.ehBoxConsultationPort,
 				location);
 		configureBindingProvider(this.consultationDispatch, location);
-
 		this.objectFactory = new ObjectFactory();
 	}
 
@@ -100,6 +104,7 @@ public class EHealthBoxConsultationClient {
 		Binding binding = bindingProvider.getBinding();
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.wsSecuritySOAPHandler);
+		handlerChain.add(this.inboundAttachmentsSOAPHandler);
 		handlerChain.add(new LoggingHandler());
 		binding.setHandlerChain(handlerChain);
 	}
@@ -171,6 +176,11 @@ public class EHealthBoxConsultationClient {
 		LOG.debug("response Source type: "
 				+ responseSource.getClass().getName());
 		return toString(responseSource);
+	}
+
+	public Map<String, DataHandler> getMessageAttachments() {
+		return this.inboundAttachmentsSOAPHandler
+				.getInboundMessageAttachments();
 	}
 
 	private String toString(Source source) {
