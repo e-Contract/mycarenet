@@ -54,6 +54,12 @@ import org.w3c.dom.NodeList;
 
 import be.e_contract.mycarenet.common.SessionKey;
 
+/**
+ * XKMS 2.0 proof-of-possession signature JAX-WS SOAP handler implementation.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class ProofOfPossessionSignatureSOAPHandler implements
 		SOAPHandler<SOAPMessageContext> {
 
