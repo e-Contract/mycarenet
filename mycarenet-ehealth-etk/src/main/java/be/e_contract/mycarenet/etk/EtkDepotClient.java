@@ -24,6 +24,7 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.common.PayloadLogicalHandler;
 import be.e_contract.mycarenet.etk.jaxb.GetEtkRequest;
 import be.e_contract.mycarenet.etk.jaxb.GetEtkResponse;
 import be.e_contract.mycarenet.etk.jaxb.ObjectFactory;
@@ -43,6 +44,8 @@ public class EtkDepotClient {
 
 	private final ObjectFactory objectFactory;
 
+	private final PayloadLogicalHandler payloadLogicalHandler;
+
 	/**
 	 * Main constructor.
 	 * 
@@ -52,6 +55,8 @@ public class EtkDepotClient {
 	public EtkDepotClient(String location) {
 		EtkDepotService service = EtkDepotServiceFactory.newInstance();
 		this.etkDepotPort = service.getEtkDepotPort();
+
+		this.payloadLogicalHandler = new PayloadLogicalHandler();
 
 		configureBindingProvider((BindingProvider) this.etkDepotPort, location);
 
@@ -66,6 +71,7 @@ public class EtkDepotClient {
 		Binding binding = bindingProvider.getBinding();
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(new LoggingHandler());
+		handlerChain.add(this.payloadLogicalHandler);
 		binding.setHandlerChain(handlerChain);
 	}
 
@@ -91,5 +97,9 @@ public class EtkDepotClient {
 		GetEtkResponse getEtkResponse = this.etkDepotPort.getEtk(getEtkRequest);
 		byte[] etk = getEtkResponse.getETK();
 		return etk;
+	}
+
+	public String getPayload() {
+		return this.payloadLogicalHandler.getPayload();
 	}
 }
