@@ -76,7 +76,7 @@ public class EtkDepotClient {
 	 * @param identifierValue
 	 * @return
 	 */
-	public byte[] getEtk(IdentifierType identifierType, String identifierValue) {
+	public byte[] getEtk(String identifierType, String identifierValue) {
 		GetEtkRequest getEtkRequest = this.objectFactory.createGetEtkRequest();
 		SearchCriteriaType searchCriteria = this.objectFactory
 				.createSearchCriteriaType();
@@ -84,7 +84,7 @@ public class EtkDepotClient {
 		be.e_contract.mycarenet.etk.jaxb.IdentifierType identifier = this.objectFactory
 				.createIdentifierType();
 		searchCriteria.getIdentifier().add(identifier);
-		identifier.setType(identifierType.getValue());
+		identifier.setType(identifierType);
 		identifier.setValue(identifierValue);
 		identifier.setApplicationID("");
 

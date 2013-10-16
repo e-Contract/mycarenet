@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 import be.e_contract.mycarenet.etk.EtkDepotClient;
-import be.e_contract.mycarenet.etk.IdentifierType;
 import be.fedict.commons.eid.client.BeIDCard;
 import be.fedict.commons.eid.client.BeIDCards;
 import be.fedict.commons.eid.client.FileType;
@@ -52,7 +51,7 @@ public class EtkDepotClientTest {
 		Identity identity = TlvParser.parse(identityData, Identity.class);
 
 		String inss = identity.getNationalNumber();
-		byte[] etk = etkDepotClient.getEtk(IdentifierType.SSIN, inss);
+		byte[] etk = etkDepotClient.getEtk("SSIN", inss);
 
 		assertNotNull(etk);
 
@@ -75,5 +74,32 @@ public class EtkDepotClientTest {
 				+ authenticationCertificate.getIssuerX500Principal());
 		LOG.debug("authentication certificate subject: "
 				+ authenticationCertificate.getSubjectX500Principal());
+	}
+
+	@Test
+	public void testScenario1() throws Exception {
+		EtkDepotClient etkDepotClient = new EtkDepotClient(
+				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+
+		byte[] etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
+		assertNotNull(etk);
+	}
+
+	@Test
+	public void testScenario2() throws Exception {
+		EtkDepotClient etkDepotClient = new EtkDepotClient(
+				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+
+		byte[] etk = etkDepotClient.getEtk("SSIN", "85040309180");
+		assertNotNull(etk);
+
+		etk = etkDepotClient.getEtk("CBE", "0809394427");
+		assertNotNull(etk);
+
+		etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
+		assertNotNull(etk);
+
+		etk = etkDepotClient.getEtk("NIHII-LABO", "89999964");
+		assertNotNull(etk);
 	}
 }
