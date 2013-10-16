@@ -266,6 +266,8 @@ public class EHealthBoxPublicationClientTest {
 		publicationAnnex.setEncryptableTitle("hello world".getBytes());
 		publicationAnnex.setMimeType("application/octet-stream");
 		publicationAnnex.setEncryptableTextContent(message);
+		messageDigest.reset();
+		digest = messageDigest.digest(message);
 		publicationAnnex.setDigest(Base64.encodeBase64String(digest));
 
 		ContentSpecificationType contentSpecification = objectFactory

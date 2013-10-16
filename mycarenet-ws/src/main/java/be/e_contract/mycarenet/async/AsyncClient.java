@@ -25,6 +25,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.common.PayloadLogicalHandler;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.jaxb.async.DownloadRequestType;
 import be.e_contract.mycarenet.jaxb.async.DownloadResultType;

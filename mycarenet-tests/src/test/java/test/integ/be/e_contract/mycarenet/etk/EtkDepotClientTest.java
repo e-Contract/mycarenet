@@ -19,6 +19,7 @@
 package test.integ.be.e_contract.mycarenet.etk;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.security.cert.X509Certificate;
@@ -83,6 +84,18 @@ public class EtkDepotClientTest {
 
 		byte[] etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
 		assertNotNull(etk);
+	}
+
+	@Test
+	public void testNonExitingSSIN() throws Exception {
+		EtkDepotClient etkDepotClient = new EtkDepotClient(
+				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+
+		byte[] etk = etkDepotClient.getEtk("SSIN", "23491519151");
+		assertNull(etk);
+
+		String payload = etkDepotClient.getPayload();
+		LOG.debug("payload: " + payload);
 	}
 
 	@Test

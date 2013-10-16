@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/.
  */
 
-package be.e_contract.mycarenet.async;
+package be.e_contract.mycarenet.common;
 
 import java.io.StringWriter;
 
