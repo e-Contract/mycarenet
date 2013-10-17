@@ -50,7 +50,7 @@ public class EtkDepotClient {
 	 * Main constructor.
 	 * 
 	 * @param location
-	 *            the URL of the eHealth Encryption Token web service.
+	 *            the URL of the eHealth Encryption Token Key web service.
 	 */
 	public EtkDepotClient(String location) {
 		EtkDepotService service = EtkDepotServiceFactory.newInstance();
