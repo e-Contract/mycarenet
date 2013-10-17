@@ -56,8 +56,8 @@ import org.xml.sax.InputSource;
 
 import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.common.SessionKey;
-import be.e_contract.mycarenet.ehbox.SOAPAttachmentUnmarshaller;
 import be.e_contract.mycarenet.ehbox.EHealthBoxConsultationClient;
+import be.e_contract.mycarenet.ehbox.SOAPAttachmentUnmarshaller;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetFullMessageResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessageListResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessageListResponseType.Message;
@@ -69,8 +69,7 @@ import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class EHealthBoxClientTest {
 
-	static final Log LOG = LogFactory
-			.getLog(EHealthBoxClientTest.class);
+	static final Log LOG = LogFactory.getLog(EHealthBoxClientTest.class);
 
 	private Config config;
 
@@ -80,7 +79,7 @@ public class EHealthBoxClientTest {
 	}
 
 	@Test
-	public void testGetBoxInfo() throws Exception {
+	public void testGetBoxInfoGetMessageDeleteMessage() throws Exception {
 		// STS
 		EHealthSTSClient client = new EHealthSTSClient(
 				"https://wwwacc.ehealth.fgov.be/sts_1_1/SecureTokenService");
@@ -133,17 +132,16 @@ public class EHealthBoxClientTest {
 		// eHealthBox
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
-		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.setCredentials(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.getBoxInfo();
 
 		GetMessageListResponseType messageList = eHealthBoxClient
-				.getMessagesList(eHealthPrivateKey, assertionString);
+				.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
 			LOG.debug("message id: " + messageId);
-			eHealthBoxClient.getMessage(eHealthPrivateKey, assertionString,
-					messageId);
-			eHealthBoxClient.deleteMessage(eHealthPrivateKey, assertionString,
-					messageId);
+			eHealthBoxClient.getMessage(messageId);
+			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
 
@@ -201,10 +199,11 @@ public class EHealthBoxClientTest {
 		// eHealthBox
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
-		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.setCredentials(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.getBoxInfo();
 
 		GetMessageListResponseType messageList = eHealthBoxClient
-				.getMessagesList(eHealthPrivateKey, assertionString);
+				.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
 			LOG.debug("message id: " + messageId);
@@ -213,8 +212,7 @@ public class EHealthBoxClientTest {
 					+ "<MessageId>"
 					+ messageId
 					+ "</MessageId>" + "</ehbox:GetFullMessageRequest>";
-			String response = eHealthBoxClient.invoke(request,
-					eHealthPrivateKey, assertionString);
+			String response = eHealthBoxClient.invoke(request);
 			LOG.debug("response message: " + response);
 
 			JAXBContext jaxbContext = JAXBContext
@@ -298,8 +296,8 @@ public class EHealthBoxClientTest {
 		// eHealthBox
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
-		eHealthBoxClient.invoke(requestElement, eHealthPrivateKey,
-				toString(assertion));
+		eHealthBoxClient.setCredentials(eHealthPrivateKey, toString(assertion));
+		eHealthBoxClient.invoke(requestElement);
 	}
 
 	@Test
@@ -356,8 +354,8 @@ public class EHealthBoxClientTest {
 		// eHealthBox
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
-		String result = eHealthBoxClient.invoke(request, eHealthPrivateKey,
-				toString(assertion));
+		eHealthBoxClient.setCredentials(eHealthPrivateKey, toString(assertion));
+		String result = eHealthBoxClient.invoke(request);
 		LOG.debug("result: " + result);
 	}
 
@@ -415,7 +413,8 @@ public class EHealthBoxClientTest {
 		// eHealthBox
 		EHealthBoxConsultationClient eHealthBoxClient = new EHealthBoxConsultationClient(
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
-		eHealthBoxClient.getBoxInfo(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.setCredentials(eHealthPrivateKey, assertionString);
+		eHealthBoxClient.getBoxInfo();
 	}
 
 	private String toString(Node node) throws Exception {

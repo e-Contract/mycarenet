@@ -84,6 +84,19 @@ public class EHealthBoxConsultationClient {
 	private final InboundAttachmentsSOAPHandler inboundAttachmentsSOAPHandler;
 
 	/**
+	 * Sets the credentials to be used.
+	 * 
+	 * @param hokPrivateKey
+	 *            the eHealth holder-of-key authentication private key.
+	 * @param samlAssertion
+	 *            the eHealth SAML assertion as string.
+	 */
+	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
+		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
+		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	}
+
+	/**
 	 * Main constructor.
 	 * 
 	 * @param location
@@ -126,76 +139,58 @@ public class EHealthBoxConsultationClient {
 	/**
 	 * Gives back the eHealthBox information.
 	 * 
-	 * @param hokPrivateKey
-	 *            the eHealth holder-of-key authentication private key.
-	 * @param samlAssertion
-	 *            the eHealth SAML assertion as string.
+	 * 
 	 * @return
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetBoxInfoResponseType getBoxInfo(PrivateKey hokPrivateKey,
-			String samlAssertion) throws BusinessError, SystemError {
+	public GetBoxInfoResponseType getBoxInfo() throws BusinessError,
+			SystemError {
 		GetBoxInfoRequestType getBoxInfoRequest = this.objectFactory
 				.createGetBoxInfoRequestType();
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 		GetBoxInfoResponseType getBoxInfoResponse = this.ehBoxConsultationPort
 				.getBoxInfo(getBoxInfoRequest);
 		return getBoxInfoResponse;
 	}
 
-	public GetMessageListResponseType getMessagesList(PrivateKey hokPrivateKey,
-			String samlAssertion) throws BusinessError, SystemError {
+	public GetMessageListResponseType getMessagesList() throws BusinessError,
+			SystemError {
 		GetMessagesListRequestType getMessagesListRequest = this.objectFactory
 				.createGetMessagesListRequestType();
 		getMessagesListRequest.setSource("INBOX");
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 		GetMessageListResponseType getMessageListResponse = this.ehBoxConsultationPort
 				.getMessagesList(getMessagesListRequest);
 		return getMessageListResponse;
 	}
 
-	public GetFullMessageResponseType getMessage(PrivateKey hokPrivateKey,
-			String samlAssertion, String messageId) throws BusinessError,
-			SystemError {
+	public GetFullMessageResponseType getMessage(String messageId)
+			throws BusinessError, SystemError {
 		MessageRequestType messageRequest = this.objectFactory
 				.createMessageRequestType();
 		messageRequest.setSource("INBOX");
 		messageRequest.setMessageId(messageId);
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 		GetFullMessageResponseType message = this.ehBoxConsultationPort
 				.getFullMessage(messageRequest);
 		return message;
 	}
 
-	public void deleteMessage(PrivateKey hokPrivateKey, String samlAssertion,
-			String messageId) throws BusinessError, SystemError {
+	public void deleteMessage(String messageId) throws BusinessError,
+			SystemError {
 		DeleteMessageRequestType deleteMessageRequest = this.objectFactory
 				.createDeleteMessageRequestType();
 		deleteMessageRequest.setSource("INBOX");
 		deleteMessageRequest.getMessageId().add(messageId);
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 		this.ehBoxConsultationPort.deleteMessage(deleteMessageRequest);
 	}
 
-	public Element invoke(Element request, PrivateKey hokPrivateKey,
-			String samlAssertion) {
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	public Element invoke(Element request) {
 		Source responseSource = this.consultationDispatch.invoke(new DOMSource(
 				request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
 	}
 
-	public String invoke(String request, PrivateKey hokPrivateKey,
-			String samlAssertion) {
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	public String invoke(String request) {
 		Source responseSource = this.consultationDispatch
 				.invoke(new StreamSource(new StringReader(request)));
 		LOG.debug("response Source type: "

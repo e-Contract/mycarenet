@@ -71,6 +71,11 @@ public class EHealthBoxPublicationClient {
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
+	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
+		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
+		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	}
+
 	public EHealthBoxPublicationClient(String location) {
 		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory
 				.newInstance();
@@ -93,8 +98,7 @@ public class EHealthBoxPublicationClient {
 			PublicationMessageType publicationMessage,
 			PrivateKey hokPrivateKey, String samlAssertion)
 			throws BusinessError, SystemError {
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+
 		SendMessageResponse sendMessageResponse = this.ehBoxPublicationPort
 				.sendMessage(publicationMessage);
 		return sendMessageResponse;
@@ -112,20 +116,14 @@ public class EHealthBoxPublicationClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public Element invoke(Element request, PrivateKey hokPrivateKey,
-			String samlAssertion) {
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	public Element invoke(Element request) {
 		Source responseSource = this.publicationDispatch.invoke(new DOMSource(
 				request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
 	}
 
-	public String invoke(String request, PrivateKey hokPrivateKey,
-			String samlAssertion) {
-		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
-		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	public String invoke(String request) {
 		Source responseSource = this.publicationDispatch
 				.invoke(new StreamSource(new StringReader(request)));
 		LOG.debug("response Source type: "
