@@ -71,11 +71,25 @@ public class EHealthBoxPublicationClient {
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
 
+	/**
+	 * Sets the authentication credentials.
+	 * 
+	 * @param hokPrivateKey
+	 *            the eHealth authentication private key.
+	 * @param samlAssertion
+	 *            the eHealth STS SAML assertion as string.
+	 */
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
 	}
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the URL of the eHealth Publication version 3.0 web service.
+	 */
 	public EHealthBoxPublicationClient(String location) {
 		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory
 				.newInstance();
@@ -94,9 +108,15 @@ public class EHealthBoxPublicationClient {
 		configureBindingProvider(this.publicationDispatch, location);
 	}
 
-	public SendMessageResponse publish(
-			PublicationMessageType publicationMessage,
-			PrivateKey hokPrivateKey, String samlAssertion)
+	/**
+	 * @param publicationMessage
+	 * @param hokPrivateKey
+	 * @param samlAssertion
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public SendMessageResponse publish(PublicationMessageType publicationMessage)
 			throws BusinessError, SystemError {
 
 		SendMessageResponse sendMessageResponse = this.ehBoxPublicationPort

@@ -27,6 +27,13 @@ package be.e_contract.mycarenet.ehealth.common;
  */
 public class IdentifierMapper {
 
+	/**
+	 * Maps from eHealthBox identifier types to ETK identifier types.
+	 * 
+	 * @param eHealthBoxType
+	 * @param eHealthBoxQuality
+	 * @return the corresponding ETK identifier type.
+	 */
 	public static String getETKIdentifierType(String eHealthBoxType,
 			String eHealthBoxQuality) {
 		if ("INSS".equals(eHealthBoxType)) {

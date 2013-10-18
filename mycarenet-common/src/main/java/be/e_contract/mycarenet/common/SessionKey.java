@@ -53,6 +53,12 @@ import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 
+/**
+ * MyCareNet session key.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class SessionKey {
 
 	private static final int KEY_SIZE = 1024;
@@ -73,6 +79,12 @@ public class SessionKey {
 		this(KEY_SIZE);
 	}
 
+	/**
+	 * Generator constructor. Creates a new MyCareNet session key.
+	 * 
+	 * @param keySize
+	 *            the RSA key size.
+	 */
 	public SessionKey(int keySize) {
 		KeyPairGenerator keyPairGenerator;
 		try {
@@ -90,6 +102,15 @@ public class SessionKey {
 		this.keyPair = keyPairGenerator.generateKeyPair();
 	}
 
+	/**
+	 * Loader constructor. Loads an existing MyCareNet session key.
+	 * 
+	 * @param encodedPrivateKey
+	 * @param encodedPublicKey
+	 * @param encodedCertificate
+	 * @param notBefore
+	 * @param notAfter
+	 */
 	public SessionKey(byte[] encodedPrivateKey, byte[] encodedPublicKey,
 			byte[] encodedCertificate, Date notBefore, Date notAfter) {
 		this.notBefore = notBefore;
@@ -139,35 +160,73 @@ public class SessionKey {
 		}
 	}
 
+	/**
+	 * Sets the distinguished name to be used on the generated self-signed
+	 * certificate.
+	 * 
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gives back the RSA modulus.
+	 * 
+	 * @return
+	 */
 	public byte[] getModulus() {
 		RSAPublicKey rsaPublicKey = getRSAPublicKey();
 		return rsaPublicKey.getModulus().toByteArray();
 	}
 
+	/**
+	 * Gives back the RSA public modulus.
+	 * 
+	 * @return
+	 */
 	public byte[] getExponent() {
 		RSAPublicKey rsaPublicKey = getRSAPublicKey();
 		return rsaPublicKey.getPublicExponent().toByteArray();
 	}
 
+	/**
+	 * Gives back the RSA public key.
+	 * 
+	 * @return
+	 */
 	private RSAPublicKey getRSAPublicKey() {
 		PublicKey publicKey = this.keyPair.getPublic();
 		RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
 		return rsaPublicKey;
 	}
 
+	/**
+	 * Gives back the RSA private key.
+	 * 
+	 * @return
+	 */
 	public PrivateKey getPrivate() {
 		return this.keyPair.getPrivate();
 	}
 
+	/**
+	 * Sets the validity period of the MyCareNet session key.
+	 * 
+	 * @param notBefore
+	 * @param notAfter
+	 */
 	public void setValidity(Date notBefore, Date notAfter) {
 		this.notBefore = notBefore;
 		this.notAfter = notAfter;
 	}
 
+	/**
+	 * Checks whether this MyCareNet session key still operates within its
+	 * validity period.
+	 * 
+	 * @return
+	 */
 	public boolean isValid() {
 		if (null == this.notBefore) {
 			return false;

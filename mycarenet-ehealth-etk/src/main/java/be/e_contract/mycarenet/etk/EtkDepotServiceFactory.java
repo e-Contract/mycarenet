@@ -24,20 +24,30 @@ import javax.xml.namespace.QName;
 
 import be.e_contract.mycarenet.etk.jaxws.EtkDepotService;
 
+/**
+ * Factory for ETK JAX-WS service. This factory is using an embedded WSDL and is
+ * thus portable.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EtkDepotServiceFactory {
 
 	private EtkDepotServiceFactory() {
 		super();
 	}
-	
+
+	/**
+	 * Gives back a new instance of the ETK JAX-WS service.
+	 * 
+	 * @return
+	 */
 	public static EtkDepotService newInstance() {
 		URL wsdlLocation = EtkDepotServiceFactory.class
 				.getResource("/EtkDepot-v1.wsdl");
 		QName serviceName = new QName(
-				"urn:be:fgov:ehealth:etkdepot:1_0:protocol",
-				"EtkDepotService");
-		EtkDepotService service = new EtkDepotService(
-				wsdlLocation, serviceName);
+				"urn:be:fgov:ehealth:etkdepot:1_0:protocol", "EtkDepotService");
+		EtkDepotService service = new EtkDepotService(wsdlLocation, serviceName);
 		return service;
 	}
 }

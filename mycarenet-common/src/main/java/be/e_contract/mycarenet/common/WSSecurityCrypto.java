@@ -32,6 +32,12 @@ import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoType;
 
+/**
+ * Generic WSS4J Crypto implementation.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class WSSecurityCrypto implements Crypto {
 
 	private static final Log LOG = LogFactory.getLog(WSSecurityCrypto.class);

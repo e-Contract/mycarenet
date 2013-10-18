@@ -32,6 +32,13 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * JAX-WS SOAP handler to provides logging of the SOAP messages using the
+ * Commons Logging framework.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory.getLog(LoggingHandler.class);
