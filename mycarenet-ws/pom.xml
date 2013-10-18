@@ -80,11 +80,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.e_contract.mycarenet</groupId>
-			<artifactId>mycarenet-xkms2</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>be.e_contract.mycarenet</groupId>
 			<artifactId>mycarenet-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
