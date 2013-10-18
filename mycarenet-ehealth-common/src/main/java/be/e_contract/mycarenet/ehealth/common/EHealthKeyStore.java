@@ -26,6 +26,12 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
+/**
+ * eHealth key store loader.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class EHealthKeyStore {
 
 	private final X509Certificate authenticationCertificate;
@@ -33,6 +39,14 @@ public class EHealthKeyStore {
 	private final X509Certificate encryptionCertificate;
 	private final PrivateKey encryptionPrivateKey;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param keyStoreData
+	 *            the PKCS#12 key store data.
+	 * @param keyStorePassword
+	 *            the PKCS#12 password.
+	 */
 	public EHealthKeyStore(byte[] keyStoreData, String keyStorePassword) {
 		KeyStore keyStore;
 		try {
@@ -96,18 +110,38 @@ public class EHealthKeyStore {
 		this.encryptionPrivateKey = encryptionPrivateKey;
 	}
 
+	/**
+	 * Gives back the eHealth authentication certificate.
+	 * 
+	 * @return
+	 */
 	public X509Certificate getAuthenticationCertificate() {
 		return this.authenticationCertificate;
 	}
 
+	/**
+	 * Gives back the eHealth authentication private key.
+	 * 
+	 * @return
+	 */
 	public PrivateKey getAuthenticationPrivateKey() {
 		return this.authenticationPrivateKey;
 	}
 
+	/**
+	 * Gives back the eHealth encryption certificate.
+	 * 
+	 * @return
+	 */
 	public X509Certificate getEncryptionCertificate() {
 		return this.encryptionCertificate;
 	}
 
+	/**
+	 * Gives back the eHealth encryption private key.
+	 * 
+	 * @return
+	 */
 	public PrivateKey getEncryptionPrivateKey() {
 		return this.encryptionPrivateKey;
 	}

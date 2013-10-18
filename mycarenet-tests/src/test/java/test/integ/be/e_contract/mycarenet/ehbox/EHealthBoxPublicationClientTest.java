@@ -164,8 +164,8 @@ public class EHealthBoxPublicationClientTest {
 		contentContext.setContentSpecification(contentSpecification);
 		contentSpecification.setContentType("DOCUMENT");
 
-		publicationClient.publish(publicationMessage, eHealthPrivateKey,
-				assertionString);
+		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
+		publicationClient.publish(publicationMessage);
 	}
 
 	@Test
@@ -276,8 +276,8 @@ public class EHealthBoxPublicationClientTest {
 		contentContext.setContentSpecification(contentSpecification);
 		contentSpecification.setContentType("DOCUMENT");
 
-		publicationClient.publish(publicationMessage, eHealthPrivateKey,
-				assertionString);
+		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
+		publicationClient.publish(publicationMessage);
 	}
 
 	@Test
@@ -377,8 +377,8 @@ public class EHealthBoxPublicationClientTest {
 		contentContext.setContentSpecification(contentSpecification);
 		contentSpecification.setContentType("DOCUMENT");
 
-		publicationClient.publish(publicationMessage, eHealthPrivateKey,
-				assertionString);
+		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
+		publicationClient.publish(publicationMessage);
 	}
 
 	private String getUserIdentifier(X509Certificate certificate) {

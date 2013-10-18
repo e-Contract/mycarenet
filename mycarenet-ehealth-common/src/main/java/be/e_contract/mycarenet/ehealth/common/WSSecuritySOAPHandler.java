@@ -55,6 +55,13 @@ import org.xml.sax.SAXException;
 
 import be.e_contract.mycarenet.common.WSSecurityCrypto;
 
+/**
+ * WS-Security JAX-WS SOAP handler implementation for eHealth web services that
+ * are secured using the eHealth STS SAML assertion and holder-of-key.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
@@ -77,10 +84,20 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		}
 	}
 
+	/**
+	 * Sets the eHealth holder-of-key private key.
+	 * 
+	 * @param privateKey
+	 */
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
 
+	/**
+	 * Sets the eHealth STS SAML assertion.
+	 * 
+	 * @param samlAssertion
+	 */
 	public void setAssertion(String samlAssertion) {
 		this.samlAssertion = samlAssertion;
 	}

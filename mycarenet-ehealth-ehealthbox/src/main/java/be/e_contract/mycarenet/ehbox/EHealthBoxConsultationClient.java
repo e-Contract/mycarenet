@@ -48,12 +48,15 @@ import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.DeleteMessageRequestType;
+import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.DeleteMessageResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetBoxInfoRequestType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetBoxInfoResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetFullMessageResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessageListResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetMessagesListRequestType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.MessageRequestType;
+import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.MoveMessageRequestType;
+import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.MoveMessageResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.ObjectFactory;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.BusinessError;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationPortType;
@@ -153,36 +156,122 @@ public class EHealthBoxConsultationClient {
 		return getBoxInfoResponse;
 	}
 
+	/**
+	 * Gives back the message list from the "INBOX" source.
+	 * 
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
 	public GetMessageListResponseType getMessagesList() throws BusinessError,
 			SystemError {
+		return getMessagesList("INBOX");
+	}
+
+	/**
+	 * Gives back the messages list for the given source. Source can be for
+	 * example "INBOX".
+	 * 
+	 * @param source
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public GetMessageListResponseType getMessagesList(String source)
+			throws BusinessError, SystemError {
 		GetMessagesListRequestType getMessagesListRequest = this.objectFactory
 				.createGetMessagesListRequestType();
-		getMessagesListRequest.setSource("INBOX");
+		getMessagesListRequest.setSource(source);
 		GetMessageListResponseType getMessageListResponse = this.ehBoxConsultationPort
 				.getMessagesList(getMessagesListRequest);
 		return getMessageListResponse;
 	}
 
+	/**
+	 * Gives back a message from the INBOX.
+	 * 
+	 * @param messageId
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
 	public GetFullMessageResponseType getMessage(String messageId)
+			throws BusinessError, SystemError {
+		return getMessage("INBOX", messageId);
+	}
+
+	/**
+	 * Gives back a message.
+	 * 
+	 * @param source
+	 * @param messageId
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public GetFullMessageResponseType getMessage(String source, String messageId)
 			throws BusinessError, SystemError {
 		MessageRequestType messageRequest = this.objectFactory
 				.createMessageRequestType();
-		messageRequest.setSource("INBOX");
+		messageRequest.setSource(source);
 		messageRequest.setMessageId(messageId);
 		GetFullMessageResponseType message = this.ehBoxConsultationPort
 				.getFullMessage(messageRequest);
 		return message;
 	}
 
-	public void deleteMessage(String messageId) throws BusinessError,
-			SystemError {
-		DeleteMessageRequestType deleteMessageRequest = this.objectFactory
-				.createDeleteMessageRequestType();
-		deleteMessageRequest.setSource("INBOX");
-		deleteMessageRequest.getMessageId().add(messageId);
-		this.ehBoxConsultationPort.deleteMessage(deleteMessageRequest);
+	/**
+	 * Delete a message from the "INBOX" source.
+	 * 
+	 * @param messageId
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public DeleteMessageResponseType deleteMessage(String messageId)
+			throws BusinessError, SystemError {
+		return deleteMessage("INBOX", messageId);
 	}
 
+	/**
+	 * Delete a message.
+	 * 
+	 * @param source
+	 * @param messageId
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public DeleteMessageResponseType deleteMessage(String source,
+			String messageId) throws BusinessError, SystemError {
+		DeleteMessageRequestType deleteMessageRequest = this.objectFactory
+				.createDeleteMessageRequestType();
+		deleteMessageRequest.setSource(source);
+		deleteMessageRequest.getMessageId().add(messageId);
+		return this.ehBoxConsultationPort.deleteMessage(deleteMessageRequest);
+	}
+
+	/**
+	 * Moves a message.
+	 * 
+	 * @param moveMessageRequest
+	 * @return
+	 * @throws BusinessError
+	 * @throws SystemError
+	 */
+	public MoveMessageResponseType moveMessage(
+			MoveMessageRequestType moveMessageRequest) throws BusinessError,
+			SystemError {
+		return this.ehBoxConsultationPort.moveMessage(moveMessageRequest);
+	}
+
+	/**
+	 * Invokes a method on the eHealthBox consultation web service using the
+	 * low-level SOAP payload.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Element invoke(Element request) {
 		Source responseSource = this.consultationDispatch.invoke(new DOMSource(
 				request));
@@ -190,6 +279,13 @@ public class EHealthBoxConsultationClient {
 		return responseElement;
 	}
 
+	/**
+	 * Invokes a method on the eHealthBox consultation web service using the
+	 * low-level SOAP payload.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public String invoke(String request) {
 		Source responseSource = this.consultationDispatch
 				.invoke(new StreamSource(new StringReader(request)));
@@ -198,6 +294,11 @@ public class EHealthBoxConsultationClient {
 		return toString(responseSource);
 	}
 
+	/**
+	 * Gives back the inbound SOAP attachments.
+	 * 
+	 * @return a map of data handlers keyed on attachment identifiers.
+	 */
 	public Map<String, DataHandler> getMessageAttachments() {
 		return this.inboundAttachmentsSOAPHandler
 				.getInboundMessageAttachments();

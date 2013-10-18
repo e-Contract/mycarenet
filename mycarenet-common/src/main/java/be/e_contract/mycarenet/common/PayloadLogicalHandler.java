@@ -33,6 +33,12 @@ import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.handler.LogicalMessageContext;
 import javax.xml.ws.handler.MessageContext;
 
+/**
+ * JAX-WS SOAP handler implementation that captures the inbound SOAP payload.
+ * 
+ * @author Frank Cornelis
+ * 
+ */
 public class PayloadLogicalHandler implements
 		LogicalHandler<LogicalMessageContext> {
 
@@ -50,6 +56,11 @@ public class PayloadLogicalHandler implements
 		return true;
 	}
 
+	/**
+	 * Gives back the inbound SOAP payload as string.
+	 * 
+	 * @return
+	 */
 	public String getPayload() {
 		return this.payload;
 	}

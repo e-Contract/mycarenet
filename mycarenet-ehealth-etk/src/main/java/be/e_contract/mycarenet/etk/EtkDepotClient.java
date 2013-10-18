@@ -79,10 +79,25 @@ public class EtkDepotClient {
 	 * Gives back the eHealth Encryption Token Key for the given identifier.
 	 * 
 	 * @param identifierType
+	 *            the ETK identifier type.
 	 * @param identifierValue
 	 * @return
+	 * @see be.e_contract.mycarenet.ehealth.common.IdentifierMapper
 	 */
 	public byte[] getEtk(String identifierType, String identifierValue) {
+		return getEtk(identifierType, identifierValue, "");
+	}
+
+	/**
+	 * Gives back the eHealth Encryption Token Key for the given identifier.
+	 * 
+	 * @param identifierType
+	 * @param identifierValue
+	 * @param applicationId
+	 * @return
+	 */
+	public byte[] getEtk(String identifierType, String identifierValue,
+			String applicationId) {
 		GetEtkRequest getEtkRequest = this.objectFactory.createGetEtkRequest();
 		SearchCriteriaType searchCriteria = this.objectFactory
 				.createSearchCriteriaType();
@@ -92,13 +107,18 @@ public class EtkDepotClient {
 		searchCriteria.getIdentifier().add(identifier);
 		identifier.setType(identifierType);
 		identifier.setValue(identifierValue);
-		identifier.setApplicationID("");
+		identifier.setApplicationID(applicationId);
 
 		GetEtkResponse getEtkResponse = this.etkDepotPort.getEtk(getEtkRequest);
 		byte[] etk = getEtkResponse.getETK();
 		return etk;
 	}
 
+	/**
+	 * Gives back the inbound SOAP payload as string.
+	 * 
+	 * @return
+	 */
 	public String getPayload() {
 		return this.payloadLogicalHandler.getPayload();
 	}
