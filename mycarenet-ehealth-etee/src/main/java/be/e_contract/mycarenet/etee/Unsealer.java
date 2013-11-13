@@ -34,6 +34,7 @@ import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.KeyTransRecipientId;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.RecipientInformationStore;
@@ -138,6 +139,30 @@ public class Unsealer {
 				this.decryptionCertificate);
 		Collection<RecipientInformation> recipients = recipientInformationStore
 				.getRecipients(recipientId);
+		LOG.debug("number of recipients for given decryption cert: "
+				+ recipients.size());
+		if (0 == recipients.size()) {
+			recipients = recipientInformationStore.getRecipients();
+			LOG.debug("number of all recipients: " + recipients.size());
+			Iterator<RecipientInformation> recipientsIterator = recipients
+					.iterator();
+			while (recipientsIterator.hasNext()) {
+				RecipientInformation recipientInformation = recipientsIterator
+						.next();
+				RecipientId actualRecipientId = recipientInformation.getRID();
+				LOG.debug("actual recipient id type: "
+						+ actualRecipientId.getClass().getName());
+				if (actualRecipientId instanceof KeyTransRecipientId) {
+					KeyTransRecipientId actualKeyTransRecipientId = (KeyTransRecipientId) actualRecipientId;
+					LOG.debug("actual recipient issuer: "
+							+ actualKeyTransRecipientId.getIssuer());
+					LOG.debug("actual recipient serial number: "
+							+ actualKeyTransRecipientId.getSerialNumber());
+				}
+			}
+			throw new SecurityException(
+					"message does not seem to be addressed to you");
+		}
 		Iterator<RecipientInformation> recipientsIterator = recipients
 				.iterator();
 		RecipientInformation recipientInformation = recipientsIterator.next();
@@ -162,6 +187,15 @@ public class Unsealer {
 	 */
 	public byte[] unseal(byte[] data) throws CertificateException,
 			OperatorCreationException, CMSException, IOException {
+		/*
+		 * Only unseal when we actually received something.
+		 */
+		if (null == data) {
+			return null;
+		}
+		if (0 == data.length) {
+			return data;
+		}
 		byte[] encryptedData = getVerifiedContent(data);
 		byte[] decryptedData = decrypt(encryptedData);
 		byte[] unsealedData = getVerifiedContent(decryptedData);

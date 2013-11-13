@@ -20,6 +20,7 @@ package test.integ.be.e_contract.mycarenet.sts;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
@@ -56,6 +57,11 @@ public class EHealthCertificateTest {
 			X509Certificate certificate = (X509Certificate) keyStore
 					.getCertificate(alias);
 			LOG.debug("certificate: " + certificate);
+			Certificate[] certificateChain = keyStore
+					.getCertificateChain(alias);
+			for (Certificate cert : certificateChain) {
+				LOG.debug("certificate chain: " + cert);
+			}
 		}
 	}
 }
