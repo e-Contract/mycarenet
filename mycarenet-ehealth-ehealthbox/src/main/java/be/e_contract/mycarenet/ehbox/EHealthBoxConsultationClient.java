@@ -46,7 +46,6 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.DeleteMessageRequestType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.DeleteMessageResponseType;
 import be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.GetBoxInfoRequestType;
@@ -135,7 +134,9 @@ public class EHealthBoxConsultationClient {
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(this.inboundAttachmentsSOAPHandler);
-		handlerChain.add(new LoggingHandler());
+		// handlerChain.add(new LoggingHandler());
+		// LoggingHandler makes CXF fail on the attachments.
+		// https://issues.apache.org/jira/browse/CXF-5496
 		binding.setHandlerChain(handlerChain);
 	}
 
