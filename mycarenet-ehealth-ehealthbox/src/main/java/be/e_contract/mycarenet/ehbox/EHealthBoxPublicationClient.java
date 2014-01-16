@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.common.PayloadLogicalHandler;
 import be.e_contract.mycarenet.ehbox.jaxb.publication.protocol.PublicationMessageType;
 import be.e_contract.mycarenet.ehbox.jaxb.publication.protocol.SendMessageResponse;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.BusinessError;
@@ -54,7 +55,7 @@ import be.e_contract.mycarenet.ehbox.jaxws.publication.SystemError;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 /**
- * The eHealthBox Publication web service client. This client implementation the
+ * The eHealthBox Publication web service client. This client implements the
  * eHealthBox Publication web service version 3.0.
  * 
  * @author Frank Cornelis
@@ -70,6 +71,8 @@ public class EHealthBoxPublicationClient {
 	private final Dispatch<Source> publicationDispatch;
 
 	private final WSSecuritySOAPHandler wsSecuritySOAPHandler;
+
+	private final PayloadLogicalHandler payloadLogicalHandler;
 
 	/**
 	 * Sets the authentication credentials.
@@ -103,6 +106,7 @@ public class EHealthBoxPublicationClient {
 				publicationPortQName, Source.class, Service.Mode.PAYLOAD);
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
+		this.payloadLogicalHandler = new PayloadLogicalHandler();
 		configureBindingProvider((BindingProvider) this.ehBoxPublicationPort,
 				location);
 		configureBindingProvider(this.publicationDispatch, location);
@@ -133,6 +137,7 @@ public class EHealthBoxPublicationClient {
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(new LoggingHandler());
+		handlerChain.add(this.payloadLogicalHandler);
 		binding.setHandlerChain(handlerChain);
 	}
 
@@ -149,6 +154,15 @@ public class EHealthBoxPublicationClient {
 		LOG.debug("response Source type: "
 				+ responseSource.getClass().getName());
 		return toString(responseSource);
+	}
+
+	/**
+	 * Returns the SOAP payload as a string.
+	 * 
+	 * @return
+	 */
+	public String getPayload() {
+		return this.payloadLogicalHandler.getPayload();
 	}
 
 	private String toString(Source source) {
