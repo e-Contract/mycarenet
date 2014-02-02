@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ehboxp="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" xmlns:err="urn:be:fgov:ehealth:errors:service:v1" xmlns:mon="urn:be:fgov:ehealth:ehbox:monitoring:protocol:v3" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3">
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ehboxp="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" xmlns:err="urn:be:fgov:ehealth:errors:soa:v1" xmlns:mon="urn:be:fgov:ehealth:ehbox:monitoring:protocol:v3" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3">
   <wsdl:types>
     <xsd:schema>
       <xsd:import namespace="urn:be:fgov:ehealth:ehbox:publication:protocol:v3" schemaLocation="ehealth-ehBox-publication-schema-protocol-3_0.xsd"/>
-      <xsd:import namespace="urn:be:fgov:ehealth:errors:service:v1" schemaLocation="ehealth-errors-schema-service-1_0.xsd"/>
+      <xsd:import namespace="urn:be:fgov:ehealth:errors:soa:v1" schemaLocation="ehealth-errors-schema-soa-1_0.xsd"/>
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="SendMessageRequestMessage">
