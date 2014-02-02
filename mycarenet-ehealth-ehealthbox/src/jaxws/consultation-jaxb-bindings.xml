@@ -40,11 +40,11 @@
 		</jxb:bindings>
 	</jxb:bindings>
 
-	<jxb:bindings schemaLocation="../wsdl/ehealth-errors-schema-service-1_0.xsd"
+	<jxb:bindings schemaLocation="../wsdl/ehealth-errors-schema-soa-1_0.xsd"
 		node="/xs:schema">
 		<jxb:schemaBindings>
-			<jxb:package name="be.e_contract.mycarenet.ehbox.jaxb.error.service">
-				<jxb:javadoc><![CDATA[<body>JAXB eHealthBox Error Service</body>]]></jxb:javadoc>
+			<jxb:package name="be.e_contract.mycarenet.ehbox.jaxb.error.soa">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealthBox Error SOA</body>]]></jxb:javadoc>
 			</jxb:package>
 		</jxb:schemaBindings>
 		<jxb:bindings schemaLocation="../wsdl/ehealth-errors-schema-core-1_0.xsd"
