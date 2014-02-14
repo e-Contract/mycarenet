@@ -182,8 +182,7 @@ public class ScenarioTest {
 				.createPublicationDocumentType();
 		publicationContent.setDocument(publicationDocument);
 		publicationDocument.setTitle("test");
-		publicationDocument.setMimeType("text/plain");
-		// publicationDocument.setMimeType("application/octet-stream");
+		publicationDocument.setMimeType("application/octet-stream");
 		publicationDocument.setDownloadFileName("test.dat");
 		byte[] data = new byte[1024 * 256];
 		DataSource dataSource = new ByteArrayDataSource(data,
