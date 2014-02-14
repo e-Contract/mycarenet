@@ -38,6 +38,7 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
+import javax.xml.ws.soap.MTOMFeature;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -96,8 +97,12 @@ public class EHealthBoxPublicationClient {
 	public EHealthBoxPublicationClient(String location) {
 		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory
 				.newInstance();
+		/*
+		 * Nasty way to disable MTOM for Apache CXF.
+		 */
 		this.ehBoxPublicationPort = publicationService
-				.getEhBoxPublicationPort();
+				.getEhBoxPublicationPort(new MTOMFeature(false,
+						1024 * 1024 * 1024));
 
 		QName publicationPortQName = new QName(
 				"urn:be:fgov:ehealth:ehbox:publication:protocol:v3",
