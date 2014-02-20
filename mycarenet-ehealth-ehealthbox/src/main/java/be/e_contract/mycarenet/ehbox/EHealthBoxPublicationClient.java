@@ -133,12 +133,14 @@ public class EHealthBoxPublicationClient {
 		return sendMessageResponse;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void configureBindingProvider(BindingProvider bindingProvider,
 			String location) {
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
+		@SuppressWarnings("rawtypes")
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(new LoggingHandler());

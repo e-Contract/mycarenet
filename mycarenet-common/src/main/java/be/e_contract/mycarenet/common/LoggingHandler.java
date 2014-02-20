@@ -75,6 +75,7 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 		String message = outputStream.toString();
 		LOG.debug("SOAP message: " + message);
 		if (false == outboundProperty) {
+			@SuppressWarnings("unchecked")
 			Map<String, DataHandler> inboundMessageAttachments = (Map<String, DataHandler>) context
 					.get(MessageContext.INBOUND_MESSAGE_ATTACHMENTS);
 			Set<String> attachmentContentIds = inboundMessageAttachments
