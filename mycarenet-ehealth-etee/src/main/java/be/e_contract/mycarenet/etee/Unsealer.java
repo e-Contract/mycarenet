@@ -90,6 +90,7 @@ public class Unsealer {
 		SignerId signerId = signer.getSID();
 
 		Store certificateStore = cmsSignedData.getCertificates();
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificateCollection = certificateStore
 				.getMatches(signerId);
 		if (null == this.senderCertificate) {
@@ -125,6 +126,7 @@ public class Unsealer {
 		return data;
 	}
 
+	@SuppressWarnings("unchecked")
 	private byte[] decrypt(byte[] encryptedData) throws CMSException,
 			IOException {
 		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(

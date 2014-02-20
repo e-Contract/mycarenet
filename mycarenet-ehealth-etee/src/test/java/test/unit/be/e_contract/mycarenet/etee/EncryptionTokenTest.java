@@ -61,6 +61,7 @@ public class EncryptionTokenTest {
 		LOG.debug("signer Id: " + signerId.getIssuer());
 
 		Store certificateStore = cmsSignedData.getCertificates();
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificateCollection = certificateStore
 				.getMatches(signerId);
 		X509CertificateHolder certificateHolder = certificateCollection

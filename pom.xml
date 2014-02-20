@@ -59,7 +59,7 @@
 		<jaxws.version>2.2.7</jaxws.version>
 		<!-- CXF 2.7.7 = JBoss EAP 6.2 -->
 		<cxf.version>2.7.10</cxf.version>
-		<bouncycastle.version>1.49</bouncycastle.version>
+		<bouncycastle.version>1.50</bouncycastle.version>
 	</properties>
 	<build>
 		<pluginManagement>

@@ -89,6 +89,7 @@ public class EncryptionToken {
 		Store certificateStore = cmsSignedData.getCertificates();
 		LOG.debug("certificate store type: "
 				+ certificateStore.getClass().getName());
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> signingCertificateCollection = certificateStore
 				.getMatches(signerId);
 		X509CertificateHolder signingCertificateHolder = signingCertificateCollection
@@ -122,6 +123,7 @@ public class EncryptionToken {
 		CustomSelector authenticationSelector = new CustomSelector();
 		authenticationSelector.setSubject(encryptionCertificate
 				.getIssuerX500Principal());
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> authenticationCertificates = certificateStore
 				.getMatches(authenticationSelector);
 		if (authenticationCertificates.size() != 1) {
@@ -156,6 +158,7 @@ public class EncryptionToken {
 	}
 
 	private void logCertificates(Store store, Selector selector) {
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificates = store
 				.getMatches(selector);
 		LOG.debug("match size: " + certificates.size());

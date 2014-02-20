@@ -82,6 +82,7 @@ public class XKMSClient {
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
+		@SuppressWarnings("rawtypes")
 		List<Handler> handlerChain = binding.getHandlerChain();
 		handlerChain.add(new LoggingHandler());
 		this.proofOfPossessionSignatureSOAPHandler = new ProofOfPossessionSignatureSOAPHandler();

@@ -86,6 +86,7 @@ public class EHealthSTSClient {
 				Dispatch.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = dispatch.getBinding();
+		@SuppressWarnings("rawtypes")
 		List<Handler> handlerChain = binding.getHandlerChain();
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 		handlerChain.add(this.wsSecuritySOAPHandler);

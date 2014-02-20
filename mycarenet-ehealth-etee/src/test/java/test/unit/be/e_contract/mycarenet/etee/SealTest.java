@@ -65,6 +65,7 @@ public class SealTest {
 		SignerId signerId = signer.getSID();
 
 		Store certificateStore = cmsSignedData.getCertificates();
+		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificateCollection = certificateStore
 				.getMatches(signerId);
 		X509CertificateHolder certificateHolder = certificateCollection
@@ -96,6 +97,7 @@ public class SealTest {
 
 		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser
 				.getRecipientInfos();
+		@SuppressWarnings("unchecked")
 		Collection<RecipientInformation> recipients = recipientInformationStore
 				.getRecipients();
 		RecipientInformation recipientInformation = recipients.iterator()
@@ -103,6 +105,6 @@ public class SealTest {
 		LOG.debug("recipient info type: "
 				+ recipientInformation.getClass().getName());
 		KeyTransRecipientInformation keyTransRecipientInformation = (KeyTransRecipientInformation) recipientInformation;
-		
+
 	}
 }

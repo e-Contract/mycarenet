@@ -38,6 +38,7 @@ public class InboundAttachmentsSOAPHandler implements
 
 	private Map<String, DataHandler> inboundMessageAttachments;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
 		Boolean outboundProperty = (Boolean) context
