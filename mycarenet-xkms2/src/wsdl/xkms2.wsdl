@@ -61,30 +61,30 @@
 
     <operation name="Register">
       <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Register" style="document"/>
-      <input message="tns:RegisterRequest">
+      <input>
         <soap:body parts="request" use="literal"/>
       </input>
-      <output message="tns:RegisterResult">
+      <output>
         <soap:body parts="result" use="literal"/>
       </output>
     </operation>
 
     <operation name="Revoke">
       <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Revoke" style="document"/>
-      <input message="tns:RevokeRequest">
+      <input>
         <soap:body parts="request" use="literal"/>
       </input>
-      <output message="tns:RevokeResult">
+      <output>
         <soap:body parts="result" use="literal"/>
       </output>
     </operation>
 
     <operation name="Validate">
       <soap:operation soapAction="http://www.xkms.org/schema/xkms-2001-01-20#Validate" style="document"/>
-      <input message="tns:ValidateRequest">
+      <input>
         <soap:body parts="request" use="literal"/>
       </input>
-      <output message="tns:ValidateResult">
+      <output>
         <soap:body parts="result" use="literal"/>
       </output>
     </operation>
