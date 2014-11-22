@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="MyCarenetCareProviderSyncService" targetNamespace="urn:be:cin:mycarenet:1.0:sync" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="urn:be:cin:mycarenet:1.0:sync" xmlns:type="urn:be:cin:mycarenet:1.0:sync:types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xsd:schema xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="urn:be:cin:mycarenet:1.0:sync" xmlns:type="urn:be:cin:mycarenet:1.0:sync:types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="urn:be:cin:mycarenet:1.0:sync:types" schemaLocation="MyCarenetTypes-Sync-v1.0.xsd" />
+        </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ProcessXmlDocumentResponse">
+    <wsdl:part element="type:ProcessXmlDocumentResponse" name="result">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ProcessCareProviderDocumentResponse">
+    <wsdl:part element="type:ProcessCareProviderDocumentResponse" name="result">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ProcessXmlDocumentRequest">
+    <wsdl:part element="type:ProcessXmlDocumentRequest" name="request">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="EchoResponse">
+    <wsdl:part element="type:EchoResponse" name="result">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ProcessCareProviderDocumentRequest">
+    <wsdl:part element="type:ProcessCareProviderDocumentRequest" name="request">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FaultMessage">
+    <wsdl:part element="type:Fault" name="fault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="EchoRequest">
+    <wsdl:part element="type:EchoRequest" name="request">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CareProviderSyncPortType">
+<wsdl:documentation>The Sync Web Service interface of the MyCareNet Platform.</wsdl:documentation>
+    <wsdl:operation name="Echo">
+<wsdl:documentation>The xml message that is given as input will be returned as output unchanged.
+In all cases the license and the session key will be verified.  When the input is
+a valid CareProviderDocument, then the sender is also verified with BeHealth.</wsdl:documentation>
+      <wsdl:input message="tns:EchoRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:EchoResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:FaultMessage" name="FaultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessXmlDocument">
+<wsdl:documentation>The xml document of the input must be an CareProviderDocument.
+The CareProviderDocument will be verified and treated when supported.
+Treating means, validation of the content, conversion of the content
+when required, sending to the IO, receiving the response of the IO
+converting the response when required and return the response.
+
+This method works with xml documents and not objects.</wsdl:documentation>
+      <wsdl:input message="tns:ProcessXmlDocumentRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ProcessXmlDocumentResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:FaultMessage" name="FaultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessCareProviderDocument">
+<wsdl:documentation>The xml document of the input must be an CareProviderDocument.
+The CareProviderDocument will be verified and treated when supported.
+Treating means, validation of the content, conversion of the content
+when required, sending to the IO, receiving the response of the IO
+converting the response when required and return the response.
+
+This method works with objects and not xml documents.</wsdl:documentation>
+      <wsdl:input message="tns:ProcessCareProviderDocumentRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ProcessCareProviderDocumentResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:FaultMessage" name="FaultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CareProviderSyncPortBinding" type="tns:CareProviderSyncPortType">
+    <soap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Echo">
+      <soap11:operation soapAction="urn:be:cin:mycarenet:1.0:sync:echo" />
+      <wsdl:input>
+        <soap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="FaultMessage">
+        <soap11:fault name="FaultMessage" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessXmlDocument">
+      <soap11:operation soapAction="urn:be:cin:mycarenet:1.0:sync:processXmlDocument" />
+      <wsdl:input>
+        <soap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="FaultMessage">
+        <soap11:fault name="FaultMessage" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessCareProviderDocument">
+      <soap11:operation soapAction="urn:be:cin:mycarenet:1.0:sync:processCareProviderDocument" />
+      <wsdl:input>
+        <soap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="FaultMessage">
+        <soap11:fault name="FaultMessage" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MyCarenetCareProviderSyncService">
+    <wsdl:port binding="tns:CareProviderSyncPortBinding" name="CareProviderSyncPort">
+      <soap11:address location="https://pilot.mycarenet.be/nip/services/care-provider/sync" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
