@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Java MyCareNet Project">
+	<body>
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+		</menu>
+		<menu ref="modules" />
+		<menu ref="reports" />
+	</body>
+</project>
