@@ -1,0 +1,438 @@
+<?xml version='1.0' encoding='UTF-8'?><schema elementFormDefault="qualified" targetNamespace="urn:be:cin:mycarenet:1.0:sync:types" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:be:cin:mycarenet:1.0:sync:types" xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+    <import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+    <import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="xmlmime.xsd" />
+
+    <simpleType name="MsgTypeType">
+        <restriction base="string">
+            <enumeration value="M4A_REQ">
+                <annotation>
+                    <documentation xml:lang="en">Medadmin request. Coming from the Care-Provider.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="M4A_RSP">
+                <annotation>
+                    <documentation xml:lang="en">Medadmin response Coming from the Insurer Organization.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="M4A_CNF">
+                <annotation>
+                    <documentation xml:lang="en">Medadmin confirmation. Coming from myCareNet.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="MBS_REQ">
+                <annotation>
+                    <documentation xml:lang="en">Membership check request. Coming from the Care-Provider.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="MBS_RSP">
+                <annotation>
+                    <documentation xml:lang="en">Membership check response. Coming from MyCarenet Membership filter.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="INS_REQ">
+                <annotation>
+                    <documentation xml:lang="en">Insurability request. Coming from the Care-Provider.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="INS_RSP">
+                <annotation>
+                    <documentation xml:lang="en">Insurability response. Coming from the Insurer Organization
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FAC_REQ">
+                <annotation>
+                    <documentation xml:lang="en">Invoice request. Coming from the Care-Provider.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FAC_RSP">
+                <annotation>
+                    <documentation xml:lang="en">Invoice response. Coming from the Insurer Organization.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FAC_RSP_SIGNED_INPUT">
+                <annotation>
+                    <documentation xml:lang="en">The original invoice response, together with its signature. This is to
+                        allow end-to-end validation.
+                    </documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+    <simpleType name="DetailFileTypeType">
+        <restriction base="string">
+            <enumeration value="XML_SINGLE">
+                <annotation>
+                    <documentation xml:lang="en">The DetailFile tag contains an XML, and contains only one request
+                        record.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="XML_MULTIPLE">
+                <annotation>
+                    <documentation xml:lang="en">The DetailFile tag contains an XML, and can contain multiple request
+                        records.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FLAT_SINGLE">
+                <annotation>
+                    <documentation xml:lang="en">The DetailFile tag contains a flat file (ASCII), and contains only one
+                        request record.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FLAT_MULTIPLE">
+                <annotation>
+                    <documentation xml:lang="en">The DetailFile tag contains a flat file (ASCII), and can contain
+                        multiple request records.
+                    </documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+    <simpleType name="NumericString12Type">
+        <restriction base="string">
+            <pattern value="[0-9]{12}" />
+        </restriction>
+    </simpleType>
+    <simpleType name="PreferredLanguageType">
+        <restriction base="string">
+            <minLength value="2" />
+            <maxLength value="2" />
+        </restriction>
+    </simpleType>
+    <element name="SignatureValue" type="base64Binary">
+        <annotation>
+            <documentation>The detached Signature of the detailfile.</documentation>
+        </annotation>
+    </element>
+    <element name="X509Certificate" type="base64Binary">
+        <annotation>
+            <documentation>The certificate which was used to sign the detailfile.</documentation>
+        </annotation>
+    </element>
+    <complexType name="X509DataType">
+        <sequence>
+            <element ref="tns:X509Certificate" />
+        </sequence>
+    </complexType>
+    <element name="X509Data" type="tns:X509DataType" />
+    <complexType name="KeyInfoType">
+        <sequence>
+            <element ref="tns:X509Data" />
+        </sequence>
+    </complexType>
+    <element name="KeyInfo" type="tns:KeyInfoType" />
+    <complexType name="SignatureType">
+        <sequence>
+            <element ref="tns:SignatureValue" />
+            <element ref="tns:KeyInfo" />
+        </sequence>
+    </complexType>
+    <complexType name="BeHealthInfoType">
+        <sequence>
+            <any namespace="##other" processContents="lax" />
+        </sequence>
+    </complexType>
+    <complexType name="IdentifierType">
+        <sequence>
+            <element name="Id" type="tns:IdType" />
+            <element name="Type" type="tns:TypeType" />
+            <element minOccurs="0" name="Subtype" type="tns:SubtypeType" />
+        </sequence>
+    </complexType>
+    <simpleType name="IdType">
+        <restriction base="string">
+            <pattern value="[0-9]{8,12}" />
+        </restriction>
+    </simpleType>
+
+    <simpleType name="TypeType">
+        <restriction base="string">
+            <enumeration value="NIHII">
+                <annotation>
+                    <documentation>
+                        If the id is the NIHII of an organization
+                        If this is selected, the subtype should be GROUP.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="CBE">
+                <annotation>
+                    <documentation>If the id is the CBE number</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="INSS">
+                <annotation>
+                    <documentation>If the id is the INSS number. Only possible for a mandate.</documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="SubtypeType">
+        <union>
+            <simpleType>
+                <restriction base="string">
+                    <enumeration value="GROUP">
+                        <annotation>
+                            <documentation>
+                        If the id is the NIHII of an organization
+                        the subtype can be GROUP or LABO.
+                            </documentation>
+                        </annotation>
+                    </enumeration>
+                    <enumeration value="LABO">
+                        <annotation>
+                            <documentation>
+                        If the id is the NIHII of an organization
+                        the subtype can be GROUP or LABO.
+                            </documentation>
+                        </annotation>
+                    </enumeration>
+                    <enumeration value="RETIREMENT">
+                        <annotation>
+                            <documentation>
+                        If the id is the NIHII of an organization
+                        the subtype can be GROUP or LABO.
+                            </documentation>
+                        </annotation>
+                    </enumeration>
+                    <enumeration value="OTD_PHARMACY">
+                        <annotation>
+                            <documentation>
+                        If the id is the NIHII of an organization
+                        the subtype can be GROUP or LABO.
+                            </documentation>
+                        </annotation>
+                    </enumeration>
+                </restriction>
+            </simpleType>
+            <simpleType>
+                <restriction base="string" />
+            </simpleType>
+        </union>
+    </simpleType>
+
+    <complexType name="SenderType">
+        <sequence>
+            <element name="Nihii" type="tns:NihiiType" />
+            <element minOccurs="0" name="Organisation" type="tns:IdentifierType" />
+            <element minOccurs="0" name="Mandate" type="tns:IdentifierType" />
+        </sequence>
+    </complexType>
+
+    <complexType name="Wrapped">
+        <simpleContent>
+            <restriction base="xmime:base64Binary">
+                <attribute default="application/zip" ref="xmime:contentType" />
+            </restriction>
+        </simpleContent>
+    </complexType>
+
+    <complexType mixed="true" name="Inline">
+        <sequence>
+            <any minOccurs="0" namespace="urn:be:cin:mycarenet:1.0:carenet:types" processContents="lax" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="NihiiType">
+        <restriction base="string">
+            <pattern value="[0-9]{12}" />
+        </restriction>
+    </simpleType>
+
+    <simpleType name="MessageVersionType">
+        <restriction base="string">
+            <pattern value="[0-9]{2}" />
+        </restriction>
+    </simpleType>
+
+    <simpleType name="String14Type">
+        <restriction base="string">
+            <maxLength value="14" />
+        </restriction>
+    </simpleType>
+
+    <element name="DetailFile_Wrapped" type="tns:Wrapped" />
+    <element name="DetailFile_Inline" type="tns:Inline" />
+
+    <element name="MsgType" type="tns:MsgTypeType" />
+    <element name="MsgTypeVersion" type="tns:MessageVersionType" />
+    <element name="DetailFileType" type="tns:DetailFileTypeType" />
+    <element name="Sender" type="tns:SenderType" />
+    <element name="Receiver" type="tns:NumericString12Type" />
+    <element name="DocumentReference" type="tns:String14Type" />
+    <element name="PreferredLanguage" type="tns:PreferredLanguageType" />
+    <element name="MessageCreationDateTime" type="dateTime" />
+    <element name="TestFlag" type="boolean" />
+    <element name="DetailRecordCount" type="int" />
+    <element name="DetailFile" type="anyType" />
+    <element name="OriginalDetailFile" type="base64Binary" />
+    <element name="Signature" type="tns:SignatureType" />
+    <element name="BeHealthInfo" type="tns:BeHealthInfoType" />
+    <complexType name="CareProviderDocumentType">
+        <annotation>
+            <documentation xml:lang="en">The care provider document is used for both request and response messages.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element ref="tns:MsgType" />
+            <element ref="tns:MsgTypeVersion" />
+            <element ref="tns:DetailFileType" />
+            <element ref="tns:Sender" />
+            <element minOccurs="0" ref="tns:Receiver" />
+            <element minOccurs="0" ref="tns:DocumentReference" />
+            <element minOccurs="0" ref="tns:PreferredLanguage" />
+            <element minOccurs="0" ref="tns:MessageCreationDateTime" />
+            <element ref="tns:TestFlag" />
+            <element minOccurs="0" ref="tns:DetailRecordCount" />
+            <element ref="tns:DetailFile" />
+            <element minOccurs="0" ref="tns:OriginalDetailFile" />
+            <element minOccurs="0" ref="tns:Signature" />
+            <element minOccurs="0" ref="tns:BeHealthInfo" />
+        </sequence>
+    </complexType>
+    <element name="CareProviderDocument" type="tns:CareProviderDocumentType" />
+    <simpleType name="FaultCodeType">
+        <restriction base="string">
+            <enumeration value="AUDIT_NOT_FOUND">
+                <annotation>
+                    <documentation xml:lang="en">The given audit number does not exist within the system.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="EID_STATUS_INVALID">
+                <annotation>
+                    <documentation xml:lang="en">The care provider certificate is found to be invalid.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="FILE_NOT_FOUND">
+                <annotation>
+                    <documentation xml:lang="en">The file sequence number does not exist within the system.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="GENERIC_ERROR">
+                <annotation>
+                    <documentation xml:lang="en">Generic error.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="RECEIVE_ERROR">
+                <annotation>
+                    <documentation xml:lang="en">The system was unable to queue the post for further processing.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="SCHEMA_ERROR">
+                <annotation>
+                    <documentation xml:lang="en">The structure of the document is not correct (package error).
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="UNAUTHORIZED">
+                <annotation>
+                    <documentation xml:lang="en">The care provider was not authorized by Be-Health.</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="UNKNOWN_SESSION_KEY">
+                <annotation>
+                    <documentation xml:lang="en">The session key used to authenticate is unknown by the system.
+                        This is possible when the session key was not registered via the XKMS service or if the session
+                        key as expired.
+                    </documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+    <complexType name="StringLangType">
+        <simpleContent>
+            <extension base="string">
+                <attribute ref="xml:lang" />
+            </extension>
+        </simpleContent>
+    </complexType>
+    <complexType name="DetailType">
+        <sequence>
+            <element name="DetailCode" type="string">
+                <annotation>
+                    <documentation xml:lang="en">Contains a detail code.</documentation>
+                </annotation>
+            </element>
+            <element minOccurs="0" name="Location" type="string">
+                <annotation>
+                    <documentation xml:lang="en">Contains the location of the fault. This could be an XPath expression.
+                    </documentation>
+                </annotation>
+            </element>
+            <element minOccurs="0" name="Message" type="tns:StringLangType">
+                <annotation>
+                    <documentation xml:lang="en">Contains a human-readable message.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+    <element name="Detail" type="tns:DetailType" />
+    <complexType name="DetailsType">
+        <sequence>
+            <element maxOccurs="unbounded" minOccurs="0" ref="tns:Detail" />
+        </sequence>
+    </complexType>
+    <element name="Details" type="tns:DetailsType" />
+    <complexType name="FaultType">
+        <sequence>
+            <element name="FaultCode" type="tns:FaultCodeType" />
+            <element name="FaultSource" type="string">
+                <annotation>
+                    <documentation xml:lang="en">Contains the name of the subsystem that caused the error event to
+                        occur.
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="Message" type="tns:StringLangType">
+                <annotation>
+                    <documentation xml:lang="en">A human-readable error message.</documentation>
+                </annotation>
+            </element>
+            <element ref="tns:Details" />
+        </sequence>
+    </complexType>
+    <element name="Fault" type="tns:FaultType" />
+
+
+    <complexType name="XmlDocumentWrapperType">
+        <annotation>
+            <documentation xml:lang="en">
+                Should normaly wrap a CareProviderDocument.
+                It does not directly references the CareProviderDocument to work easier with existing files.
+                Packages can still manually serialize the CareProviderDocument with the tools specific for the
+                programming langues (tools that are used by the WebService client)
+            </documentation>
+        </annotation>
+        <sequence>
+            <any namespace="##targetNamespace" processContents="skip" />
+        </sequence>
+        <attribute ref="xml:lang" />
+    </complexType>
+
+    <complexType name="CareProviderDocumentWrapperType">
+        <!-- Differs from public xsd, avoids processing by JAX-WS Stack -->
+        <sequence>
+            <any namespace="##targetNamespace" processContents="skip" />
+        </sequence>
+        <attribute ref="xml:lang" />
+    </complexType>
+
+    <element name="EchoRequest" type="tns:XmlDocumentWrapperType" />
+    <element name="EchoResponse" type="tns:XmlDocumentWrapperType" />
+    <element name="ProcessXmlDocumentRequest" type="tns:XmlDocumentWrapperType" />
+    <element name="ProcessXmlDocumentResponse" type="tns:XmlDocumentWrapperType" />
+    <element name="ProcessCareProviderDocumentRequest" type="tns:CareProviderDocumentWrapperType" />
+    <element name="ProcessCareProviderDocumentResponse" type="tns:CareProviderDocumentWrapperType" />
+</schema>

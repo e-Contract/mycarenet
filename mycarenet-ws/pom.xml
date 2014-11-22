@@ -18,7 +18,7 @@
 				<artifactId>jaxws-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>xkms2-wsimport</id>
+						<id>wsimport-async</id>
 						<goals>
 							<goal>wsimport</goal>
 						</goals>
@@ -26,13 +26,33 @@
 							<verbose>true</verbose>
 							<xdebug>true</xdebug>
 							<extension>true</extension>
-							<catalog>${basedir}/src/wsdl/catalog.xml</catalog>
 							<wsdlFiles>
 								<wsdlFile>care-provider.wsdl</wsdlFile>
 							</wsdlFiles>
 							<bindingFiles>
 								<bindingFile>jaxws-bindings.xml</bindingFile>
 								<bindingFile>jaxb-bindings.xml</bindingFile>
+							</bindingFiles>
+							<target>2.1</target>
+							<xnoAddressingDataBinding>true</xnoAddressingDataBinding>
+							<xnocompile>true</xnocompile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>wsimport-sync</id>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<verbose>true</verbose>
+							<xdebug>true</xdebug>
+							<extension>true</extension>
+							<wsdlFiles>
+								<wsdlFile>care-provider-sync.wsdl</wsdlFile>
+							</wsdlFiles>
+							<bindingFiles>
+								<bindingFile>sync-jaxws-bindings.xml</bindingFile>
+								<bindingFile>sync-jaxb-bindings.xml</bindingFile>
 							</bindingFiles>
 							<target>2.1</target>
 							<xnoAddressingDataBinding>true</xnoAddressingDataBinding>
