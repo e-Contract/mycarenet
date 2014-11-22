@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2014 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,13 +18,8 @@
 
 package be.e_contract.mycarenet.async;
 
-import java.util.List;
-
-import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
-import javax.xml.ws.handler.Handler;
 
-import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.common.PayloadLogicalHandler;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.jaxb.async.DownloadRequestType;
@@ -66,19 +61,10 @@ public class AsyncClient {
 		MyCarenetCareProviderAsyncService service = MyCareNetAsyncServiceFactory
 				.newInstance();
 		this.asyncPort = service.getCareProviderAsyncPort();
-		BindingProvider bindingProvider = (BindingProvider) this.asyncPort;
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
-
-		Binding binding = bindingProvider.getBinding();
-		List<Handler> handlerChain = binding.getHandlerChain();
-		SecuritySOAPHandler sessionKeySignatureSOAPHandler = new SecuritySOAPHandler(
-				sessionKey, packageLicenseKey);
-		handlerChain.add(sessionKeySignatureSOAPHandler);
-		handlerChain.add(new LoggingHandler());
-		this.payloadLogicalHandler = new PayloadLogicalHandler();
-		handlerChain.add(this.payloadLogicalHandler);
-		binding.setHandlerChain(handlerChain);
+		SecurityDecorator securityDecorator = new SecurityDecorator(sessionKey,
+				packageLicenseKey, location);
+		this.payloadLogicalHandler = securityDecorator
+				.decorate((BindingProvider) this.asyncPort);
 	}
 
 	public String echo(String message) {
