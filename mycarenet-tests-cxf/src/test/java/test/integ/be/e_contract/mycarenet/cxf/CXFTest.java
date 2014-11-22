@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 Frank Cornelis.
+ * Copyright (C) 2012 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -34,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import test.integ.be.e_contract.mycarenet.Config;
-
 import be.e_contract.mycarenet.async.AsyncClient;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
 import be.e_contract.mycarenet.common.SessionKey;
@@ -115,7 +114,7 @@ public class CXFTest {
 		// verify
 		assertFalse(sessionKey.isValid());
 	}
-	
+
 	@Test
 	public void testEcho() throws Exception {
 		// setup
@@ -163,7 +162,8 @@ public class CXFTest {
 			assertEquals(result, message);
 		} finally {
 			// operate
-			XKMSClient xkmsClient = new XKMSClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/xkms");
+			XKMSClient xkmsClient = new XKMSClient(
+					"https://pilot.mycarenet.be/mycarenet-ws/care-provider/xkms");
 			xkmsClient.revokeSessionKey(sessionKey);
 
 			// verify

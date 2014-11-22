@@ -1,7 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2014 Frank Cornelis.
- * Copyright (C) 2014 e-Contract.be BVBA.
+ * Copyright (C) 2013-2014 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -200,7 +199,7 @@ public class ScenarioTest {
 
 		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
 		publicationClient.publish(publicationMessage);
-		
+
 		Thread.sleep(1000 * 5);
 
 		LOG.debug("GET MESSAGES LIST");
@@ -357,7 +356,7 @@ public class ScenarioTest {
 
 		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
 		publicationClient.publish(publicationMessage);
-		
+
 		// give eHealthBox some time.
 		Thread.sleep(1000 * 5);
 
@@ -601,7 +600,7 @@ public class ScenarioTest {
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
-	
+
 	private String getUserIdentifier(X509Certificate certificate) {
 		X500Principal userPrincipal = certificate.getSubjectX500Principal();
 		String name = userPrincipal.toString();
