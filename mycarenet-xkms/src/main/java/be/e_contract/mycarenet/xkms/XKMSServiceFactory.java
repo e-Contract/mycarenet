@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 Frank Cornelis.
+ * Copyright (C) 2012 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -33,7 +33,8 @@ public class XKMSServiceFactory {
 	}
 
 	public static XMLKeyManagementService newInstance() {
-		URL wsdlLocation = XKMSServiceFactory.class.getResource("/mycarenet-xkms.wsdl");
+		URL wsdlLocation = XKMSServiceFactory.class
+				.getResource("/mycarenet-xkms.wsdl");
 		QName serviceName = new QName(XKMS_NAMESPACE, "XMLKeyManagementService");
 		XMLKeyManagementService service = new XMLKeyManagementService(
 				wsdlLocation, serviceName);
