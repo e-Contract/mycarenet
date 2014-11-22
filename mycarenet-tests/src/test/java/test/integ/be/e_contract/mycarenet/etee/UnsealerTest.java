@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 Frank Cornelis.
+ * Copyright (C) 2013-2014 Frank Cornelis.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -20,6 +20,7 @@ package test.integ.be.e_contract.mycarenet.etee;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -52,6 +53,33 @@ public class UnsealerTest {
 	public void testUnsealing() throws Exception {
 		InputStream sealInputStream = SealTest.class
 				.getResourceAsStream("/seal-fcorneli.der");
+		assertNotNull(sealInputStream);
+		byte[] sealedData = IOUtils.toByteArray(sealInputStream);
+
+		FileInputStream keyStoreInputStream = new FileInputStream(
+				this.config.getEHealthPKCS12Path());
+		byte[] keyStoreData = IOUtils.toByteArray(keyStoreInputStream);
+		String keyStorePassword = this.config.getEHealthPKCS12Password();
+		EHealthKeyStore eHealthKeyStore = new EHealthKeyStore(keyStoreData,
+				keyStorePassword);
+
+		Unsealer unsealer = new Unsealer(
+				eHealthKeyStore.getEncryptionPrivateKey(),
+				eHealthKeyStore.getEncryptionCertificate());
+
+		try {
+			unsealer.unseal(sealedData);
+			fail();
+		} catch (SecurityException e) {
+			// expected
+			LOG.debug(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testUnsealing2014() throws Exception {
+		InputStream sealInputStream = SealTest.class
+				.getResourceAsStream("/seal-fcorneli-2014.der");
 		assertNotNull(sealInputStream);
 		byte[] sealedData = IOUtils.toByteArray(sealInputStream);
 
