@@ -27,10 +27,15 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.spi.Provider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.junit.Test;
 
 import test.integ.be.e_contract.mycarenet.Config;
@@ -148,6 +153,15 @@ public class CXFTest {
 			AsyncClient asyncClient = new AsyncClient(
 					"https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
 					sessionKey, packageLicenseKey);
+
+			BindingProvider bindingProvider = asyncClient.getBindingProvider();
+			Client client = ClientProxy.getClient(bindingProvider);
+			HTTPConduit http = (HTTPConduit) client.getConduit();
+			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+			httpClientPolicy.setConnectionTimeout(36000); // ms
+			httpClientPolicy.setReceiveTimeout(36000); // ms
+			http.setClient(httpClientPolicy);
+
 			String message = "hello world";
 
 			// operate

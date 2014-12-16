@@ -67,6 +67,16 @@ public class AsyncClient {
 				.decorate((BindingProvider) this.asyncPort);
 	}
 
+	/**
+	 * Gives back the underlying JAX-WS binding provider. Can be used to
+	 * configure JAX-WS runtime specific aspects like timeout.
+	 * 
+	 * @return the JAX-WS binding provider.
+	 */
+	public BindingProvider getBindingProvider() {
+		return (BindingProvider) this.asyncPort;
+	}
+
 	public String echo(String message) {
 		try {
 			return this.asyncPort.echo(message);
