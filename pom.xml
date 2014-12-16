@@ -51,6 +51,7 @@
 		<module>mycarenet-ehealth-ehealthbox</module>
 		<module>mycarenet-ehealth-etk</module>
 		<module>mycarenet-ehealth-etee</module>
+		<module>mycarenet-ehealth-gen-ins</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>

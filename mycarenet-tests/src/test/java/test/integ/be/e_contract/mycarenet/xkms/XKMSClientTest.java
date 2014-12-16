@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.Signature;
 import java.security.cert.X509Certificate;
 
 import org.junit.Test;
@@ -65,5 +66,21 @@ public class XKMSClientTest {
 
 		// verify
 		assertFalse(sessionKey.isValid());
+	}
+
+	@Test
+	public void testBeIDAuthenticationSignature() throws Exception {
+		Security.addProvider(new BeIDProvider());
+		KeyStore keyStore = KeyStore.getInstance("BeID");
+		keyStore.load(null);
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
+				"Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore
+				.getCertificate("Authentication");
+
+		Signature signature = Signature.getInstance("SHA1withRSA");
+		signature.initSign(authnPrivateKey);
+		signature.update("hello world".getBytes());
+		signature.sign();
 	}
 }
