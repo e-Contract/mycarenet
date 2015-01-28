@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -46,6 +46,7 @@ public class EHealthCertificateTest {
 	@Test
 	public void testReadCertificate() throws Exception {
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
+		LOG.debug("eHealth PKCS12 path: " + this.config.getEHealthPKCS12Path());
 		FileInputStream fileInputStream = new FileInputStream(
 				this.config.getEHealthPKCS12Path());
 		keyStore.load(fileInputStream, this.config.getEHealthPKCS12Password()
