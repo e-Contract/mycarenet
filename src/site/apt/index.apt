@@ -2,6 +2,6 @@ Java MyCareNet Project
 
   The Java MyCareNet Project delivers a Java connector to the MyCareNet platform.
 
-  Besides MyCareNet connectivity, we also provide an eHealth STS, an eHealthBox v3 connector, and an eHealth end-to-end encryption implementation.
+  Besides MyCareNet connectivity, we also provide an eHealth STS, an eHealthBox v3 connector, an eHealth Generic Insurability connector, and an eHealth end-to-end encryption implementation.
 
   The project delivers a clean room MyCareNet SDK implementation under an unambiguous open source software license that is made available via a public Maven repository. 
