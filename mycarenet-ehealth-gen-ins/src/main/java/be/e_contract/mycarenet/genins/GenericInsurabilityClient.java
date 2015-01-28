@@ -50,6 +50,12 @@ import be.e_contract.mycarenet.genins.jaxws.GenericInsurabilityPortType;
 import be.e_contract.mycarenet.genins.jaxws.GenericInsurabilityService;
 import be.e_contract.mycarenet.genins.jaxws.SystemError;
 
+/**
+ * Client for the eHealth Generic Insurability v1 web service.
+ * 
+ * @author Frank Cornelis
+ *
+ */
 public class GenericInsurabilityClient {
 
 	private final GenericInsurabilityPortType port;
@@ -58,6 +64,11 @@ public class GenericInsurabilityClient {
 
 	private final Dispatch<Source> dispatch;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location location of the web service endpoint.
+	 */
 	public GenericInsurabilityClient(String location) {
 		GenericInsurabilityService service = GenericInsurabilityServiceFactory
 				.newInstance();
@@ -105,7 +116,7 @@ public class GenericInsurabilityClient {
 	}
 
 	/**
-	 * Invokes a method on the eHealthBox consultation web service using the
+	 * Invokes a method on the eHealth Generic Insurability web service using the
 	 * low-level SOAP payload.
 	 * 
 	 * @param request
@@ -118,7 +129,7 @@ public class GenericInsurabilityClient {
 	}
 
 	/**
-	 * Invokes a method on the eHealthBox consultation web service using the
+	 * Invokes a method on the eHealth Generic Insurability web service using the
 	 * low-level SOAP payload.
 	 * 
 	 * @param request
