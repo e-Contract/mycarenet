@@ -11,6 +11,7 @@
 		<name>e-Contract.be BVBA</name>
 		<url>https://www.e-contract.be/</url>
 	</organization>
+	<url>https://github.com/e-Contract/mycarenet</url>
 	<developers>
 		<developer>
 			<id>fcorneli</id>
@@ -27,20 +28,23 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:hg:https://code.google.com/p/mycarenet/</connection>
+		<connection>scm:git:https://github.com/e-Contract/mycarenet.git</connection>
 		<tag>HEAD</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
 			<id>e-contract-deploy</id>
-			<url>sftp://e-contract.be/maven2</url>
+			<url>scp://192.168.100.1/maven2</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
 			<id>e-contract-site</id>
-			<url>sftp://e-contract.be/sites/mycarenet/</url>
+			<url>scp://192.168.100.1/sites/mycarenet/</url>
 		</site>
 	</distributionManagement>
+	<issueManagement>
+		<url>https://github.com/e-Contract/mycarenet/issues</url>
+	</issueManagement>
 	<modules>
 		<module>mycarenet-common</module>
 		<module>mycarenet-xkms</module>
