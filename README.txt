@@ -4,7 +4,7 @@ README for Java MyCareNet Project
 === 1. Introduction
 
 This project contains the source code tree of Java MyCareNet Project.
-The source code is hosted at: https://code.google.com/p/mycarenet/
+The source code is hosted at: https://github.com/e-Contract/mycarenet
 
 
 === 2. Requirements
