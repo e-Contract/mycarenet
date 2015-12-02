@@ -84,13 +84,13 @@ public class RequestFactoryTest {
 
 		RequestFactory requestFactory = new RequestFactory();
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -109,7 +109,6 @@ public class RequestFactoryTest {
 
 		LOG.debug("request: " + toString(requestElement));
 	}
-
 	private String toString(Element element) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();

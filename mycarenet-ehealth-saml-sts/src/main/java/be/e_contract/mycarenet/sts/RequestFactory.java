@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -77,8 +77,9 @@ import be.e_contract.mycarenet.jaxb.xmldsig.X509DataType;
 
 /**
  * Factory for SAML Request.
- * <p/>
+ * <p>
  * We don't use OpenSAML here as this conflicts with the JBoss CXF runtime.
+ * </p>
  * 
  * @author Frank Cornelis
  * 
@@ -322,7 +323,7 @@ public class RequestFactory {
 		String requestId = requestElement.getAttribute("RequestID");
 		requestElement.setIdAttribute("RequestID", true);
 
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		transforms.add(xmlSignatureFactory.newTransform(Transform.ENVELOPED,
 				(TransformParameterSpec) null));
 		transforms.add(xmlSignatureFactory.newTransform(
@@ -348,7 +349,6 @@ public class RequestFactory {
 				signedInfo, keyInfo);
 		xmlSignature.sign(domSignContext);
 	}
-
 	/**
 	 * Creates a SAML Request DOM element.
 	 * 

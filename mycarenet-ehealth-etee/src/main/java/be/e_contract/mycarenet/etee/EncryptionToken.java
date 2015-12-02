@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -189,6 +189,7 @@ public class EncryptionToken {
 			return certificateHolder.getSubject().equals(this.subject);
 		}
 
+		@Override
 		public Object clone() {
 			return this;
 		}

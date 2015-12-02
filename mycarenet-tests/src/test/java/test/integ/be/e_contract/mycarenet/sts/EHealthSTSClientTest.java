@@ -93,13 +93,13 @@ public class EHealthSTSClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -120,7 +120,6 @@ public class EHealthSTSClientTest {
 
 		LOG.debug("not after: " + client.getNotAfter(assertionElement));
 	}
-
 	private String toString(Element element) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();

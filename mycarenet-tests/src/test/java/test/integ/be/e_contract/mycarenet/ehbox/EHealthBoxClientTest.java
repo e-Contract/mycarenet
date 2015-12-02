@@ -110,13 +110,13 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -150,7 +150,6 @@ public class EHealthBoxClientTest {
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
-
 	@Test
 	public void testDecryptMessages() throws Exception {
 		// STS
@@ -187,13 +186,13 @@ public class EHealthBoxClientTest {
 				encryptionAlias, this.config.getEHealthPKCS12Password()
 						.toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -240,7 +239,6 @@ public class EHealthBoxClientTest {
 			unsealer.unseal(data);
 		}
 	}
-
 	@Test
 	public void testGetMessageWithAttachments() throws Exception {
 		// STS
@@ -271,13 +269,13 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -333,7 +331,6 @@ public class EHealthBoxClientTest {
 			LOG.debug("data: " + new String(data));
 		}
 	}
-
 	@Test
 	public void testGetBoxInfoViaDOM() throws Exception {
 		// STS
@@ -364,13 +361,13 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -403,7 +400,6 @@ public class EHealthBoxClientTest {
 		eHealthBoxClient.setCredentials(eHealthPrivateKey, toString(assertion));
 		eHealthBoxClient.invoke(requestElement);
 	}
-
 	@Test
 	public void testGetBoxInfoViaString() throws Exception {
 		// STS
@@ -434,13 +430,13 @@ public class EHealthBoxClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -466,7 +462,6 @@ public class EHealthBoxClientTest {
 		String result = eHealthBoxClient.invoke(request);
 		LOG.debug("result: " + result);
 	}
-
 	/**
 	 * Not supported according to Hannes De Clercq from eHealth.
 	 * 
@@ -497,13 +492,13 @@ public class EHealthBoxClientTest {
 		X509Certificate eHealthCertificate = sessionKey.getCertificate();
 		PrivateKey eHealthPrivateKey = sessionKey.getPrivate();
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -528,7 +523,6 @@ public class EHealthBoxClientTest {
 		eHealthBoxClient.setCredentials(eHealthPrivateKey, assertionString);
 		eHealthBoxClient.getBoxInfo();
 	}
-
 	private String toString(Node node) throws Exception {
 		TransformerFactory transformerFactory = TransformerFactory
 				.newInstance();

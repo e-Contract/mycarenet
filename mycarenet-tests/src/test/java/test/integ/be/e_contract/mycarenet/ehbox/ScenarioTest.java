@@ -119,13 +119,13 @@ public class ScenarioTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -243,7 +243,6 @@ public class ScenarioTest {
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
-
 	/**
 	 * First we clean the eHealthBox. Then we publish to ourself. Next we
 	 * download this message.
@@ -280,13 +279,13 @@ public class ScenarioTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -423,7 +422,6 @@ public class ScenarioTest {
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
-
 	/**
 	 * First we clean the eHealthBox. Then we publish to ourself. Next we
 	 * download this message.
@@ -460,13 +458,13 @@ public class ScenarioTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -613,7 +611,6 @@ public class ScenarioTest {
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
-
 	private String getUserIdentifier(X509Certificate certificate) {
 		X500Principal userPrincipal = certificate.getSubjectX500Principal();
 		String name = userPrincipal.toString();

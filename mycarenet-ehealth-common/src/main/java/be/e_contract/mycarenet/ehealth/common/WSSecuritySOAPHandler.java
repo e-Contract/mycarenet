@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -148,7 +148,7 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		wsSecSignature.setCustomTokenId(assertionId);
 		Crypto crypto = new WSSecurityCrypto(this.privateKey, null);
 		wsSecSignature.prepare(soapPart, crypto, wsSecHeader);
-		Vector<WSEncryptionPart> signParts = new Vector<WSEncryptionPart>();
+		Vector<WSEncryptionPart> signParts = new Vector<>();
 		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart
 				.getDocumentElement());
 		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName()
@@ -158,7 +158,6 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 				signParts, wsSecHeader);
 		wsSecSignature.computeSignature(referenceList, false, null);
 	}
-
 	@Override
 	public boolean handleFault(SOAPMessageContext context) {
 		return false;

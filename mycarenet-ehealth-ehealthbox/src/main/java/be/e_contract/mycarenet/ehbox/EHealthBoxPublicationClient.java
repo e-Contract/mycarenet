@@ -119,8 +119,6 @@ public class EHealthBoxPublicationClient {
 
 	/**
 	 * @param publicationMessage
-	 * @param hokPrivateKey
-	 * @param samlAssertion
 	 * @return
 	 * @throws BusinessError
 	 * @throws SystemError

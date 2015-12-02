@@ -102,13 +102,13 @@ public class EHealthBoxPublicationClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -173,7 +173,6 @@ public class EHealthBoxPublicationClientTest {
 		publicationClient.publish(publicationMessage);
 		LOG.debug("payload: " + publicationClient.getPayload());
 	}
-
 	@Test
 	public void testPublishAnnex() throws Exception {
 		// STS
@@ -205,13 +204,13 @@ public class EHealthBoxPublicationClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -289,7 +288,6 @@ public class EHealthBoxPublicationClientTest {
 		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
 		publicationClient.publish(publicationMessage);
 	}
-
 	@Test
 	public void testPublishViaSOAPAttachment() throws Exception {
 		// STS
@@ -321,13 +319,13 @@ public class EHealthBoxPublicationClientTest {
 		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
 				alias, this.config.getEHealthPKCS12Password().toCharArray());
 
-		List<Attribute> attributes = new LinkedList<Attribute>();
+		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:person:ssin"));
 
-		List<AttributeDesignator> attributeDesignators = new LinkedList<AttributeDesignator>();
+		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
 		attributeDesignators.add(new AttributeDesignator(
 				"urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
@@ -394,7 +392,6 @@ public class EHealthBoxPublicationClientTest {
 		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
 		publicationClient.publish(publicationMessage);
 	}
-
 	private String getUserIdentifier(X509Certificate certificate) {
 		X500Principal userPrincipal = certificate.getSubjectX500Principal();
 		String name = userPrincipal.toString();
