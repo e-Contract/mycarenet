@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2014 e-Contract.be BVBA.
+ * Copyright (C) 2012-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -43,6 +43,7 @@ import be.e_contract.mycarenet.jaxb.sync.ObjectFactory;
 import be.e_contract.mycarenet.jaxb.sync.XmlDocumentWrapperType;
 import be.e_contract.mycarenet.sync.SyncClient;
 import be.e_contract.mycarenet.xkms2.XKMS2Client;
+import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class SyncClientTest {
@@ -58,7 +59,11 @@ public class SyncClientTest {
 
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
-		keyStore.load(null);
+		BeIDKeyStoreParameter beIDKeyStoreParameter = new BeIDKeyStoreParameter();
+		beIDKeyStoreParameter.addPPDUName("digipass 870");
+		beIDKeyStoreParameter.addPPDUName("digipass 875");
+		beIDKeyStoreParameter.addPPDUName("digipass 920");
+		keyStore.load(beIDKeyStoreParameter);
 		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
 				"Authentication", null);
 		X509Certificate authnCertificate = (X509Certificate) keyStore
@@ -124,7 +129,11 @@ public class SyncClientTest {
 
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
-		keyStore.load(null);
+		BeIDKeyStoreParameter beIDKeyStoreParameter = new BeIDKeyStoreParameter();
+		beIDKeyStoreParameter.addPPDUName("digipass 870");
+		beIDKeyStoreParameter.addPPDUName("digipass 875");
+		beIDKeyStoreParameter.addPPDUName("digipass 920");
+		keyStore.load(beIDKeyStoreParameter);
 		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
 				"Authentication", null);
 		X509Certificate authnCertificate = (X509Certificate) keyStore

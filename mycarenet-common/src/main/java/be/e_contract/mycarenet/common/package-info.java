@@ -20,4 +20,3 @@
  * MyCareNet common utility classes.
  */
 package be.e_contract.mycarenet.common;
-

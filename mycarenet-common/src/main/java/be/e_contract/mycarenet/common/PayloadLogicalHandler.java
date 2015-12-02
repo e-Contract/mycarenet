@@ -39,8 +39,9 @@ import javax.xml.ws.handler.MessageContext;
  * @author Frank Cornelis
  * 
  */
-public class PayloadLogicalHandler implements
-		LogicalHandler<LogicalMessageContext> {
+public class PayloadLogicalHandler
+		implements
+			LogicalHandler<LogicalMessageContext> {
 
 	private String payload;
 

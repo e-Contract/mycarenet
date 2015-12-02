@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -47,6 +47,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.sts.Attribute;
 import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
+import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class EHealthSTSClientTest {
@@ -64,11 +65,17 @@ public class EHealthSTSClientTest {
 	@Test
 	public void testClient() throws Exception {
 		EHealthSTSClient client = new EHealthSTSClient(
-				"https://wwwacc.ehealth.fgov.be/sts_1_1/SecureTokenService");
+				"https://services-acpt.ehealth.fgov.be/IAM/Saml11TokenService/Legacy/v1");
 
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
-		keyStore.load(null);
+
+		BeIDKeyStoreParameter beIDKeyStoreParameter = new BeIDKeyStoreParameter();
+		beIDKeyStoreParameter.addPPDUName("digipass 870");
+		beIDKeyStoreParameter.addPPDUName("digipass 875");
+		beIDKeyStoreParameter.addPPDUName("digipass 920");
+		keyStore.load(beIDKeyStoreParameter);
+
 		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
 				"Authentication", null);
 		X509Certificate authnCertificate = (X509Certificate) keyStore

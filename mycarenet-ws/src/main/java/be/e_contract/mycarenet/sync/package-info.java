@@ -20,4 +20,3 @@
  * MyCareNet Synchronous web service client classes.
  */
 package be.e_contract.mycarenet.sync;
-

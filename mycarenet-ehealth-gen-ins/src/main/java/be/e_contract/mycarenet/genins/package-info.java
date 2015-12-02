@@ -20,4 +20,3 @@
  * eHealth Generic Insurability client classes.
  */
 package be.e_contract.mycarenet.genins;
-

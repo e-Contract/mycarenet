@@ -60,8 +60,9 @@ import be.e_contract.mycarenet.common.SessionKey;
  * @author Frank Cornelis
  * 
  */
-public class ProofOfPossessionSignatureSOAPHandler implements
-		SOAPHandler<SOAPMessageContext> {
+public class ProofOfPossessionSignatureSOAPHandler
+		implements
+			SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
 			.getLog(ProofOfPossessionSignatureSOAPHandler.class);

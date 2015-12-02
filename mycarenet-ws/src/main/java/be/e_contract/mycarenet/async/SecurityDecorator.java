@@ -32,7 +32,7 @@ import be.e_contract.mycarenet.common.SessionKey;
  * Decorator for MyCareNet WS-Security profile.
  * 
  * @author Frank Cornelis
- *
+ * 
  */
 public class SecurityDecorator {
 

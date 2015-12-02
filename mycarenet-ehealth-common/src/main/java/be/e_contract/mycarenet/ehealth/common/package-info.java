@@ -20,4 +20,3 @@
  * eHealth common utility classes.
  */
 package be.e_contract.mycarenet.ehealth.common;
-

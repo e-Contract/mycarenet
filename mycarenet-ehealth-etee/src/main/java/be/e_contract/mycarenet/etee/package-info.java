@@ -20,4 +20,3 @@
  * eHealth end-to-end encryption classes.
  */
 package be.e_contract.mycarenet.etee;
-

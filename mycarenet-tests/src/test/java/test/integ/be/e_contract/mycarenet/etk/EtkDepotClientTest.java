@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2015 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -44,7 +44,7 @@ public class EtkDepotClientTest {
 	@Test
 	public void testClient() throws Exception {
 		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		BeIDCards beIDCards = new BeIDCards();
 		BeIDCard beIDCard = beIDCards.getOneBeIDCard();
@@ -80,7 +80,7 @@ public class EtkDepotClientTest {
 	@Test
 	public void testScenario1() throws Exception {
 		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
 		assertNotNull(etk);
@@ -89,7 +89,7 @@ public class EtkDepotClientTest {
 	@Test
 	public void testNonExitingSSIN() throws Exception {
 		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("SSIN", "23491519151");
 		assertNull(etk);
@@ -101,7 +101,7 @@ public class EtkDepotClientTest {
 	@Test
 	public void testScenario2() throws Exception {
 		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://wwwacc.ehealth.fgov.be/etkdepot_1_0/EtkDepotService");
+				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("SSIN", "85040309180");
 		assertNotNull(etk);

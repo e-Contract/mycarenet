@@ -33,8 +33,9 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  * @author Frank Cornelis
  * 
  */
-public class InboundAttachmentsSOAPHandler implements
-		SOAPHandler<SOAPMessageContext> {
+public class InboundAttachmentsSOAPHandler
+		implements
+			SOAPHandler<SOAPMessageContext> {
 
 	private Map<String, DataHandler> inboundMessageAttachments;
 

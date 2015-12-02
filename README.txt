@@ -19,6 +19,9 @@ The following is required for compiling the software:
 The project can be build via:
 	mvn clean install
 
+Code formatting before commit via:
+mvn -e com.googlecode.maven-java-formatter-plugin:maven-java-formatter-plugin:format
+
 
 === 4. Release
 

@@ -39,6 +39,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -60,6 +62,8 @@ import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
  * 
  */
 public class SessionKey {
+
+	private static final Log LOG = LogFactory.getLog(SessionKey.class);
 
 	private static final int KEY_SIZE = 1024;
 
@@ -229,16 +233,22 @@ public class SessionKey {
 	 */
 	public boolean isValid() {
 		if (null == this.notBefore) {
+			LOG.debug("no notBefore");
 			return false;
 		}
 		if (null == this.notAfter) {
+			LOG.debug("no notAfter");
 			return false;
 		}
 		Date now = new Date();
 		if (now.before(this.notBefore)) {
+			LOG.debug("session key not yet active");
+			LOG.debug("now: " + now);
+			LOG.debug("notBefore: " + this.notBefore);
 			return false;
 		}
 		if (now.after(this.notAfter)) {
+			LOG.debug("session key expired");
 			return false;
 		}
 		return true;

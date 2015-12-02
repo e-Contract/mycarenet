@@ -37,7 +37,7 @@ public class UnsealerTest {
 	@Test
 	public void testEmptyData() throws Exception {
 		Unsealer unsealer = new Unsealer(null, null);
-		byte[] result = unsealer.unseal(new byte[] {});
+		byte[] result = unsealer.unseal(new byte[]{});
 		assertNotNull(result);
 		assertEquals(0, result.length);
 	}

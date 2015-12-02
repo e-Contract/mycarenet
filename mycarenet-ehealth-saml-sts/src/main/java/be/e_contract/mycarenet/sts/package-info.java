@@ -20,4 +20,3 @@
  * eHealth STS client classes.
  */
 package be.e_contract.mycarenet.sts;
-

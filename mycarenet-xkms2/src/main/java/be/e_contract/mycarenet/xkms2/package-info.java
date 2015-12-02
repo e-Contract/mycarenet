@@ -20,4 +20,3 @@
  * MyCareNet XKMS version 2.0 client classes.
  */
 package be.e_contract.mycarenet.xkms2;
-

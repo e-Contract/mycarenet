@@ -20,4 +20,3 @@
  * eHealth Encryption Token Key web service client classes.
  */
 package be.e_contract.mycarenet.etk;
-

@@ -105,7 +105,7 @@ public class WSSecurityCrypto implements Crypto {
 	public X509Certificate[] getX509Certificates(CryptoType cryptoType)
 			throws WSSecurityException {
 		LOG.debug("getX509Certificates");
-		X509Certificate[] certificates = new X509Certificate[] { this.certificate };
+		X509Certificate[] certificates = new X509Certificate[]{this.certificate};
 		return certificates;
 	}
 

@@ -54,7 +54,7 @@ import be.e_contract.mycarenet.genins.jaxws.SystemError;
  * Client for the eHealth Generic Insurability v1 web service.
  * 
  * @author Frank Cornelis
- *
+ * 
  */
 public class GenericInsurabilityClient {
 
@@ -67,7 +67,8 @@ public class GenericInsurabilityClient {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location location of the web service endpoint.
+	 * @param location
+	 *            location of the web service endpoint.
 	 */
 	public GenericInsurabilityClient(String location) {
 		GenericInsurabilityService service = GenericInsurabilityServiceFactory
@@ -116,8 +117,8 @@ public class GenericInsurabilityClient {
 	}
 
 	/**
-	 * Invokes a method on the eHealth Generic Insurability web service using the
-	 * low-level SOAP payload.
+	 * Invokes a method on the eHealth Generic Insurability web service using
+	 * the low-level SOAP payload.
 	 * 
 	 * @param request
 	 * @return
@@ -129,8 +130,8 @@ public class GenericInsurabilityClient {
 	}
 
 	/**
-	 * Invokes a method on the eHealth Generic Insurability web service using the
-	 * low-level SOAP payload.
+	 * Invokes a method on the eHealth Generic Insurability web service using
+	 * the low-level SOAP payload.
 	 * 
 	 * @param request
 	 * @return

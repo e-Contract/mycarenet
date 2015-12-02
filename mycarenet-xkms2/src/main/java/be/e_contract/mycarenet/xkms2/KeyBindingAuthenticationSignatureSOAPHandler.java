@@ -63,8 +63,9 @@ import org.w3c.dom.NodeList;
  * @author Frank Cornelis
  * 
  */
-public class KeyBindingAuthenticationSignatureSOAPHandler implements
-		SOAPHandler<SOAPMessageContext> {
+public class KeyBindingAuthenticationSignatureSOAPHandler
+		implements
+			SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
 			.getLog(KeyBindingAuthenticationSignatureSOAPHandler.class);
