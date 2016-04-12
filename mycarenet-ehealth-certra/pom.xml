@@ -86,6 +86,16 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>be.e_contract.mycarenet</groupId>
+			<artifactId>mycarenet-ehealth-certra-cms</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>be.e_contract.mycarenet</groupId>
+			<artifactId>mycarenet-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
 		</dependency>

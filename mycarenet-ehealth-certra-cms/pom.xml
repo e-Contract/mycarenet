@@ -83,8 +83,8 @@
 			<artifactId>commons-logging-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ws.security</groupId>
-			<artifactId>wss4j</artifactId>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -104,6 +104,11 @@
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
