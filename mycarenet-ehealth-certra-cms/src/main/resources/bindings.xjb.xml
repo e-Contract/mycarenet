@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:prefix="http://jaxb2-commons.dev.java.net/namespace-prefix"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://jaxb2-commons.dev.java.net/namespace-prefix http://java.net/projects/jaxb2-commons/sources/svn/content/namespace-prefix/trunk/src/main/resources/prefix-namespace-schema.xsd">
+	<jxb:bindings schemaLocation="ehealth-etee-ra-aqdr-protocol-types.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.certra.cms.aqdr" />
+		</jxb:schemaBindings>
+		<prefix:prefix name="aqdr" />
+	</jxb:bindings>
+	<jxb:bindings schemaLocation="ehealth-etee-ra-csr-protocol-types.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.certra.cms.csr" />
+		</jxb:schemaBindings>
+		<prefix:prefix name="csr" />
+	</jxb:bindings>
+	<jxb:bindings schemaLocation="ehealth-etee-ra-revoke-protocol-types.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.certra.cms.revoke" />
+		</jxb:schemaBindings>
+		<prefix:prefix name="revoke" />
+	</jxb:bindings>
+</jxb:bindings>
