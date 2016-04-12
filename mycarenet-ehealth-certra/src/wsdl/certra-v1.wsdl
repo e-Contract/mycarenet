@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="CertRa" targetNamespace="urn:be:fgov:ehealth:certra:protocol:v1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:certra="urn:be:fgov:ehealth:certra:protocol:v1"
+  xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/">
+
+  <documentation>Certificate Registration Authority Service - version 1.0</documentation>
+
+  <types>
+    <xs:schema>
+      <xs:import namespace="urn:be:fgov:ehealth:certra:protocol:v1" schemaLocation="ehealth-certra-schema-protocol-1_0.xsd" />
+    </xs:schema>
+  </types>
+
+  <message name="GetGenericOrganizationTypesRequest">
+    <part element="certra:OrganizationTypeRequest" name="body" />
+  </message>
+
+  <message name="GetGenericOrganizationTypesResponse">
+    <part element="certra:OrganizationTypeResponse" name="body" />
+  </message>
+
+  <message name="GetEHActorQualitiesRequest">
+    <part element="certra:GetEHActorQualitiesRequest" name="body" />
+  </message>
+
+  <message name="GetEHActorQualitiesResponse">
+    <part element="certra:GetEHActorQualitiesResponse" name="body" />
+  </message>
+
+  <message name="GenerateCertificateRequest">
+    <part element="certra:GenerateCertificateRequest" name="body" />
+  </message>
+  <message name="GenerateCertificateResponse">
+    <part element="certra:GenerateCertificateResponse" name="body" />
+  </message>
+
+  <message name="GenerateCertificateForRenewalRequest">
+    <part element="certra:GenerateCertificateForRenewalRequest" name="body" />
+  </message>
+  <message name="GenerateCertificateForRenewalResponse">
+    <part element="certra:GenerateCertificateForRenewalResponse" name="body" />
+  </message>
+
+  <message name="GetCertificateRequest">
+    <part element="certra:GetCertificateRequest" name="body" />
+  </message>
+  <message name="GetCertificateResponse">
+    <part element="certra:GetCertificateResponse" name="body" />
+  </message>
+
+  <message name="ValidateRenewRequest">
+    <part element="certra:ValidateRenewRequest" name="body" />
+  </message>
+  <message name="ValidateRenewResponse">
+    <part element="certra:ValidateRenewResponse" name="body" />
+  </message>
+
+  <message name="GetRevocableCertificatesRequest">
+    <part element="certra:GetRevocableCertificatesRequest" name="body" />
+  </message>
+  <message name="GetRevocableCertificatesResponse">
+    <part element="certra:GetRevocableCertificatesResponse" name="body" />
+  </message>
+
+  <message name="GetExistingApplicationIdsRequest">
+    <part element="certra:GetExistingApplicationIdsRequest" name="body" />
+  </message>
+  <message name="GetExistingApplicationIdsResponse">
+    <part element="certra:GetExistingApplicationIdsResponse" name="body" />
+  </message>
+
+  <message name="RevokeRequest">
+    <part element="certra:RevokeRequest" name="body" />
+  </message>
+  <message name="RevokeResponse">
+    <part element="certra:RevokeResponse" name="body" />
+  </message>
+
+  <portType name="CertRaPortType">
+    <operation name="generateCertificate">
+      <input message="certra:GenerateCertificateRequest" />
+      <output message="certra:GenerateCertificateResponse" />
+    </operation>
+    <operation name="generateCertificateForRenewal">
+      <input message="certra:GenerateCertificateForRenewalRequest" />
+      <output message="certra:GenerateCertificateForRenewalResponse" />
+    </operation>
+    <operation name="getCertificate">
+      <input message="certra:GetCertificateRequest" />
+      <output message="certra:GetCertificateResponse" />
+    </operation>
+    <operation name="validateRenew">
+      <input message="certra:ValidateRenewRequest" />
+      <output message="certra:ValidateRenewResponse" />
+    </operation>
+    <operation name="getActorQualities">
+      <input message="certra:GetEHActorQualitiesRequest" />
+      <output message="certra:GetEHActorQualitiesResponse" />
+    </operation>
+    <operation name="getGenericOrganizationTypes">
+      <input message="certra:GetGenericOrganizationTypesRequest" />
+      <output message="certra:GetGenericOrganizationTypesResponse" />
+    </operation>
+    <operation name="getRevocableCertificates">
+      <input message="certra:GetRevocableCertificatesRequest" />
+      <output message="certra:GetRevocableCertificatesResponse" />
+    </operation>
+    <operation name="getExistingApplicationIds">
+      <input message="certra:GetExistingApplicationIdsRequest" />
+      <output message="certra:GetExistingApplicationIdsResponse" />
+    </operation>
+    <operation name="revoke">
+      <input message="certra:RevokeRequest" />
+      <output message="certra:RevokeResponse" />
+    </operation>
+  </portType>
+
+
+  <binding name="CertRaSOAPBinding" type="certra:CertRaPortType">
+    <soap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="generateCertificate">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="generateCertificateForRenewal">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getCertificate">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="validateRenew">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getActorQualities">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getGenericOrganizationTypes">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getRevocableCertificates">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getExistingApplicationIds">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+    <operation name="revoke">
+      <soap11:operation soapAction="" />
+      <input>
+        <soap11:body use="literal" />
+      </input>
+      <output>
+        <soap11:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+
+  <service name="CertRaService">
+    <port name="CertRaPort" binding="certra:CertRaSOAPBinding">
+      <soap11:address location="https://services.ehealth.fgov.be/CertRa/v1" />
+    </port>
+  </service>
+
+</definitions>
