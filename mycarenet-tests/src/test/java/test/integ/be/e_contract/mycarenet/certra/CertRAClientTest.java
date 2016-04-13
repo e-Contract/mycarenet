@@ -39,6 +39,7 @@ import be.e_contract.mycarenet.certra.cms.aqdr.NaturalPerson;
 import be.e_contract.mycarenet.certra.cms.aqdr.NaturalPerson.Quality;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificateType;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataResponse;
+import be.e_contract.mycarenet.certra.jaxb.etee.core.OrganizationTypes;
 import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
@@ -100,6 +101,14 @@ public class CertRAClientTest {
 		for (Quality quality : qualities) {
 			LOG.debug("NIHII: " + quality.getNIHII());
 			LOG.debug("quality: " + quality.getName());
+		}
+	}
+
+	@Test
+	public void testGetOrganizationTypes() throws Exception {
+		List<OrganizationTypes> organizationTypesList = this.client.getOrganizationTypes();
+		for (OrganizationTypes organizationTypes : organizationTypesList) {
+			LOG.debug("organization type : " + organizationTypes.getIdentifierType());
 		}
 	}
 }

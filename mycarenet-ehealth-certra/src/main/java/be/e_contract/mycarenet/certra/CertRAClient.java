@@ -51,10 +51,12 @@ import be.e_contract.mycarenet.certra.cms.aqdr.EntityType;
 import be.e_contract.mycarenet.certra.cms.revoke.ObjectFactory;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataRequest;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataResponse;
+import be.e_contract.mycarenet.certra.jaxb.etee.core.OrganizationTypes;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetEHActorQualitiesRequest;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetEHActorQualitiesResponse;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesRequest;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesResponse;
+import be.e_contract.mycarenet.certra.jaxb.protocol.OrganizationTypeResponse;
 import be.e_contract.mycarenet.certra.jaxws.CertRaPortType;
 import be.e_contract.mycarenet.certra.jaxws.CertRaService;
 import be.e_contract.mycarenet.common.LoggingHandler;
@@ -172,6 +174,11 @@ public class CertRAClient {
 		EHActorQualitiesDataResponse ehActorQualitiesDataResponse = (EHActorQualitiesDataResponse) unmarshaller
 				.unmarshal(new ByteArrayInputStream(responseData));
 		return ehActorQualitiesDataResponse;
+	}
+
+	public List<OrganizationTypes> getOrganizationTypes() {
+		OrganizationTypeResponse response = this.port.getGenericOrganizationTypes(null);
+		return response.getOrganizationTypes();
 	}
 
 	public static String getSSIN(X509Certificate certificate) {
