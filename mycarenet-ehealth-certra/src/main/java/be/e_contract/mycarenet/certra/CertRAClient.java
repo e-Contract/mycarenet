@@ -18,24 +18,44 @@
 
 package be.e_contract.mycarenet.certra;
 
+import java.io.ByteArrayInputStream;
 import java.security.PrivateKey;
-import java.security.SignatureException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.SignerInformationVerifier;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.util.Store;
 
 import be.e_contract.mycarenet.certra.cms.CMSSigner;
 import be.e_contract.mycarenet.certra.cms.revoke.ObjectFactory;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataRequest;
+import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataResponse;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesRequest;
+import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesResponse;
 import be.e_contract.mycarenet.certra.jaxws.CertRaPortType;
 import be.e_contract.mycarenet.certra.jaxws.CertRaService;
 import be.e_contract.mycarenet.common.LoggingHandler;
 
 public class CertRAClient {
+
+	private static final Log LOG = LogFactory.getLog(CertRAClient.class);
 
 	private final CertRaPortType port;
 
@@ -54,21 +74,56 @@ public class CertRAClient {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	public void getRevocableCertificates(PrivateKey nonRepPrivateKey, X509Certificate nonRepCertificate)
-			throws SignatureException {
-		String ssin = getSSIN(nonRepCertificate);
+	public RevocableCertificatesDataResponse getRevocableCertificates(PrivateKey nonRepPrivateKey,
+			List<X509Certificate> nonRepCertificateChain) throws Exception {
+		String ssin = getSSIN(nonRepCertificateChain.get(0));
 
 		ObjectFactory dataObjectFactory = new ObjectFactory();
 		RevocableCertificatesDataRequest requestData = dataObjectFactory.createRevocableCertificatesDataRequest();
 		requestData.setSSIN(ssin);
 
-		CMSSigner cmsSigner = new CMSSigner(nonRepPrivateKey, nonRepCertificate);
-		byte[] data = cmsSigner.sign(requestData);
+		CMSSigner cmsSigner = new CMSSigner(nonRepPrivateKey, nonRepCertificateChain);
+		byte[] requestCmsData = cmsSigner.sign(requestData);
 
 		be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory objectFactory = new be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory();
 		GetRevocableCertificatesRequest request = objectFactory.createGetRevocableCertificatesRequest();
-		request.setRevocableCertificatesDataRequest(data);
-		this.port.getRevocableCertificates(request);
+		request.setRevocableCertificatesDataRequest(requestCmsData);
+		GetRevocableCertificatesResponse getRevocableCertificatesResponse = this.port.getRevocableCertificates(request);
+
+		byte[] responseCmsData = getRevocableCertificatesResponse.getRevocableCertificatesDataResponse();
+
+		CMSSignedData cmsSignedData = new CMSSignedData(responseCmsData);
+		SignerInformationStore signers = cmsSignedData.getSignerInfos();
+		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
+		SignerId signerId = signer.getSID();
+
+		Store certificateStore = cmsSignedData.getCertificates();
+		Collection<X509CertificateHolder> certificateCollection = certificateStore.getMatches(signerId);
+
+		X509CertificateHolder certificateHolder = certificateCollection.iterator().next();
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+		X509Certificate certificate = (X509Certificate) certificateFactory
+				.generateCertificate(new ByteArrayInputStream(certificateHolder.getEncoded()));
+		// we trust SSL here, no need for explicit verification of CMS signing
+		// certificate
+
+		LOG.debug("CMS signing certificate subject: " + certificate.getSubjectX500Principal());
+
+		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
+				.build(certificate);
+		boolean signatureResult = signer.verify(signerInformationVerifier);
+		if (false == signatureResult) {
+			throw new SecurityException("woops");
+		}
+
+		CMSTypedData signedContent = cmsSignedData.getSignedContent();
+		byte[] responseData = (byte[]) signedContent.getContent();
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		RevocableCertificatesDataResponse revocableCertificatesDataResponse = (RevocableCertificatesDataResponse) unmarshaller
+				.unmarshal(new ByteArrayInputStream(responseData));
+		return revocableCertificatesDataResponse;
 	}
 
 	private String getSSIN(X509Certificate certificate) {

@@ -30,6 +30,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -69,7 +70,7 @@ public class CMSSignerTest {
 		PrivateKey privateKey = keyPair.getPrivate();
 		X509Certificate certificate = generateCertificate(keyPair, "CN=Test");
 
-		CMSSigner cmsSigner = new CMSSigner(privateKey, certificate);
+		CMSSigner cmsSigner = new CMSSigner(privateKey, Collections.singletonList(certificate));
 
 		// operate
 		byte[] result = cmsSigner.sign(request);

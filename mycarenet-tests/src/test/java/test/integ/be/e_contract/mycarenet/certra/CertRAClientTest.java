@@ -23,17 +23,26 @@ import static org.junit.Assert.assertNotNull;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import be.e_contract.mycarenet.certra.CertRAClient;
+import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificateType;
+import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataResponse;
 import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class CertRAClientTest {
+
+	private static final Log LOG = LogFactory.getLog(CertRAClientTest.class);
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -51,10 +60,22 @@ public class CertRAClientTest {
 		keyStore.load(beIDKeyStoreParameter);
 		PrivateKey signPrivateKey = (PrivateKey) keyStore.getKey("Signature", null);
 		assertNotNull(signPrivateKey);
-		X509Certificate signCertificate = (X509Certificate) keyStore.getCertificate("Signature");
-		assertNotNull(signCertificate);
+		Certificate[] signCertificates = keyStore.getCertificateChain("Signature");
+
+		List<X509Certificate> signCertificateChain = new LinkedList<>();
+		for (Certificate signCertificate : signCertificates) {
+			signCertificateChain.add((X509Certificate) signCertificate);
+		}
 
 		CertRAClient client = new CertRAClient("https://services-acpt.ehealth.fgov.be/CertRa/v1");
-		client.getRevocableCertificates(signPrivateKey, signCertificate);
+		RevocableCertificatesDataResponse revocableCertificatesDataResponse = client
+				.getRevocableCertificates(signPrivateKey, signCertificateChain);
+
+		List<RevocableCertificateType> revocableCertificates = revocableCertificatesDataResponse
+				.getRevocablePersonalCertificate();
+		for (RevocableCertificateType revocableCertificate : revocableCertificates) {
+			LOG.debug("subject DN: " + revocableCertificate.getAuthDN());
+			LOG.debug("certificate serial number: " + revocableCertificate.getAuthSerial());
+		}
 	}
 }

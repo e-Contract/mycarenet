@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -44,11 +45,11 @@ public class CMSSigner {
 
 	private final PrivateKey privateKey;
 
-	private final X509Certificate certificate;
+	private final List<X509Certificate> certificateChain;
 
-	public CMSSigner(PrivateKey privateKey, X509Certificate certificate) {
+	public CMSSigner(PrivateKey privateKey, List<X509Certificate> certificateChain) {
 		this.privateKey = privateKey;
-		this.certificate = certificate;
+		this.certificateChain = certificateChain;
 	}
 
 	public byte[] sign(RevocableCertificatesDataRequest request) throws SignatureException {
@@ -62,8 +63,10 @@ public class CMSSigner {
 			ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(this.privateKey);
 			cmsSignedDataGenerator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
 					new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build())
-							.build(contentSigner, this.certificate));
-			cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(this.certificate.getEncoded()));
+							.build(contentSigner, this.certificateChain.get(0)));
+			for (X509Certificate certificate : this.certificateChain) {
+				cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(certificate.getEncoded()));
+			}
 			CMSTypedData cmsTypedData = new CMSProcessableByteArray(outputStream.toByteArray());
 			CMSSignedData cmsSignedData = cmsSignedDataGenerator.generate(cmsTypedData, true);
 			return cmsSignedData.getEncoded();
