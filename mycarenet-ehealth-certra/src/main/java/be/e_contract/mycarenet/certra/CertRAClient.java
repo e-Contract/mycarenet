@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,9 +45,14 @@ import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.util.Store;
 
 import be.e_contract.mycarenet.certra.cms.CMSSigner;
+import be.e_contract.mycarenet.certra.cms.aqdr.EHActorQualitiesDataRequest;
+import be.e_contract.mycarenet.certra.cms.aqdr.EHActorQualitiesDataResponse;
+import be.e_contract.mycarenet.certra.cms.aqdr.EntityType;
 import be.e_contract.mycarenet.certra.cms.revoke.ObjectFactory;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataRequest;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataResponse;
+import be.e_contract.mycarenet.certra.jaxb.protocol.GetEHActorQualitiesRequest;
+import be.e_contract.mycarenet.certra.jaxb.protocol.GetEHActorQualitiesResponse;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesRequest;
 import be.e_contract.mycarenet.certra.jaxb.protocol.GetRevocableCertificatesResponse;
 import be.e_contract.mycarenet.certra.jaxws.CertRaPortType;
@@ -59,6 +65,8 @@ public class CertRAClient {
 
 	private final CertRaPortType port;
 
+	private final be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory protocolObjectFactory;
+
 	public CertRAClient(String location) {
 		CertRaService certRaService = CertRaServiceFactory.newInstance();
 		this.port = certRaService.getCertRaPort();
@@ -67,11 +75,13 @@ public class CertRAClient {
 		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
-		List handlerChain = binding.getHandlerChain();
+		List<Handler> handlerChain = binding.getHandlerChain();
 		handlerChain.add(new LoggingHandler());
 		// LoggingHandler makes CXF fail on the attachments.
 		// https://issues.apache.org/jira/browse/CXF-5496
 		binding.setHandlerChain(handlerChain);
+
+		this.protocolObjectFactory = new be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory();
 	}
 
 	public RevocableCertificatesDataResponse getRevocableCertificates(PrivateKey nonRepPrivateKey,
@@ -84,15 +94,28 @@ public class CertRAClient {
 
 		CMSSigner cmsSigner = new CMSSigner(nonRepPrivateKey, nonRepCertificateChain);
 		byte[] requestCmsData = cmsSigner.sign(requestData);
+		return getRevocableCertificates(requestCmsData);
+	}
 
-		be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory objectFactory = new be.e_contract.mycarenet.certra.jaxb.protocol.ObjectFactory();
-		GetRevocableCertificatesRequest request = objectFactory.createGetRevocableCertificatesRequest();
-		request.setRevocableCertificatesDataRequest(requestCmsData);
+	public RevocableCertificatesDataResponse getRevocableCertificates(byte[] signedCms) throws Exception {
+
+		GetRevocableCertificatesRequest request = this.protocolObjectFactory.createGetRevocableCertificatesRequest();
+		request.setRevocableCertificatesDataRequest(signedCms);
 		GetRevocableCertificatesResponse getRevocableCertificatesResponse = this.port.getRevocableCertificates(request);
 
 		byte[] responseCmsData = getRevocableCertificatesResponse.getRevocableCertificatesDataResponse();
 
-		CMSSignedData cmsSignedData = new CMSSignedData(responseCmsData);
+		byte[] responseData = getCmsData(responseCmsData);
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		RevocableCertificatesDataResponse revocableCertificatesDataResponse = (RevocableCertificatesDataResponse) unmarshaller
+				.unmarshal(new ByteArrayInputStream(responseData));
+		return revocableCertificatesDataResponse;
+	}
+
+	private byte[] getCmsData(byte[] cms) throws Exception {
+		CMSSignedData cmsSignedData = new CMSSignedData(cms);
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
 		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
@@ -119,14 +142,39 @@ public class CertRAClient {
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		byte[] responseData = (byte[]) signedContent.getContent();
 
-		JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		RevocableCertificatesDataResponse revocableCertificatesDataResponse = (RevocableCertificatesDataResponse) unmarshaller
-				.unmarshal(new ByteArrayInputStream(responseData));
-		return revocableCertificatesDataResponse;
+		return responseData;
 	}
 
-	private String getSSIN(X509Certificate certificate) {
+	public EHActorQualitiesDataResponse getActorQualities(PrivateKey nonRepPrivateKey,
+			List<X509Certificate> nonRepCertificateChain) throws Exception {
+		be.e_contract.mycarenet.certra.cms.aqdr.ObjectFactory aqdrObjectFactory = new be.e_contract.mycarenet.certra.cms.aqdr.ObjectFactory();
+		EHActorQualitiesDataRequest dataRequest = aqdrObjectFactory.createEHActorQualitiesDataRequest();
+		String ssin = getSSIN(nonRepCertificateChain.get(0));
+		dataRequest.setSSIN(ssin);
+		dataRequest.setEntityType(EntityType.NATURAL);
+
+		CMSSigner cmsSigner = new CMSSigner(nonRepPrivateKey, nonRepCertificateChain);
+		byte[] requestCmsData = cmsSigner.sign(dataRequest);
+		return getActorQualities(requestCmsData);
+	}
+
+	public EHActorQualitiesDataResponse getActorQualities(byte[] signedCms) throws Exception {
+		GetEHActorQualitiesRequest request = this.protocolObjectFactory.createGetEHActorQualitiesRequest();
+		request.setEHActorQualitiesDataRequest(signedCms);
+
+		GetEHActorQualitiesResponse response = this.port.getActorQualities(request);
+		byte[] responseCms = response.getEHActorQualitiesDataResponse();
+
+		byte[] responseData = getCmsData(responseCms);
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(be.e_contract.mycarenet.certra.cms.aqdr.ObjectFactory.class);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		EHActorQualitiesDataResponse ehActorQualitiesDataResponse = (EHActorQualitiesDataResponse) unmarshaller
+				.unmarshal(new ByteArrayInputStream(responseData));
+		return ehActorQualitiesDataResponse;
+	}
+
+	public static String getSSIN(X509Certificate certificate) {
 		X500Principal userPrincipal = certificate.getSubjectX500Principal();
 		String name = userPrincipal.toString();
 		int serialNumberBeginIdx = name.indexOf("SERIALNUMBER=");

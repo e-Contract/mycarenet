@@ -38,6 +38,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
+import be.e_contract.mycarenet.certra.cms.aqdr.EHActorQualitiesDataRequest;
 import be.e_contract.mycarenet.certra.cms.revoke.ObjectFactory;
 import be.e_contract.mycarenet.certra.cms.revoke.RevocableCertificatesDataRequest;
 
@@ -59,7 +60,15 @@ public class CMSSigner {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			marshaller.marshal(request, outputStream);
 
-			CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
+			return sign(outputStream.toByteArray());
+		} catch (Exception e) {
+			throw new SignatureException(e);
+		}
+	}
+
+	private byte[] sign(byte[] data) throws SignatureException {
+		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
+		try {
 			ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(this.privateKey);
 			cmsSignedDataGenerator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
 					new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build())
@@ -67,10 +76,23 @@ public class CMSSigner {
 			for (X509Certificate certificate : this.certificateChain) {
 				cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(certificate.getEncoded()));
 			}
-			CMSTypedData cmsTypedData = new CMSProcessableByteArray(outputStream.toByteArray());
+			CMSTypedData cmsTypedData = new CMSProcessableByteArray(data);
 			CMSSignedData cmsSignedData = cmsSignedDataGenerator.generate(cmsTypedData, true);
 			return cmsSignedData.getEncoded();
+		} catch (Exception e) {
+			throw new SignatureException(e);
+		}
+	}
 
+	public byte[] sign(EHActorQualitiesDataRequest dataRequest) throws SignatureException {
+		try {
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(be.e_contract.mycarenet.certra.cms.aqdr.ObjectFactory.class);
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			marshaller.marshal(dataRequest, outputStream);
+
+			return sign(outputStream.toByteArray());
 		} catch (Exception e) {
 			throw new SignatureException(e);
 		}
