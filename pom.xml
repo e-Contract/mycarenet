@@ -29,7 +29,7 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:https://github.com/e-Contract/mycarenet.git</connection>
+		<connection>scm:git:git@github.com:e-Contract/mycarenet.git</connection>
 		<tag>HEAD</tag>
 	</scm>
 	<distributionManagement>
