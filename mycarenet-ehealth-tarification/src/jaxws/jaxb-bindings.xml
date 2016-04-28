@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jxb:bindings schemaLocation="../wsdl/mycarenet-tarification-protocol-1_0.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.tarification.jaxb.protocol">
+				<jxb:javadoc><![CDATA[<body>JAXB Tarification Protocol</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings schemaLocation="../wsdl/mycarenet-commons-protocol-2_0.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.tarification.jaxb.mycarenet.commons.protocol">
+					<jxb:javadoc><![CDATA[<body>JAXB MyCareNet Commons Protocol</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+			<jxb:bindings schemaLocation="../wsdl/mycarenet-commons-core-2_0.xsd"
+				node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package
+						name="be.e_contract.mycarenet.tarification.jaxb.mycarenet.commons.core">
+						<jxb:javadoc><![CDATA[<body>JAXB MyCareNet Commons Core</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+			</jxb:bindings>
+			<jxb:bindings schemaLocation="../wsdl/ehealth-commons-schema-protocol-2_0.xsd"
+				node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package
+						name="be.e_contract.mycarenet.tarification.jaxb.ehealth.commons.protocol">
+						<jxb:javadoc><![CDATA[<body>JAXB eHealth Commons Protocol</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+				<jxb:bindings schemaLocation="../wsdl/ehealth-commons-schema-core-2_0.xsd"
+					node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package
+							name="be.e_contract.mycarenet.tarification.jaxb.ehealth.commons.core">
+							<jxb:javadoc><![CDATA[<body>JAXB eHealth Commons Core</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+			</jxb:bindings>
+			<jxb:bindings schemaLocation="../wsdl/xmlmime.xsd" node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package name="be.e_contract.mycarenet.tarification.jaxb.xmlmime">
+						<jxb:javadoc><![CDATA[<body>JAXB XML Mime</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+			</jxb:bindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+	<jxb:bindings schemaLocation="../wsdl/ehealth-errors-schema-soa-1_1.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="be.e_contract.mycarenet.tarification.jaxb.error.soa">
+				<jxb:javadoc><![CDATA[<body>JAXB Tarification Error SOA</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings schemaLocation="../wsdl/ehealth-errors-schema-core-1_1.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.tarification.jaxb.error.core">
+					<jxb:javadoc><![CDATA[<body>JAXB Tarification Error Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>

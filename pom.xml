@@ -59,6 +59,7 @@
 		<module>mycarenet-ehealth-gen-ins</module>
 		<module>mycarenet-ehealth-certra-cms</module>
 		<module>mycarenet-ehealth-certra</module>
+		<module>mycarenet-ehealth-tarification</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>
