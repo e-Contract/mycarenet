@@ -87,12 +87,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.e_contract.mycarenet</groupId>
-			<artifactId>mycarenet-ehealth-certra-cms</artifactId>
+			<artifactId>mycarenet-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>be.e_contract.mycarenet</groupId>
-			<artifactId>mycarenet-common</artifactId>
+			<artifactId>mycarenet-ehealth-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -74,33 +74,25 @@ public class EncryptionToken {
 		}
 	}
 
-	private X509Certificate parseEncryptionCertificate(
-			byte[] encodedEncryptionToken) throws CMSException,
-			CertificateException, IOException, OperatorCreationException {
+	private X509Certificate parseEncryptionCertificate(byte[] encodedEncryptionToken)
+			throws CMSException, CertificateException, IOException, OperatorCreationException {
 		CMSSignedData cmsSignedData = new CMSSignedData(encodedEncryptionToken);
 
 		// get signer identifier
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
-		SignerInformation signer = (SignerInformation) signers.getSigners()
-				.iterator().next();
+		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
 
 		// get signer certificate
 		Store certificateStore = cmsSignedData.getCertificates();
-		LOG.debug("certificate store type: "
-				+ certificateStore.getClass().getName());
+		LOG.debug("certificate store type: " + certificateStore.getClass().getName());
 		@SuppressWarnings("unchecked")
-		Collection<X509CertificateHolder> signingCertificateCollection = certificateStore
-				.getMatches(signerId);
-		X509CertificateHolder signingCertificateHolder = signingCertificateCollection
-				.iterator().next();
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("X.509");
+		Collection<X509CertificateHolder> signingCertificateCollection = certificateStore.getMatches(signerId);
+		X509CertificateHolder signingCertificateHolder = signingCertificateCollection.iterator().next();
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate signingCertificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(
-						signingCertificateHolder.getEncoded()));
-		LOG.debug("signing certificate: "
-				+ signingCertificate.getSubjectX500Principal());
+				.generateCertificate(new ByteArrayInputStream(signingCertificateHolder.getEncoded()));
+		LOG.debug("signing certificate: " + signingCertificate.getSubjectX500Principal());
 
 		// verify CMS signature
 		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
@@ -121,22 +113,18 @@ public class EncryptionToken {
 
 		// get authentication certificate
 		CustomSelector authenticationSelector = new CustomSelector();
-		authenticationSelector.setSubject(encryptionCertificate
-				.getIssuerX500Principal());
+		authenticationSelector.setSubject(encryptionCertificate.getIssuerX500Principal());
 		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> authenticationCertificates = certificateStore
 				.getMatches(authenticationSelector);
 		if (authenticationCertificates.size() != 1) {
 			LOG.debug("no authentication certificate match");
 		}
-		X509CertificateHolder authenticationCertificateHolder = authenticationCertificates
-				.iterator().next();
+		X509CertificateHolder authenticationCertificateHolder = authenticationCertificates.iterator().next();
 		this.authenticationCertificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(
-						authenticationCertificateHolder.getEncoded()));
+				.generateCertificate(new ByteArrayInputStream(authenticationCertificateHolder.getEncoded()));
 
-		verifyProxyCertificate(encryptionCertificate,
-				this.authenticationCertificate);
+		verifyProxyCertificate(encryptionCertificate, this.authenticationCertificate);
 
 		return encryptionCertificate;
 	}
@@ -147,26 +135,28 @@ public class EncryptionToken {
 	 * @param certificate
 	 * @param issuer
 	 */
-	private void verifyProxyCertificate(X509Certificate certificate,
-			X509Certificate issuer) {
+	private void verifyProxyCertificate(X509Certificate certificate, X509Certificate issuer) {
 		try {
 			certificate.verify(issuer.getPublicKey());
+		} catch (Exception e) {
+			LOG.error("invalid proxy certificate signature");
+			throw new SecurityException("not a proxy certificate");
+		}
+		try {
 			issuer.checkValidity();
 		} catch (Exception e) {
+			LOG.error("invalid proxy certificate issuer validity");
 			throw new SecurityException("not a proxy certificate");
 		}
 	}
 
 	private void logCertificates(Store store, Selector selector) {
 		@SuppressWarnings("unchecked")
-		Collection<X509CertificateHolder> certificates = store
-				.getMatches(selector);
+		Collection<X509CertificateHolder> certificates = store.getMatches(selector);
 		LOG.debug("match size: " + certificates.size());
-		Iterator<X509CertificateHolder> certificatesIterator = certificates
-				.iterator();
+		Iterator<X509CertificateHolder> certificatesIterator = certificates.iterator();
 		while (certificatesIterator.hasNext()) {
-			X509CertificateHolder certificateHolder = certificatesIterator
-					.next();
+			X509CertificateHolder certificateHolder = certificatesIterator.next();
 			LOG.debug("certificate issuer: " + certificateHolder.getIssuer());
 			LOG.debug("certificate subject: " + certificateHolder.getSubject());
 		}
