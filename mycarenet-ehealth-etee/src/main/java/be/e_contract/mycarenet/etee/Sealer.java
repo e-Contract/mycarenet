@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2016 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -128,7 +128,7 @@ public class Sealer {
 			CMSException, IOException {
 		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
 		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
-				.find("SHA1withRSA");
+				.find("SHA265withRSA");
 		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
 				.find(sigAlgId);
 		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
