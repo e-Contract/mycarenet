@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2015 e-Contract.be BVBA.
+ * Copyright (C) 2013-2016 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -26,6 +26,10 @@ import java.util.Enumeration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,8 +37,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class EHealthCertificateTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(EHealthCertificateTest.class);
+	private static final Log LOG = LogFactory.getLog(EHealthCertificateTest.class);
 
 	private Config config;
 
@@ -47,21 +50,31 @@ public class EHealthCertificateTest {
 	public void testReadCertificate() throws Exception {
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
 		LOG.debug("eHealth PKCS12 path: " + this.config.getEHealthPKCS12Path());
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		keyStore.load(fileInputStream, this.config.getEHealthPKCS12Password()
-				.toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		keyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = keyStore.aliases();
 		while (aliasesEnum.hasMoreElements()) {
 			String alias = aliasesEnum.nextElement();
 			LOG.debug("alias: " + alias);
-			X509Certificate certificate = (X509Certificate) keyStore
-					.getCertificate(alias);
-			LOG.debug("certificate: " + certificate);
-			Certificate[] certificateChain = keyStore
-					.getCertificateChain(alias);
+			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
+			// LOG.debug("certificate: " + certificate);
+			LOG.debug("certificate subject: " + certificate.getSubjectX500Principal());
+
+			X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
+			X500Name subjectName = certificateHolder.getSubject();
+			RDN[] rdns = subjectName.getRDNs();
+			for (RDN rdn : rdns) {
+				LOG.debug("--------");
+				AttributeTypeAndValue[] attributes = rdn.getTypesAndValues();
+				for (AttributeTypeAndValue attribute : attributes) {
+					LOG.debug(attribute.getType() + " = " + attribute.getValue());
+					LOG.debug("value type: " + attribute.getValue().getClass().getName());
+				}
+			}
+
+			Certificate[] certificateChain = keyStore.getCertificateChain(alias);
 			for (Certificate cert : certificateChain) {
-				LOG.debug("certificate chain: " + cert);
+				// LOG.debug("certificate chain: " + cert);
 			}
 		}
 	}

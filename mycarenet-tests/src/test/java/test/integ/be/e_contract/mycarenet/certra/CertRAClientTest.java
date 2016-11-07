@@ -28,12 +28,20 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.DERPrintableString;
+import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import be.e_contract.mycarenet.certra.CertRAClient;
+import be.e_contract.mycarenet.certra.CertRASession;
 import be.e_contract.mycarenet.certra.cms.aqdr.EHActorQualitiesDataResponse;
 import be.e_contract.mycarenet.certra.cms.aqdr.NaturalPerson;
 import be.e_contract.mycarenet.certra.cms.aqdr.NaturalPerson.Quality;
@@ -109,6 +117,36 @@ public class CertRAClientTest {
 		List<OrganizationTypes> organizationTypesList = this.client.getOrganizationTypes();
 		for (OrganizationTypes organizationTypes : organizationTypesList) {
 			LOG.debug("organization type : " + organizationTypes.getIdentifierType());
+		}
+	}
+
+	@Test
+	public void testGenerateCertificate() throws Exception {
+		CertRASession certRASession = new CertRASession("info@e-contract.be", "0478/299492");
+
+		String ssin = CertRAClient.getSSIN(this.signCertificateChain.get(0));
+
+		X500NameBuilder nameBuilder = new X500NameBuilder();
+		nameBuilder.addRDN(X509ObjectIdentifiers.countryName, new DERPrintableString("BE"));
+		nameBuilder.addRDN(X509ObjectIdentifiers.organization, new DERPrintableString("Federal Government"));
+		nameBuilder.addRDN(X509ObjectIdentifiers.organizationalUnitName,
+				new DERPrintableString("eHealth-platform Belgium"));
+		nameBuilder.addRDN(X509ObjectIdentifiers.organizationalUnitName, new DERPrintableString("SSIN=" + ssin));
+		nameBuilder.addRDN(X509ObjectIdentifiers.commonName, new DERPrintableString("SSIN=" + ssin));
+		X500Name name = nameBuilder.build();
+		byte[] encodedCsr = certRASession.generateCSR(name);
+
+		PKCS10CertificationRequest csr = new PKCS10CertificationRequest(encodedCsr);
+		LOG.debug("CSR subject: " + csr.getSubject());
+		X500Name subjectName = csr.getSubject();
+		RDN[] rdns = subjectName.getRDNs();
+		for (RDN rdn : rdns) {
+			LOG.debug("--------");
+			AttributeTypeAndValue[] attributes = rdn.getTypesAndValues();
+			for (AttributeTypeAndValue attribute : attributes) {
+				LOG.debug(attribute.getType() + " = " + attribute.getValue());
+				LOG.debug("value type: " + attribute.getValue().getClass().getName());
+			}
 		}
 	}
 }
