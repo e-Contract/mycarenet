@@ -4,7 +4,7 @@
 	<name>Java MyCareNet Project</name>
 	<groupId>be.e_contract</groupId>
 	<artifactId>mycarenet</artifactId>
-	<version>1.2.3</version>
+	<version>1.2.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<inceptionYear>2012</inceptionYear>
 	<organization>
@@ -29,7 +29,7 @@
 	</licenses>
 	<scm>
 		<connection>scm:git:git@github.com:e-Contract/mycarenet.git</connection>
-		<tag>mycarenet-1.2.3</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
