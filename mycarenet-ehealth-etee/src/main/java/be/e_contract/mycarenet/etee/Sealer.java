@@ -128,7 +128,7 @@ public class Sealer {
 			CMSException, IOException {
 		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
 		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
-				.find("SHA265withRSA");
+				.find("SHA256withRSA");
 		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
 				.find(sigAlgId);
 		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
