@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2016 e-Contract.be BVBA.
+ * Copyright (C) 2013-2017 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -25,7 +25,6 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
 
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.cms.CMSEnvelopedData;
@@ -38,14 +37,10 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
-import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
 /**
@@ -127,18 +122,11 @@ public class Sealer {
 			throws OperatorCreationException, CertificateEncodingException,
 			CMSException, IOException {
 		CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
-		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
-				.find("SHA256withRSA");
-		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
-				.find(sigAlgId);
-		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
-				.createKey(this.authenticationPrivateKey.getEncoded());
-		ContentSigner contentSigner = new BcRSAContentSignerBuilder(sigAlgId,
-				digAlgId).build(privKeyParams);
+		ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256WITHRSAANDMGF1")
+				.build(this.authenticationPrivateKey);
 		cmsSignedDataGenerator
 				.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
-						new JcaDigestCalculatorProviderBuilder().setProvider(
-								BouncyCastleProvider.PROVIDER_NAME).build())
+						new JcaDigestCalculatorProviderBuilder().build())
 						.build(contentSigner, this.authenticationCertificate));
 		if (includeCertificate) {
 			cmsSignedDataGenerator.addCertificate(new X509CertificateHolder(
