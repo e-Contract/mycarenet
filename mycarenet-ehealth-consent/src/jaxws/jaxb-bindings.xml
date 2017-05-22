@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jxb:bindings schemaLocation="../wsdl/hubservices_protocol-2_2.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package
+				name="be.e_contract.mycarenet.consent.jaxb.hubservices.protocol">
+				<jxb:javadoc><![CDATA[<body>JAXB Consent Hubservices Protocol</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings schemaLocation="../wsdl/hubservices_core-2_2.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package name="be.e_contract.mycarenet.consent.jaxb.hubservices.core">
+					<jxb:javadoc><![CDATA[<body>JAXB Consent Hubservices Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+			<jxb:bindings schemaLocation="../wsdl/id-1_17.xsd" node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package name="be.e_contract.mycarenet.consent.jaxb.kmehr.id">
+						<jxb:javadoc><![CDATA[<body>JAXB KMEHR Id</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+			</jxb:bindings>
+			<jxb:bindings schemaLocation="../wsdl/cd-1_17.xsd" node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package name="be.e_contract.mycarenet.consent.jaxb.kmehr.cd">
+						<jxb:javadoc><![CDATA[<body>JAXB KMEHR Cd</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+				<jxb:bindings schemaLocation="../wsdl/dt-1_17.xsd"
+					node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package name="be.e_contract.mycarenet.consent.jaxb.kmehr.dt">
+							<jxb:javadoc><![CDATA[<body>JAXB KMEHR Dt</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+			</jxb:bindings>
+			<jxb:bindings schemaLocation="../wsdl/kmehr-1_17.xsd"
+				node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package name="be.e_contract.mycarenet.consent.jaxb.kmehr">
+						<jxb:javadoc><![CDATA[<body>JAXB KMEHR</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+				<jxb:bindings schemaLocation="../wsdl/xmldsig-core-schema.xsd"
+					node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package name="be.e_contract.mycarenet.consent.jaxb.xmldsig">
+							<jxb:javadoc><![CDATA[<body>JAXB XMLDSig</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+				<jxb:bindings schemaLocation="../wsdl/xenc-schema.xsd"
+					node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package name="be.e_contract.mycarenet.consent.jaxb.xmlenc">
+							<jxb:javadoc><![CDATA[<body>JAXB XMLEnc</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+			</jxb:bindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>

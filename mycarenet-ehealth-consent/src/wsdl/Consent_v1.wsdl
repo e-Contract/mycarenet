@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="Consent" targetNamespace="urn:be:fgov:ehealth:consent:protocol:v1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:consent="urn:be:fgov:ehealth:consent:protocol:v1" xmlns:protocol="http://www.ehealth.fgov.be/hubservices/protocol/v2" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>Version 1.2</wsdl:documentation>
+  <wsp:Policy wsu:Id="SAML_HOK" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <sp:AsymmetricBinding>
+      <wsp:Policy>
+        <sp:InitiatorToken>
+          <wsp:Policy>
+            <!-- If the client framework supports sp:IssuedToken policy assertions, uncomment this block and comment the sp:SamlToken assertion -->
+            <!-- <sp:IssuedToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"> -->
+            <!-- <sp:RequestSecurityTokenTemplate /> -->
+            <!-- <wsp:Policy /> -->
+            <!-- </sp:IssuedToken> -->
+            <sp:SamlToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+              <wsp:Policy>
+                <sp:WssSamlV11Token10/>
+              </wsp:Policy>
+            </sp:SamlToken>
+          </wsp:Policy>
+        </sp:InitiatorToken>
+        <sp:RecipientToken>
+          <wsp:Policy>
+            <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+              <wsp:Policy>
+                <sp:WssX509V3Token10/>
+              </wsp:Policy>
+            </sp:X509Token>
+          </wsp:Policy>
+        </sp:RecipientToken>
+        <sp:AlgorithmSuite>
+          <wsp:Policy>
+            <sp:Basic256/>
+          </wsp:Policy>
+        </sp:AlgorithmSuite>
+        <sp:Layout>
+          <wsp:Policy>
+            <sp:Lax/>
+          </wsp:Policy>
+        </sp:Layout>
+        <sp:IncludeTimestamp/>
+        <sp:ProtectTokens/>
+        <sp:OnlySignEntireHeadersAndBody/>
+      </wsp:Policy>
+    </sp:AsymmetricBinding>
+    <sp:Wss10>
+      <wsp:Policy>
+        <sp:MustSupportRefKeyIdentifier/>
+        <sp:MustSupportRefIssuerSerial/>
+      </wsp:Policy>
+    </sp:Wss10>
+    <sp:SignedParts>
+      <sp:Body/>
+    </sp:SignedParts>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://www.ehealth.fgov.be/hubservices/protocol/v2" schemaLocation="hubservices_protocol-2_2.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <!-- PutPatientConsent -->
+  <wsdl:message name="PutPatientConsentRequest">
+    <wsdl:part name="body" element="protocol:PutPatientConsentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="PutPatientConsentResponse">
+    <wsdl:part name="body" element="protocol:PutPatientConsentResponse"/>
+  </wsdl:message>
+  <!-- GetPatientConsent -->
+  <wsdl:message name="GetPatientConsentRequest">
+    <wsdl:part name="body" element="protocol:GetPatientConsentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetPatientConsentResponse">
+    <wsdl:part name="body" element="protocol:GetPatientConsentResponse"/>
+  </wsdl:message>
+  <!-- RevokePatientConsent -->
+  <wsdl:message name="RevokePatientConsentRequest">
+    <wsdl:part name="body" element="protocol:RevokePatientConsentRequest"/>
+  </wsdl:message>
+  <wsdl:message name="RevokePatientConsentResponse">
+    <wsdl:part name="body" element="protocol:RevokePatientConsentResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ConsentPortType">
+    <!-- PutPatientConsent -->
+    <wsdl:operation name="PutPatientConsent">
+      <wsdl:input message="consent:PutPatientConsentRequest"/>
+      <wsdl:output message="consent:PutPatientConsentResponse"/>
+    </wsdl:operation>
+    <!-- GetPatientConsent -->
+    <wsdl:operation name="GetPatientConsent">
+      <wsdl:input message="consent:GetPatientConsentRequest"/>
+      <wsdl:output message="consent:GetPatientConsentResponse"/>
+    </wsdl:operation>
+    <!-- RevokePatientConsent -->
+    <wsdl:operation name="RevokePatientConsent">
+      <wsdl:input message="consent:RevokePatientConsentRequest"/>
+      <wsdl:output message="consent:RevokePatientConsentResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsentSoapBinding" type="consent:ConsentPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <!-- PutTherapeuticLink -->
+    <wsdl:operation name="PutPatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:consent:protocol:v1:PutPatientConsent" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <!-- GetTherapeuticLink -->
+    <wsdl:operation name="GetPatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:consent:protocol:v1:GetPatientConsent" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <!-- RevokeTherapeuticLink -->
+    <wsdl:operation name="RevokePatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:consent:protocol:v1:RevokePatientConsent" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConsentService">
+    <wsdl:port name="ConsentPort" binding="consent:ConsentSoapBinding">
+      <soap:address location="https://services-acpt.ehealth.fgov.be/Consent/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
