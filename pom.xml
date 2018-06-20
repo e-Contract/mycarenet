@@ -63,6 +63,7 @@
 		<module>mycarenet-ehealth-certra</module>
 		<module>mycarenet-ehealth-tarification</module>
 		<module>mycarenet-ehealth-consent</module>
+		<module>mycarenet-genasync</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>
