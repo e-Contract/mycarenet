@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="TherLink" targetNamespace="urn:be:fgov:ehealth:therlink:protocol:v1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:therlink="urn:be:fgov:ehealth:therlink:protocol:v1" xmlns:type="http://www.ehealth.fgov.be/hubservices/protocol/v2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>Version 1.2</wsdl:documentation>
+  <wsp:Policy wsu:Id="SAML_HOK" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <sp:AsymmetricBinding>
+      <wsp:Policy>
+        <sp:InitiatorToken>
+          <wsp:Policy>
+            <!-- If the client framework supports sp:IssuedToken policy assertions, uncomment this block and comment the sp:SamlToken assertion -->
+            <!-- <sp:IssuedToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"> -->
+            <!-- <sp:RequestSecurityTokenTemplate /> -->
+            <!-- <wsp:Policy /> -->
+            <!-- </sp:IssuedToken> -->
+            <sp:SamlToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+              <wsp:Policy>
+                <sp:WssSamlV11Token10/>
+              </wsp:Policy>
+            </sp:SamlToken>
+          </wsp:Policy>
+        </sp:InitiatorToken>
+        <sp:RecipientToken>
+          <wsp:Policy>
+            <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+              <wsp:Policy>
+                <sp:WssX509V3Token10/>
+              </wsp:Policy>
+            </sp:X509Token>
+          </wsp:Policy>
+        </sp:RecipientToken>
+        <sp:AlgorithmSuite>
+          <wsp:Policy>
+            <sp:Basic256/>
+          </wsp:Policy>
+        </sp:AlgorithmSuite>
+        <sp:Layout>
+          <wsp:Policy>
+            <sp:Lax/>
+          </wsp:Policy>
+        </sp:Layout>
+        <sp:IncludeTimestamp/>
+        <sp:ProtectTokens/>
+        <sp:OnlySignEntireHeadersAndBody/>
+      </wsp:Policy>
+    </sp:AsymmetricBinding>
+    <sp:Wss10>
+      <wsp:Policy>
+        <sp:MustSupportRefKeyIdentifier/>
+        <sp:MustSupportRefIssuerSerial/>
+      </wsp:Policy>
+    </sp:Wss10>
+    <sp:SignedParts>
+      <sp:Body/>
+    </sp:SignedParts>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://www.ehealth.fgov.be/hubservices/protocol/v2" schemaLocation="hubservices_protocol-2_2.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <!-- PutTherapeuticLink -->
+  <wsdl:message name="PutTherapeuticLinkRequest">
+    <wsdl:part name="body" element="type:PutTherapeuticLinkRequest"/>
+  </wsdl:message>
+  <wsdl:message name="PutTherapeuticLinkResponse">
+    <wsdl:part name="body" element="type:PutTherapeuticLinkResponse"/>
+  </wsdl:message>
+  <!-- PutTherapeuticBulkLink -->
+  <wsdl:message name="PutTherapeuticLinkBulkRequest">
+    <wsdl:part name="body" element="type:PutTherapeuticLinkBulkRequest"/>
+  </wsdl:message>
+  <wsdl:message name="PutTherapeuticLinkBulkResponse">
+    <wsdl:part name="body" element="type:PutTherapeuticLinkBulkResponse"/>
+  </wsdl:message>
+  <!-- GetTherapeuticLink -->
+  <wsdl:message name="GetTherapeuticLinkRequest">
+    <wsdl:part name="body" element="type:GetTherapeuticLinkRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetTherapeuticLinkResponse">
+    <wsdl:part name="body" element="type:GetTherapeuticLinkResponse"/>
+  </wsdl:message>
+  <!-- RevokeTherapeuticLink -->
+  <wsdl:message name="RevokeTherapeuticLinkRequest">
+    <wsdl:part name="body" element="type:RevokeTherapeuticLinkRequest"/>
+  </wsdl:message>
+  <wsdl:message name="RevokeTherapeuticLinkResponse">
+    <wsdl:part name="body" element="type:RevokeTherapeuticLinkResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="TherLinkPortType">
+    <!-- PutTherapeuticLink -->
+    <wsdl:operation name="PutTherapeuticLink">
+      <wsdl:input message="therlink:PutTherapeuticLinkRequest"/>
+      <wsdl:output message="therlink:PutTherapeuticLinkResponse"/>
+    </wsdl:operation>
+    <!-- PutTherapeuticLinkBulk -->
+    <wsdl:operation name="PutTherapeuticLinkBulk">
+      <wsdl:input message="therlink:PutTherapeuticLinkBulkRequest"/>
+      <wsdl:output message="therlink:PutTherapeuticLinkBulkResponse"/>
+    </wsdl:operation>
+    <!-- GetTherapeuticLink -->
+    <wsdl:operation name="GetTherapeuticLink">
+      <wsdl:input message="therlink:GetTherapeuticLinkRequest"/>
+      <wsdl:output message="therlink:GetTherapeuticLinkResponse"/>
+    </wsdl:operation>
+    <!-- RevokeTherapeuticLink -->
+    <wsdl:operation name="RevokeTherapeuticLink">
+      <wsdl:input message="therlink:RevokeTherapeuticLinkRequest"/>
+      <wsdl:output message="therlink:RevokeTherapeuticLinkResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TherLinkSoapBinding" type="therlink:TherLinkPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <!-- PutTherapeuticLink -->
+    <wsdl:operation name="PutTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:therlink:protocol:v1:PutTherapeuticLink" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <!-- PutTherapeuticLinkBulk -->
+    <wsdl:operation name="PutTherapeuticLinkBulk">
+      <soap:operation soapAction="urn:be:fgov:ehealth:therlink:protocol:v1:PutTherapeuticLinkBulk" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <!-- GetTherapeuticLink -->
+    <wsdl:operation name="GetTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:therlink:protocol:v1:GetTherapeuticLink" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <!-- RevokeTherapeuticLink -->
+    <wsdl:operation name="RevokeTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:therlink:protocol:v1:RevokeTherapeuticLink" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TherLinkService">
+    <wsdl:port name="TherLinkPort" binding="therlink:TherLinkSoapBinding">
+      <soap:address location="https://services.ehealth.fgov.be/TherLink/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

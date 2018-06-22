@@ -62,6 +62,7 @@
 		<module>mycarenet-ehealth-tarification</module>
 		<module>mycarenet-ehealth-consent</module>
 		<module>mycarenet-genasync</module>
+		<module>mycarenet-ehealth-therlink</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>
