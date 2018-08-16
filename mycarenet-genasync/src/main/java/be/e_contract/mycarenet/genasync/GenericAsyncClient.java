@@ -36,6 +36,7 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
+import javax.xml.ws.soap.AddressingFeature;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +58,7 @@ public class GenericAsyncClient {
 	public GenericAsyncClient(String location) {
 		GenericAsyncService service = GenericAsyncServiceFactory.newInstance();
 
-		this.port = service.getGenericAsyncSOAP();
+		this.port = service.getGenericAsyncSOAP(new AddressingFeature(true));
 
 		QName portQName = new QName("urn:be:cin:nip:async:generic", "GenericAsyncSOAP");
 		this.dispatch = service.createDispatch(portQName, Source.class, Service.Mode.PAYLOAD);
