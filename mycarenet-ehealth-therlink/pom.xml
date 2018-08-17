@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>be.e_contract</groupId>
 		<artifactId>mycarenet</artifactId>
-		<version>1.2.10-SNAPSHOT</version>
+		<version>1.2.10</version>
 	</parent>
 	<name>MyCareNet eHealth Therapeutic Link</name>
 	<groupId>be.e_contract.mycarenet</groupId>
