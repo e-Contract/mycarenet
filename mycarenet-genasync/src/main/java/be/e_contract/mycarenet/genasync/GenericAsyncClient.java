@@ -61,7 +61,8 @@ public class GenericAsyncClient {
 		this.port = service.getGenericAsyncSOAP(new AddressingFeature(true));
 
 		QName portQName = new QName("urn:be:cin:nip:async:generic", "GenericAsyncSOAP");
-		this.dispatch = service.createDispatch(portQName, Source.class, Service.Mode.PAYLOAD);
+		this.dispatch = service.createDispatch(portQName, Source.class, Service.Mode.PAYLOAD,
+				new AddressingFeature(true));
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 
