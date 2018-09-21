@@ -41,6 +41,8 @@ import javax.xml.ws.soap.AddressingFeature;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.ehealth.common.WSAddressingSOAPHandler;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.genasync.jaxws.GenericAsync;
 import be.e_contract.mycarenet.genasync.jaxws.GenericAsyncService;
@@ -77,7 +79,9 @@ public class GenericAsyncClient {
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
 		List handlerChain = binding.getHandlerChain();
+		handlerChain.add(new WSAddressingSOAPHandler("urn:nip:destination:io:MULTICAST"));
 		handlerChain.add(this.wsSecuritySOAPHandler);
+		handlerChain.add(new LoggingHandler());
 		binding.setHandlerChain(handlerChain);
 	}
 
