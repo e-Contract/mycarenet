@@ -1,0 +1,693 @@
+<?xml version='1.0' encoding='UTF-8'?><definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:type="http://www.ehealth.fgov.be/hubservices/protocol/v3" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:intrahub="http://www.ehealth.fgov.be/intrahub/protocol/v3" xmlns="http://schemas.xmlsoap.org/wsdl/" name="IntraHubWebservice" targetNamespace="http://www.ehealth.fgov.be/intrahub/protocol/v3">
+<documentation>Version 3.5</documentation>
+  <types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:type="http://www.ehealth.fgov.be/hubservices/protocol/v3" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:intrahub="http://www.ehealth.fgov.be/intrahub/protocol/v3" xmlns="http://schemas.xmlsoap.org/wsdl/">
+      
+  <xsd:import namespace="http://www.ehealth.fgov.be/hubservices/protocol/v3" schemaLocation="hubservices_protocol-3_5.xsd"/>
+    
+</xsd:schema>
+  </types>
+  <message name="PutAccessRightResponse">
+    <part element="type:PutAccessRightResponse" name="body">
+    </part>
+  </message>
+  <message name="PutAccessRightRequest">
+    <part element="type:PutAccessRightRequest" name="body">
+    </part>
+  </message>
+  <message name="GetPatientAuditTrailResponse">
+    <part element="type:GetPatientAuditTrailResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeAccessRightResponse">
+    <part element="type:RevokeAccessRightResponse" name="body">
+    </part>
+  </message>
+  <message name="GetHCPartyConsentRequest">
+    <part element="type:GetHCPartyConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="GetPatientRequest">
+    <part element="type:GetPatientRequest" name="body">
+    </part>
+  </message>
+  <message name="PutHCPartyConsentRequest">
+    <part element="type:PutHCPartyConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="GetAccessRightRequest">
+    <part element="type:GetAccessRightRequest" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionListResponse">
+    <part element="type:GetTransactionListResponse" name="body">
+    </part>
+  </message>
+  <message name="PutHCPartyResponse">
+    <part element="type:PutHCPartyResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeHCPartyConsentRequest">
+    <part element="type:RevokeHCPartyConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="GetTherapeuticLinkRequest">
+    <part element="type:GetTherapeuticLinkRequest" name="body">
+    </part>
+  </message>
+  <message name="PutPatientConsentResponse">
+    <part element="type:PutPatientConsentResponse" name="body">
+    </part>
+  </message>
+  <message name="PutPatientResponse">
+    <part element="type:PutPatientResponse" name="body">
+    </part>
+  </message>
+  <message name="RequestPublicationResponse">
+    <part element="type:RequestPublicationResponse" name="body">
+    </part>
+  </message>
+  <message name="PutPatientRequest">
+    <part element="type:PutPatientRequest" name="body">
+    </part>
+  </message>
+  <message name="GetAccessRightResponse">
+    <part element="type:GetAccessRightResponse" name="body">
+    </part>
+  </message>
+  <message name="PutTherapeuticLinkResponse">
+    <part element="type:PutTherapeuticLinkResponse" name="body">
+    </part>
+  </message>
+  <message name="GetTherapeuticLinkResponse">
+    <part element="type:GetTherapeuticLinkResponse" name="body">
+    </part>
+  </message>
+  <message name="GetPatientConsentRequest">
+    <part element="type:GetPatientConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionSetRequest">
+    <part element="type:GetTransactionSetRequest" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionSetResponse">
+    <part element="type:GetTransactionSetResponse" name="body">
+    </part>
+  </message>
+  <message name="GetLatestUpdateRequest">
+    <part element="type:GetLatestUpdateRequest" name="body">
+    </part>
+  </message>
+  <message name="PutPatientConsentRequest">
+    <part element="type:PutPatientConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="GetPatientConsentResponse">
+    <part element="type:GetPatientConsentResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeAccessRightRequest">
+    <part element="type:RevokeAccessRightRequest" name="body">
+    </part>
+  </message>
+  <message name="DeclareTransactionResponse">
+    <part element="type:DeclareTransactionResponse" name="body">
+    </part>
+  </message>
+  <message name="PutTherapeuticLinkRequest">
+    <part element="type:PutTherapeuticLinkRequest" name="body">
+    </part>
+  </message>
+  <message name="GetPatientAuditTrailRequest">
+    <part element="type:GetPatientAuditTrailRequest" name="body">
+    </part>
+  </message>
+  <message name="RevokePatientConsentRequest">
+    <part element="type:RevokePatientConsentRequest" name="body">
+    </part>
+  </message>
+  <message name="PutHCPartyRequest">
+    <part element="type:PutHCPartyRequest" name="body">
+    </part>
+  </message>
+  <message name="RevokeTherapeuticLinkRequest">
+    <part element="type:RevokeTherapeuticLinkRequest" name="body">
+    </part>
+  </message>
+  <message name="GetLatestUpdateResponse">
+    <part element="type:GetLatestUpdateResponse" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionResponse">
+    <part element="type:GetTransactionResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeTransactionResponse">
+    <part element="type:RevokeTransactionResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeTransactionRequest">
+    <part element="type:RevokeTransactionRequest" name="body">
+    </part>
+  </message>
+  <message name="GetHCPartyConsentResponse">
+    <part element="type:GetHCPartyConsentResponse" name="body">
+    </part>
+  </message>
+  <message name="RequestPublicationRequest">
+    <part element="type:RequestPublicationRequest" name="body">
+    </part>
+  </message>
+  <message name="DeclareTransactionRequest">
+    <part element="type:DeclareTransactionRequest" name="body">
+    </part>
+  </message>
+  <message name="RevokeHCPartyConsentResponse">
+    <part element="type:RevokeHCPartyConsentResponse" name="body">
+    </part>
+  </message>
+  <message name="PutTransactionSetResponse">
+    <part element="type:PutTransactionSetResponse" name="body">
+    </part>
+  </message>
+  <message name="GetHCPartyResponse">
+    <part element="type:GetHCPartyResponse" name="body">
+    </part>
+  </message>
+  <message name="PutTransactionSetRequest">
+    <part element="type:PutTransactionSetRequest" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionListRequest">
+    <part element="type:GetTransactionListRequest" name="body">
+    </part>
+  </message>
+  <message name="PutTransactionResponse">
+    <part element="type:PutTransactionResponse" name="body">
+    </part>
+  </message>
+  <message name="GetHCPartyRequest">
+    <part element="type:GetHCPartyRequest" name="body">
+    </part>
+  </message>
+  <message name="PutHCPartyConsentResponse">
+    <part element="type:PutHCPartyConsentResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokeTherapeuticLinkResponse">
+    <part element="type:RevokeTherapeuticLinkResponse" name="body">
+    </part>
+  </message>
+  <message name="GetTransactionRequest">
+    <part element="type:GetTransactionRequest" name="body">
+    </part>
+  </message>
+  <message name="PutTransactionRequest">
+    <part element="type:PutTransactionRequest" name="body">
+    </part>
+  </message>
+  <message name="GetPatientResponse">
+    <part element="type:GetPatientResponse" name="body">
+    </part>
+  </message>
+  <message name="RevokePatientConsentResponse">
+    <part element="type:RevokePatientConsentResponse" name="body">
+    </part>
+  </message>
+  <portType name="IntraHubPortType">
+    <operation name="GetTransaction">
+      <input message="intrahub:GetTransactionRequest">
+    </input>
+      <output message="intrahub:GetTransactionResponse">
+    </output>
+    </operation>
+    <operation name="GetTransactionList">
+      <input message="intrahub:GetTransactionListRequest">
+    </input>
+      <output message="intrahub:GetTransactionListResponse">
+    </output>
+    </operation>
+    <operation name="GetPatientAuditTrail">
+      <input message="intrahub:GetPatientAuditTrailRequest">
+    </input>
+      <output message="intrahub:GetPatientAuditTrailResponse">
+    </output>
+    </operation>
+    <operation name="RequestPublication">
+      <input message="intrahub:RequestPublicationRequest">
+    </input>
+      <output message="intrahub:RequestPublicationResponse">
+    </output>
+    </operation>
+    <operation name="DeclareTransaction">
+      <input message="intrahub:DeclareTransactionRequest">
+    </input>
+      <output message="intrahub:DeclareTransactionResponse">
+    </output>
+    </operation>
+    <operation name="PutTransaction">
+      <input message="intrahub:PutTransactionRequest">
+    </input>
+      <output message="intrahub:PutTransactionResponse">
+    </output>
+    </operation>
+    <operation name="RevokeTransaction">
+      <input message="intrahub:RevokeTransactionRequest">
+    </input>
+      <output message="intrahub:RevokeTransactionResponse">
+    </output>
+    </operation>
+    <operation name="PutPatient">
+      <input message="intrahub:PutPatientRequest">
+    </input>
+      <output message="intrahub:PutPatientResponse">
+    </output>
+    </operation>
+    <operation name="GetPatient">
+      <input message="intrahub:GetPatientRequest">
+    </input>
+      <output message="intrahub:GetPatientResponse">
+    </output>
+    </operation>
+    <operation name="PutPatientConsent">
+      <input message="intrahub:PutPatientConsentRequest">
+    </input>
+      <output message="intrahub:PutPatientConsentResponse">
+    </output>
+    </operation>
+    <operation name="GetPatientConsent">
+      <input message="intrahub:GetPatientConsentRequest">
+    </input>
+      <output message="intrahub:GetPatientConsentResponse">
+    </output>
+    </operation>
+    <operation name="RevokePatientConsent">
+      <input message="intrahub:RevokePatientConsentRequest">
+    </input>
+      <output message="intrahub:RevokePatientConsentResponse">
+    </output>
+    </operation>
+    <operation name="PutHCParty">
+      <input message="intrahub:PutHCPartyRequest">
+    </input>
+      <output message="intrahub:PutHCPartyResponse">
+    </output>
+    </operation>
+    <operation name="GetHCParty">
+      <input message="intrahub:GetHCPartyRequest">
+    </input>
+      <output message="intrahub:GetHCPartyResponse">
+    </output>
+    </operation>
+    <operation name="PutHCPartyConsent">
+      <input message="intrahub:PutHCPartyConsentRequest">
+    </input>
+      <output message="intrahub:PutHCPartyConsentResponse">
+    </output>
+    </operation>
+    <operation name="GetHCPartyConsent">
+      <input message="intrahub:GetHCPartyConsentRequest">
+    </input>
+      <output message="intrahub:GetHCPartyConsentResponse">
+    </output>
+    </operation>
+    <operation name="RevokeHCPartyConsent">
+      <input message="intrahub:RevokeHCPartyConsentRequest">
+    </input>
+      <output message="intrahub:RevokeHCPartyConsentResponse">
+    </output>
+    </operation>
+    <operation name="PutTherapeuticLink">
+      <input message="intrahub:PutTherapeuticLinkRequest">
+    </input>
+      <output message="intrahub:PutTherapeuticLinkResponse">
+    </output>
+    </operation>
+    <operation name="GetTherapeuticLink">
+      <input message="intrahub:GetTherapeuticLinkRequest">
+    </input>
+      <output message="intrahub:GetTherapeuticLinkResponse">
+    </output>
+    </operation>
+    <operation name="RevokeTherapeuticLink">
+      <input message="intrahub:RevokeTherapeuticLinkRequest">
+    </input>
+      <output message="intrahub:RevokeTherapeuticLinkResponse">
+    </output>
+    </operation>
+    <operation name="PutAccessRight">
+      <input message="intrahub:PutAccessRightRequest">
+    </input>
+      <output message="intrahub:PutAccessRightResponse">
+    </output>
+    </operation>
+    <operation name="GetAccessRight">
+      <input message="intrahub:GetAccessRightRequest">
+    </input>
+      <output message="intrahub:GetAccessRightResponse">
+    </output>
+    </operation>
+    <operation name="RevokeAccessRight">
+      <input message="intrahub:RevokeAccessRightRequest">
+    </input>
+      <output message="intrahub:RevokeAccessRightResponse">
+    </output>
+    </operation>
+    <operation name="PutTransactionSet">
+      <input message="intrahub:PutTransactionSetRequest">
+    </input>
+      <output message="intrahub:PutTransactionSetResponse">
+    </output>
+    </operation>
+    <operation name="GetTransactionSet">
+      <input message="intrahub:GetTransactionSetRequest">
+    </input>
+      <output message="intrahub:GetTransactionSetResponse">
+    </output>
+    </operation>
+    <operation name="GetLatestUpdate">
+      <input message="intrahub:GetLatestUpdateRequest">
+    </input>
+      <output message="intrahub:GetLatestUpdateResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="IntraHubSoapBinding" type="intrahub:IntraHubPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetTransaction">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetTransaction" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetTransactionList">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetTransactionList" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetPatientAuditTrail">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetPatientAuditTrail" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RequestPublication">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RequestPublication" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeclareTransaction">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:DeclareTransaction" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutTransaction">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutTransaction" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RevokeTransaction">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RevokeTransaction" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutPatient">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutPatient" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetPatient">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetPatient" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutPatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutPatientConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetPatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetPatientConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RevokePatientConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RevokePatientConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutHCParty">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutHCParty" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetHCParty">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetHCParty" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutHCPartyConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutHCPartyConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetHCPartyConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetHCPartyConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RevokeHCPartyConsent">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RevokeHCPartyConsent" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutTherapeuticLink" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetTherapeuticLink" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RevokeTherapeuticLink">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RevokeTherapeuticLink" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutAccessRight">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutAccessRight" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetAccessRight">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetAccessRight" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="RevokeAccessRight">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:RevokeAccessRight" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="PutTransactionSet">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:PutTransactionSet" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetTransactionSet">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetTransactionSet" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetLatestUpdate">
+      <soap:operation soapAction="urn:be:fgov:ehealth:intrahub:protocol:v3:GetLatestUpdate" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+    <wsp:PolicyReference URI="#Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="IntraHubService">
+    <port binding="intrahub:IntraHubSoapBinding" name="IntraHubPort">
+      <soap:address location="https://wwwint.vas.ehealth.fgov.be/vpmg/vitalink-gateway/IntraHubService"/>
+    </port>
+  </service>
+    <wsp:UsingPolicy wsu:Required="true"/>
+    <wsp:Policy wsu:Id="Wssp1.2-2007-Saml1.1-HolderOfKey-Wss1.0-eHealth">
+		<sp:AsymmetricBinding>
+			<wsp:Policy>
+				<sp:InitiatorToken>
+					<wsp:Policy>
+						<sp:SamlToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+							<wsp:Policy>
+								<sp:WssSamlV11Token10/>
+							</wsp:Policy>
+						</sp:SamlToken>
+					</wsp:Policy>
+				</sp:InitiatorToken>
+				<sp:RecipientToken>
+					<wsp:Policy>
+						<sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+							<wsp:Policy>
+								<sp:WssX509V3Token10/>
+							</wsp:Policy>
+						</sp:X509Token>
+					</wsp:Policy>
+				</sp:RecipientToken>
+				<sp:AlgorithmSuite>
+					<wsp:Policy>
+						<sp:Basic256/>
+					</wsp:Policy>
+				</sp:AlgorithmSuite>
+				<sp:Layout>
+					<wsp:Policy>
+						<sp:Lax/>
+					</wsp:Policy>
+				</sp:Layout>
+				<sp:IncludeTimestamp/>
+				<!-- comment this out if you want that the samlToken must be signed by the client -->
+				<!-- sp:ProtectTokens / -->
+				<sp:OnlySignEntireHeadersAndBody/>
+			</wsp:Policy>
+		</sp:AsymmetricBinding>
+		<sp:SignedParts>
+			<sp:Header Name="Timestamp" Namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"/>
+			<sp:Body/>
+		</sp:SignedParts>
+		<sp:Wss10>
+			<wsp:Policy>
+				<sp:MustSupportRefKeyIdentifier/>
+				<sp:MustSupportRefIssuerSerial/>
+			</wsp:Policy>
+		</sp:Wss10>
+	</wsp:Policy>
+</definitions>
