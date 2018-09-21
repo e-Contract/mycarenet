@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2018 e-Contract.be BVBA.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -74,16 +74,12 @@ public class EHealthSTSClient {
 	 *            the URL of the eHealth STS web service.
 	 */
 	public EHealthSTSClient(String location) {
-		EHealthSamlStsService service = EHealthSamlStsServiceFactory
-				.newInstance();
+		EHealthSamlStsService service = EHealthSamlStsServiceFactory.newInstance();
 
-		QName portQName = new QName("urn:be:ehealth:saml:sts:1.0",
-				"EHealthSamlStsPort");
-		this.dispatch = service.createDispatch(portQName, Source.class,
-				Service.Mode.PAYLOAD);
+		QName portQName = new QName("urn:be:ehealth:saml:sts:1.0", "EHealthSamlStsPort");
+		this.dispatch = service.createDispatch(portQName, Source.class, Service.Mode.PAYLOAD);
 
-		this.dispatch.getRequestContext().put(
-				Dispatch.ENDPOINT_ADDRESS_PROPERTY, location);
+		this.dispatch.getRequestContext().put(Dispatch.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = dispatch.getBinding();
 		@SuppressWarnings("rawtypes")
@@ -112,28 +108,33 @@ public class EHealthSTSClient {
 	 * @return the SAML assertion as DOM element.
 	 * @throws Exception
 	 *             in case something goes wrong.
+	 * @throws EHealthSTSException
+	 *             in case the STS returned no SAML assertion.
 	 */
-	public Element requestAssertion(X509Certificate authnCertificate,
-			PrivateKey authnPrivateKey, X509Certificate hokCertificate,
-			PrivateKey hokPrivateKey, List<Attribute> attributes,
+	public Element requestAssertion(X509Certificate authnCertificate, PrivateKey authnPrivateKey,
+			X509Certificate hokCertificate, PrivateKey hokPrivateKey, List<Attribute> attributes,
 			List<AttributeDesignator> attributeDesignators) throws Exception {
 		this.wsSecuritySOAPHandler.setCertificate(authnCertificate);
 		this.wsSecuritySOAPHandler.setPrivateKey(authnPrivateKey);
 
 		RequestFactory requestFactory = new RequestFactory();
-		Element requestElement = requestFactory
-				.createRequest(authnCertificate, hokPrivateKey, hokCertificate,
-						attributes, attributeDesignators);
+		Element requestElement = requestFactory.createRequest(authnCertificate, hokPrivateKey, hokCertificate,
+				attributes, attributeDesignators);
 
-		Source responseSource = this.dispatch.invoke(new DOMSource(
-				requestElement));
+		Source responseSource = this.dispatch.invoke(new DOMSource(requestElement));
 
 		Element responseElement = toElement(responseSource);
 
-		NodeList assertionNodeList = responseElement.getElementsByTagNameNS(
-				"urn:oasis:names:tc:SAML:1.0:assertion", "Assertion");
+		NodeList assertionNodeList = responseElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:1.0:assertion",
+				"Assertion");
 		if (assertionNodeList.getLength() == 0) {
 			LOG.error("no assertion in response");
+			NodeList statusNodeList = responseElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:1.0:protocol",
+					"Status");
+			if (statusNodeList.getLength() == 1) {
+				Element statusElement = (Element) statusNodeList.item(0);
+				throw new EHealthSTSException(statusElement);
+			}
 			return null;
 		}
 		return (Element) assertionNodeList.item(0);
@@ -144,8 +145,7 @@ public class EHealthSTSClient {
 			DOMSource domSource = (DOMSource) source;
 			return (Element) domSource.getNode();
 		}
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
@@ -170,13 +170,11 @@ public class EHealthSTSClient {
 	 * @return
 	 */
 	public DateTime getNotAfter(Element assertionElement) {
-		NodeList conditionsNodeList = assertionElement.getElementsByTagNameNS(
-				"urn:oasis:names:tc:SAML:1.0:assertion", "Conditions");
+		NodeList conditionsNodeList = assertionElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:1.0:assertion",
+				"Conditions");
 		Element conditionsElement = (Element) conditionsNodeList.item(0);
-		String notOnOrAfterAttributeValue = conditionsElement
-				.getAttribute("NotOnOrAfter");
-		Calendar calendar = DatatypeConverter
-				.parseDateTime(notOnOrAfterAttributeValue);
+		String notOnOrAfterAttributeValue = conditionsElement.getAttribute("NotOnOrAfter");
+		Calendar calendar = DatatypeConverter.parseDateTime(notOnOrAfterAttributeValue);
 		return new DateTime(calendar.getTime());
 	}
 
@@ -187,8 +185,7 @@ public class EHealthSTSClient {
 	 * @return
 	 */
 	public String toString(Element element) {
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
@@ -197,8 +194,7 @@ public class EHealthSTSClient {
 		}
 		StringWriter stringWriter = new StringWriter();
 		try {
-			transformer.transform(new DOMSource(element), new StreamResult(
-					stringWriter));
+			transformer.transform(new DOMSource(element), new StreamResult(stringWriter));
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
