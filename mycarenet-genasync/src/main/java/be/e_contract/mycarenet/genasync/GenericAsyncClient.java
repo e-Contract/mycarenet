@@ -58,6 +58,10 @@ public class GenericAsyncClient {
 	private final GenericAsync port;
 
 	public GenericAsyncClient(String location) {
+		this(location, "urn:nip:destination:io:MULTICAST");
+	}
+
+	public GenericAsyncClient(String location, String to) {
 		GenericAsyncService service = GenericAsyncServiceFactory.newInstance();
 
 		this.port = service.getGenericAsyncSOAP(new AddressingFeature(true));
@@ -68,18 +72,18 @@ public class GenericAsyncClient {
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 
-		configureBindingProvider(this.dispatch, location);
-		configureBindingProvider((BindingProvider) this.port, location);
+		configureBindingProvider(this.dispatch, location, to);
+		configureBindingProvider((BindingProvider) this.port, location, to);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configureBindingProvider(BindingProvider bindingProvider, String location) {
+	private void configureBindingProvider(BindingProvider bindingProvider, String location, String to) {
 		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
 		List handlerChain = binding.getHandlerChain();
-		handlerChain.add(new WSAddressingSOAPHandler("urn:nip:destination:io:MULTICAST"));
+		handlerChain.add(new WSAddressingSOAPHandler(to));
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(new LoggingHandler());
 		binding.setHandlerChain(handlerChain);
