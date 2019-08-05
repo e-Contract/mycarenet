@@ -25,7 +25,7 @@
 							<xdebug>true</xdebug>
 							<extension>true</extension>
 							<wsdlFiles>
-								<wsdlFile>GenericAsync.wsdl</wsdlFile>
+								<wsdlFile>GenericAsync-V3.wsdl</wsdlFile>
 							</wsdlFiles>
 							<bindingFiles>
 								<bindingFile>jaxws-bindings.xml</bindingFile>

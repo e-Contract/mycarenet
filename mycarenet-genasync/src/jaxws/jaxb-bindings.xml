@@ -8,7 +8,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
 	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
 
-	<jxb:bindings schemaLocation="../wsdl/GenericAsync.xsd"
+	<jxb:bindings schemaLocation="../wsdl/GenericAsync-V3.xsd"
 		node="/xs:schema">
 		<jxb:schemaBindings>
 			<jxb:package name="be.e_contract.mycarenet.genasync.jaxb">
@@ -16,7 +16,7 @@
 			</jxb:package>
 		</jxb:schemaBindings>
 		<jxb:bindings
-			schemaLocation="../wsdl/commonTypes-v1.3.xsd" node="/xs:schema">
+			schemaLocation="../wsdl/commonTypes-v1.4.xsd" node="/xs:schema">
 			<jxb:schemaBindings>
 				<jxb:package
 					name="be.e_contract.mycarenet.genasync.jaxb.common.types">
