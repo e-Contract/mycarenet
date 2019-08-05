@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:prefix="http://jaxb2-commons.dev.java.net/namespace-prefix"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+                http://jaxb2-commons.dev.java.net/namespace-prefix http://java.net/projects/jaxb2-commons/sources/svn/content/namespace-prefix/trunk/src/main/resources/prefix-namespace-schema.xsd">
+    <jxb:bindings schemaLocation="businessContent.xsd" node="/xs:schema">
+        <jxb:schemaBindings>
+            <jxb:package name="be.e_contract.mycarenet.genasync.jaxb.encrypted"/>
+        </jxb:schemaBindings>
+        <prefix:prefix name="cinenc" />
+    </jxb:bindings>
+</jxb:bindings>
