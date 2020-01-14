@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="MyCareNetMemberData" targetNamespace="urn:be:fgov:ehealth:mycarenet:memberdata:protocol:v1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:err="urn:be:fgov:ehealth:errors:soa:v1" xmlns:mcn="urn:be:fgov:ehealth:mycarenet:memberdata:protocol:v1" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>Version 1.0 : web service definition for WS eMemberData of Mycarenet platform</wsdl:documentation>
+  <wsp:Policy wsu:Id="SAML_HOK" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <sp:AsymmetricBinding>
+      <wsp:Policy>
+        <sp:InitiatorToken>
+          <wsp:Policy>
+            <!-- If the client framework supports sp:IssuedToken policy assertions, uncomment this block and comment the sp:SamlToken assertion -->
+            <!-- <sp:IssuedToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient"> -->
+            <!-- <sp:RequestSecurityTokenTemplate /> -->
+            <!-- <wsp:Policy /> -->
+            <!-- </sp:IssuedToken> -->
+            <sp:SamlToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+              <wsp:Policy>
+                <sp:WssSamlV11Token10/>
+              </wsp:Policy>
+            </sp:SamlToken>
+          </wsp:Policy>
+        </sp:InitiatorToken>
+        <sp:RecipientToken>
+          <wsp:Policy>
+            <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+              <wsp:Policy>
+                <sp:WssX509V3Token10/>
+              </wsp:Policy>
+            </sp:X509Token>
+          </wsp:Policy>
+        </sp:RecipientToken>
+        <sp:AlgorithmSuite>
+          <wsp:Policy>
+            <sp:Basic256/>
+          </wsp:Policy>
+        </sp:AlgorithmSuite>
+        <sp:Layout>
+          <wsp:Policy>
+            <sp:Lax/>
+          </wsp:Policy>
+        </sp:Layout>
+        <sp:IncludeTimestamp/>
+        <sp:ProtectTokens/>
+        <sp:OnlySignEntireHeadersAndBody/>
+      </wsp:Policy>
+    </sp:AsymmetricBinding>
+    <sp:Wss10>
+      <wsp:Policy>
+        <sp:MustSupportRefKeyIdentifier/>
+        <sp:MustSupportRefIssuerSerial/>
+      </wsp:Policy>
+    </sp:Wss10>
+    <sp:SignedParts>
+      <sp:Body/>
+    </sp:SignedParts>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="urn:be:fgov:ehealth:mycarenet:memberdata:protocol:v1" schemaLocation="mycarenet-memberdata-protocol-1_0.xsd"/>
+      <xsd:import namespace="urn:be:fgov:ehealth:errors:soa:v1" schemaLocation="ehealth-errors-schema-soa-1_1.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="MemberDataConsultationRequest">
+    <wsdl:part name="body" element="mcn:MemberDataConsultationRequest"/>
+  </wsdl:message>
+  <wsdl:message name="MemberDataConsultationResponse">
+    <wsdl:part name="body" element="mcn:MemberDataConsultationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="SystemError">
+    <wsdl:part name="fault" element="err:SystemError"/>
+  </wsdl:message>
+  <wsdl:message name="BusinessError">
+    <wsdl:part name="fault" element="err:BusinessError"/>
+  </wsdl:message>
+  <wsdl:portType name="MycarenetMemberDataPortType">
+    <wsdl:operation name="memberDataConsultation">
+      <wsdl:input message="mcn:MemberDataConsultationRequest"/>
+      <wsdl:output message="mcn:MemberDataConsultationResponse"/>
+      <wsdl:fault name="SystemError" message="mcn:SystemError"/>
+      <wsdl:fault name="BusinessError" message="mcn:BusinessError"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MycarenetMemberDataSOAPBinding" type="mcn:MycarenetMemberDataPortType">
+    <soap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="memberDataConsultation">
+      <soap11:operation soapAction="urn:be:fgov:ehealth:mycarenet:memberdata:protocol:v1:MemberDataConsultation" style="document"/>
+      <wsdl:input>
+        <soap11:body use="literal"/>
+        <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SystemError">
+        <soap11:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="BusinessError">
+        <soap11:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MycarenetMemberDataService">
+    <wsdl:port name="MycarenetMemberDataServiceSOAP11" binding="mcn:MycarenetMemberDataSOAPBinding">
+      <soap11:address location="https://services.ehealth.fgov.be/MyCareNet/MemberData/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
