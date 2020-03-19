@@ -84,7 +84,9 @@
       <soap11:operation soapAction="urn:be:fgov:ehealth:mycarenet:memberdata:protocol:v1:MemberDataConsultation" style="document"/>
       <wsdl:input>
         <soap11:body use="literal"/>
+        <!--
         <PolicyReference URI="#SAML_HOK" xmlns="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+        -->
       </wsdl:input>
       <wsdl:output>
         <soap11:body use="literal"/>
