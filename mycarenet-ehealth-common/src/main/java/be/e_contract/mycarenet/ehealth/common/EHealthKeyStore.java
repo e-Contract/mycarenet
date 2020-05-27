@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -20,6 +20,7 @@ package be.e_contract.mycarenet.ehealth.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
@@ -32,7 +33,7 @@ import java.util.Enumeration;
  * @author Frank Cornelis
  * 
  */
-public class EHealthKeyStore {
+public class EHealthKeyStore implements Serializable {
 
 	private final X509Certificate authenticationCertificate;
 	private final PrivateKey authenticationPrivateKey;

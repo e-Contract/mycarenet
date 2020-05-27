@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2014-2015 e-Contract.be BVBA.
+ * Copyright (C) 2014-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -43,6 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.genins.jaxb.protocol.GetInsurabilityAsXmlOrFlatRequestType;
 import be.e_contract.mycarenet.genins.jaxb.protocol.GetInsurabilityResponseType;
@@ -56,7 +57,7 @@ import be.e_contract.mycarenet.genins.jaxws.SystemError;
  * @author Frank Cornelis
  * 
  */
-public class GenericInsurabilityClient {
+public class GenericInsurabilityClient implements CredentialClient {
 
 	private final GenericInsurabilityPortType port;
 
@@ -106,6 +107,7 @@ public class GenericInsurabilityClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
