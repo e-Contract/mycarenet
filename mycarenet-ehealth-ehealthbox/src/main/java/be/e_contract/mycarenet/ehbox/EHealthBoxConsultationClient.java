@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -61,6 +61,7 @@ import be.e_contract.mycarenet.ehbox.jaxws.consultation.BusinessError;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationPortType;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 /**
@@ -70,7 +71,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  * @author Frank Cornelis
  * 
  */
-public class EHealthBoxConsultationClient {
+public class EHealthBoxConsultationClient implements CredentialClient {
 
 	private static final Log LOG = LogFactory
 			.getLog(EHealthBoxConsultationClient.class);
@@ -93,6 +94,7 @@ public class EHealthBoxConsultationClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
