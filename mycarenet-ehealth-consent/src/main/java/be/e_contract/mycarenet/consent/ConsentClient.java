@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2017 e-Contract.be BVBA.
+ * Copyright (C) 2017-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -44,9 +44,10 @@ import be.e_contract.mycarenet.consent.jaxb.hubservices.core.GetPatientConsentRe
 import be.e_contract.mycarenet.consent.jaxb.hubservices.core.GetPatientConsentResponseType;
 import be.e_contract.mycarenet.consent.jaxws.ConsentPortType;
 import be.e_contract.mycarenet.consent.jaxws.ConsentService;
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
-public class ConsentClient {
+public class ConsentClient implements CredentialClient {
 
 	private static final Log LOG = LogFactory.getLog(ConsentClient.class);
 
@@ -89,6 +90,7 @@ public class ConsentClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);

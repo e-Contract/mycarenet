@@ -42,12 +42,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSAddressingSOAPHandler;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.memberdata.jaxws.MycarenetMemberDataPortType;
 import be.e_contract.mycarenet.memberdata.jaxws.MycarenetMemberDataService;
 
-public class MemberDataClient {
+public class MemberDataClient implements CredentialClient {
 
 	private static final Log LOG = LogFactory.getLog(MemberDataClient.class);
 
@@ -96,6 +97,7 @@ public class MemberDataClient {
 	 * @param hokPrivateKey the eHealth holder-of-key authentication private key.
 	 * @param samlAssertion the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);

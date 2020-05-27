@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -40,11 +40,12 @@ import javax.xml.ws.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.ehealth.therlink.jaxws.TherLinkPortType;
 import be.e_contract.mycarenet.ehealth.therlink.jaxws.TherLinkService;
 
-public class TherLinkClient {
+public class TherLinkClient implements CredentialClient {
 
 	private static final Log LOG = LogFactory.getLog(TherLinkClient.class);
 
@@ -87,6 +88,7 @@ public class TherLinkClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);

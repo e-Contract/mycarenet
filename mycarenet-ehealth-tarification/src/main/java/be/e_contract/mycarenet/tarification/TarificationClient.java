@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2016 e-Contract.be BVBA.
+ * Copyright (C) 2016-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -40,6 +40,7 @@ import javax.xml.ws.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.tarification.jaxb.mycarenet.commons.protocol.SendRequestType;
 import be.e_contract.mycarenet.tarification.jaxb.mycarenet.commons.protocol.SendResponseType;
@@ -48,7 +49,7 @@ import be.e_contract.mycarenet.tarification.jaxws.MycarenetTarificationPortType;
 import be.e_contract.mycarenet.tarification.jaxws.MycarenetTarificationService;
 import be.e_contract.mycarenet.tarification.jaxws.SystemError;
 
-public class TarificationClient {
+public class TarificationClient implements CredentialClient {
 
 	private static final Log LOG = LogFactory.getLog(TarificationClient.class);
 
@@ -92,6 +93,7 @@ public class TarificationClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);

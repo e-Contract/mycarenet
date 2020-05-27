@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -43,11 +43,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
+import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 import be.e_contract.mycarenet.vitalink.intrahub.jaxws.IntraHubPortType;
 import be.e_contract.mycarenet.vitalink.intrahub.jaxws.IntraHubService;
 
-public class IntraHubServiceClient {
+public class IntraHubServiceClient implements CredentialClient {
 
 	private final IntraHubPortType port;
 
@@ -91,6 +92,7 @@ public class IntraHubServiceClient {
 	 * @param samlAssertion
 	 *            the eHealth SAML assertion as string.
 	 */
+	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
