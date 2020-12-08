@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2020 e-Contract.be BV.
+ * Copyright (C) 2020 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -16,13 +16,14 @@
  * http://www.gnu.org/licenses/.
  */
 
-package be.e_contract.mycarenet.ehbox;
+package be.e_contract.mycarenet.eh2box;
 
 import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationService;
+import be.e_contract.mycarenet.eh2box.jaxws.publication.EhBoxPublicationService;
+
 
 public class EhBoxPublicationServiceFactory {
 
@@ -32,7 +33,7 @@ public class EhBoxPublicationServiceFactory {
 
 	public static EhBoxPublicationService newInstance() {
 		URL wsdlLocation = EhBoxPublicationServiceFactory.class
-				.getResource("/ehBoxPublication-v3.wsdl");
+				.getResource("/Eh2eBoxPublication_v3.wsdl");
 		QName serviceName = new QName(
 				"urn:be:fgov:ehealth:ehbox:publication:protocol:v3",
 				"ehBoxPublicationService");
