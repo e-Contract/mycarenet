@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema version="1.6" targetNamespace="urn:be:fgov:ehealth:commons:protocol:v1" attributeFormDefault="unqualified" elementFormDefault="unqualified" xmlns:core="urn:be:fgov:ehealth:commons:core:v1" xmlns:protocol="urn:be:fgov:ehealth:commons:protocol:v1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="urn:be:fgov:ehealth:commons:core:v1" schemaLocation="ehealth-commons-schema-core-1_6.xsd"/>
+  <xs:complexType name="RequestType"/>
+  <xs:complexType name="ResponseType">
+    <xs:sequence>
+      <xs:element name="Status" type="core:StatusType"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>

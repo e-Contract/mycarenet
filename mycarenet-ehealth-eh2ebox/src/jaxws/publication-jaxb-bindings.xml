@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jxb:bindings
+		schemaLocation="../wsdl/ehealth-ehBox-publication-schema-protocol-3_0.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package
+				name="be.e_contract.mycarenet.eh2box.jaxb.publication.protocol">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Publication Protocol</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-commons-schema-protocol-1_6.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.eh2box.jaxb.commons.protocol">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Commons Protocol</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-commons-schema-core-1_6.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.eh2box.jaxb.commons.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Commons Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-ehBox-schema-core-3_0.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.eh2box.jaxb.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+	<jxb:bindings
+		schemaLocation="../wsdl/ehealth-errors-schema-service-1_0.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package
+				name="be.e_contract.mycarenet.eh2box.jaxb.errors">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealth Errors</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-errors-schema-core-1_0.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.eh2box.jaxb.errors.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth Errors</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>
