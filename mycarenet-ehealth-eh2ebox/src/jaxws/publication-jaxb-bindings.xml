@@ -13,8 +13,8 @@
 		node="/xs:schema">
 		<jxb:schemaBindings>
 			<jxb:package
-				name="be.e_contract.mycarenet.eh2box.jaxb.publication.protocol">
-				<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Publication Protocol</body>]]></jxb:javadoc>
+				name="be.e_contract.mycarenet.eh2ebox.jaxb.publication.protocol">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealth 2 eBox Publication Protocol</body>]]></jxb:javadoc>
 			</jxb:package>
 		</jxb:schemaBindings>
 		<jxb:bindings
@@ -22,8 +22,8 @@
 			node="/xs:schema">
 			<jxb:schemaBindings>
 				<jxb:package
-					name="be.e_contract.mycarenet.eh2box.jaxb.commons.protocol">
-					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Commons Protocol</body>]]></jxb:javadoc>
+					name="be.e_contract.mycarenet.eh2ebox.jaxb.commons.protocol">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth 2 eBox Commons Protocol</body>]]></jxb:javadoc>
 				</jxb:package>
 			</jxb:schemaBindings>
 		</jxb:bindings>
@@ -32,8 +32,8 @@
 			node="/xs:schema">
 			<jxb:schemaBindings>
 				<jxb:package
-					name="be.e_contract.mycarenet.eh2box.jaxb.commons.core">
-					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Commons Core</body>]]></jxb:javadoc>
+					name="be.e_contract.mycarenet.eh2ebox.jaxb.commons.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth 2 eBox Commons Core</body>]]></jxb:javadoc>
 				</jxb:package>
 			</jxb:schemaBindings>
 		</jxb:bindings>
@@ -42,8 +42,8 @@
 			node="/xs:schema">
 			<jxb:schemaBindings>
 				<jxb:package
-					name="be.e_contract.mycarenet.eh2box.jaxb.core">
-					<jxb:javadoc><![CDATA[<body>JAXB eHealth eBox 2 Core</body>]]></jxb:javadoc>
+					name="be.e_contract.mycarenet.eh2ebox.jaxb.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth 2 eBox Core</body>]]></jxb:javadoc>
 				</jxb:package>
 			</jxb:schemaBindings>
 		</jxb:bindings>

@@ -11,8 +11,8 @@
 	<jaxws:bindings
 		node="wsdl:definitions[@targetNamespace='urn:be:fgov:ehealth:ehbox:publication:protocol:v3']">
 		<jaxws:package
-			name="be.e_contract.mycarenet.eh2box.jaxws.publication">
-			<jaxws:javadoc>JAX-WS eHealth eBox 2 Publication</jaxws:javadoc>
+			name="be.e_contract.mycarenet.eh2ebox.jaxws.publication">
+			<jaxws:javadoc>JAX-WS eHealth 2 eBox Publication</jaxws:javadoc>
 		</jaxws:package>
 	</jaxws:bindings>
 

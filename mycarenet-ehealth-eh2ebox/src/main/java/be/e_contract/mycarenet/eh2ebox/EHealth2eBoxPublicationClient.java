@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2020 e-Contract.be BV.
+ * Copyright (C) 2013-2021 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/.
  */
 
-package be.e_contract.mycarenet.eh2box;
+package be.e_contract.mycarenet.eh2ebox;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -47,12 +47,12 @@ import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.common.PayloadLogicalHandler;
-import be.e_contract.mycarenet.eh2box.jaxb.publication.protocol.PublicationMessageType;
-import be.e_contract.mycarenet.eh2box.jaxb.publication.protocol.SendMessageResponse;
-import be.e_contract.mycarenet.eh2box.jaxws.publication.BusinessError;
-import be.e_contract.mycarenet.eh2box.jaxws.publication.EhBoxPublicationPortType;
-import be.e_contract.mycarenet.eh2box.jaxws.publication.EhBoxPublicationService;
-import be.e_contract.mycarenet.eh2box.jaxws.publication.SystemError;
+import be.e_contract.mycarenet.eh2ebox.jaxb.publication.protocol.PublicationMessageType;
+import be.e_contract.mycarenet.eh2ebox.jaxb.publication.protocol.SendMessageResponse;
+import be.e_contract.mycarenet.eh2ebox.jaxws.publication.BusinessError;
+import be.e_contract.mycarenet.eh2ebox.jaxws.publication.EhBoxPublicationPortType;
+import be.e_contract.mycarenet.eh2ebox.jaxws.publication.EhBoxPublicationService;
+import be.e_contract.mycarenet.eh2ebox.jaxws.publication.SystemError;
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
@@ -63,9 +63,9 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  * @author Frank Cornelis
  * 
  */
-public class EHealthBoxPublicationClient implements CredentialClient {
+public class EHealth2eBoxPublicationClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory.getLog(EHealthBoxPublicationClient.class);
+	private static final Log LOG = LogFactory.getLog(EHealth2eBoxPublicationClient.class);
 
 	private final EhBoxPublicationPortType ehBoxPublicationPort;
 
@@ -92,7 +92,7 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	 * 
 	 * @param location the URL of the eHealth Publication version 3.0 web service.
 	 */
-	public EHealthBoxPublicationClient(String location) {
+	public EHealth2eBoxPublicationClient(String location) {
 		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory.newInstance();
 		/*
 		 * Nasty way to disable MTOM for Apache CXF.

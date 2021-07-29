@@ -8,7 +8,7 @@
 		<artifactId>mycarenet</artifactId>
 		<version>1.2.16-SNAPSHOT</version>
 	</parent>
-	<name>MyCareNet eHealth eBox 2 Client</name>
+	<name>MyCareNet eHealth 2 eBox Publication Client</name>
 	<groupId>be.e_contract.mycarenet</groupId>
 	<artifactId>mycarenet-ehealth-eh2ebox</artifactId>
 	<build>
