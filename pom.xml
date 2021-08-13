@@ -73,7 +73,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jaxws.version>2.2.8</jaxws.version>
 		<cxf.version>2.7.13</cxf.version>
-		<bouncycastle.version>1.50</bouncycastle.version>
+		<bouncycastle.version>1.67</bouncycastle.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
 		<maven-surefire-report-plugin.version>2.22.2</maven-surefire-report-plugin.version>
