@@ -1,0 +1,97 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:be:fgov:ehealth:addressbook:core:v1" xmlns:aa="urn:be:fgov:ehealth:aa:complextype:v1" xmlns:ccore="urn:be:fgov:ehealth:commons:core:v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:be:fgov:ehealth:addressbook:core:v1" version="1.2">
+ <xs:annotation>
+ <xs:appinfo>
+ Implementation-Title: XSD AddressBook
+ Specification-Version: 1.2
+ Implementation-Version: 1.2.3
+ Build-Time: 20210222-1009 
+ </xs:appinfo>
+ </xs:annotation>
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+	<xs:import namespace="urn:be:fgov:ehealth:commons:core:v2" schemaLocation="ehealth-commons-schema-core-2_0.xsd"/>
+    <xs:import namespace="urn:be:fgov:ehealth:aa:complextype:v1" schemaLocation="ehealth-iam-attributes-1_5.xsd"/>
+	<!--Complex and Simple Types Definition-->
+	<xs:simpleType name="SSINType">
+		<xs:annotation>
+			<xs:documentation>Social Security Number</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{11}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NIHIIType">
+		<xs:annotation>
+			<xs:documentation>NIHII number</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{8}|[0-9]{11}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EnterpriseType">
+		<xs:annotation>
+			<xs:documentation>CBE number or EHP number are string identifiers in 10 positions.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{10}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="EHealthBoxType">
+		<xs:annotation>
+			<xs:documentation>eHealthBox representation. This information can be used in eHealthBox services.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:string"/>
+			<xs:element name="Type" type="xs:string"/>
+			<xs:element minOccurs="0" name="SubType" type="xs:string"/>
+			<xs:element name="Quality" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IndividualContactInformationType">
+		<xs:annotation>
+			<xs:documentation>Healthcare professional contact information</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="aa:IndividualType">
+				<xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" ref="aa:Address"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" ref="aa:HealthCareAdditionalInformation"/>
+					<xs:element maxOccurs="unbounded" name="ProfessionalInformation">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="aa:ProfessionalAddressbookType">
+									<xs:sequence>
+										<xs:element minOccurs="0" name="EHealthBox" type="EHealthBoxType"/>
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+<xs:complexType name="OrganizationContactInformationType">
+		<xs:annotation>
+			<xs:documentation>Healthcare institution contact information</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="aa:OrganizationAddressbookType">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="EHealthBox" type="EHealthBoxType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProfessionalInformationType">
+		<xs:annotation>
+			<xs:documentation>Professional data of the individual</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="aa:ProfessionalAddressbookType">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="EHealthBox" type="EHealthBoxType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

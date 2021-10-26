@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.1"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+	http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jxb:bindings
+		schemaLocation="../wsdl/ehealth-addressbook-protocol-1_2.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package
+				name="be.e_contract.mycarenet.addressbook.jaxb.protocol">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealth AddressBook Protocol</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-addressbook-core-1_2.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.addressbook.jaxb.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth AddressBook Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-commons-schema-protocol-2_0.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.addressbook.jaxb.commons.protocol">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth Commons Protocol</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+			<jxb:bindings
+				schemaLocation="../wsdl/ehealth-commons-schema-core-2_0.xsd"
+				node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package
+						name="be.e_contract.mycarenet.addressbook.jaxb.commons.core">
+						<jxb:javadoc><![CDATA[<body>JAXB eHealth Commons Core</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+			</jxb:bindings>
+		</jxb:bindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-iam-attributes-1_5.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.addressbook.jaxb.iam.attributes">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth IAM Attributes</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+			<jxb:bindings
+				schemaLocation="../wsdl/saml-schema-assertion-2.0.xsd"
+				node="/xs:schema">
+				<jxb:schemaBindings>
+					<jxb:package
+						name="be.e_contract.mycarenet.addressbook.jaxb.saml">
+						<jxb:javadoc><![CDATA[<body>JAXB SAML Assertion</body>]]></jxb:javadoc>
+					</jxb:package>
+				</jxb:schemaBindings>
+				<jxb:bindings
+					schemaLocation="../wsdl/xmldsig-core-schema.xsd" node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package
+							name="be.e_contract.mycarenet.addressbook.jaxb.xmldsig">
+							<jxb:javadoc><![CDATA[<body>JAXB XML Signatures</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+				<jxb:bindings schemaLocation="../wsdl/xenc-schema.xsd"
+					node="/xs:schema">
+					<jxb:schemaBindings>
+						<jxb:package
+							name="be.e_contract.mycarenet.addressbook.jaxb.xenc">
+							<jxb:javadoc><![CDATA[<body>JAXB XML Encryption</body>]]></jxb:javadoc>
+						</jxb:package>
+					</jxb:schemaBindings>
+				</jxb:bindings>
+			</jxb:bindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+	<jxb:bindings
+		schemaLocation="../wsdl/ehealth-errors-schema-soa-1_1.xsd"
+		node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package
+				name="be.e_contract.mycarenet.addressbook.jaxb.errors.soa">
+				<jxb:javadoc><![CDATA[<body>JAXB eHealth Errors SOA</body>]]></jxb:javadoc>
+			</jxb:package>
+		</jxb:schemaBindings>
+		<jxb:bindings
+			schemaLocation="../wsdl/ehealth-errors-schema-core-1_1.xsd"
+			node="/xs:schema">
+			<jxb:schemaBindings>
+				<jxb:package
+					name="be.e_contract.mycarenet.addressbook.jaxb.errors.core">
+					<jxb:javadoc><![CDATA[<body>JAXB eHealth Errors Core</body>]]></jxb:javadoc>
+				</jxb:package>
+			</jxb:schemaBindings>
+		</jxb:bindings>
+	</jxb:bindings>
+
+</jxb:bindings>

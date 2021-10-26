@@ -66,6 +66,7 @@
 		<module>mycarenet-vitalink</module>
 		<module>mycarenet-memberdata</module>
 		<module>mycarenet-ehealth-eh2ebox</module>
+		<module>mycarenet-ehealth-addressbook</module>
 		<module>mycarenet-tests</module>
 		<module>mycarenet-tests-cxf</module>
 	</modules>

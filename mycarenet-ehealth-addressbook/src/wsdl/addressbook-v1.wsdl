@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="urn:be:fgov:ehealth:addressbook:protocol:v1" xmlns:addr="urn:be:fgov:ehealth:addressbook:protocol:v1" xmlns:err="urn:be:fgov:ehealth:errors:soa:v1" xmlns:mon="urn:be:fgov:ehealth:monitoring:protocol:v2" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Addressbook" targetNamespace="urn:be:fgov:ehealth:addressbook:protocol:v1">
+  <wsdl:documentation>Version 1.2: initial version</wsdl:documentation>
+
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="urn:be:fgov:ehealth:addressbook:protocol:v1" schemaLocation="ehealth-addressbook-protocol-1_2.xsd"/>
+      <xsd:import namespace="urn:be:fgov:ehealth:errors:soa:v1" schemaLocation="ehealth-errors-schema-soa-1_1.xsd"/>
+      <!--  xsd:import namespace="urn:be:fgov:ehealth:monitoring:protocol:v2" schemaLocation="../../ehealth-monitoring/XSD/ehealth-monitoring-schema-protocol-2_0.xsd"/-->
+    </xsd:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="GetOrganizationContactInfoRequest">
+    <wsdl:part element="addr:GetOrganizationContactInfoRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetOrganizationContactInfoResponse">
+    <wsdl:part element="addr:GetOrganizationContactInfoResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetProfessionalContactInfoRequest">
+    <wsdl:part element="addr:GetProfessionalContactInfoRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="GetProfessionalContactInfoResponse">
+    <wsdl:part element="addr:GetProfessionalContactInfoResponse" name="body"/>
+  </wsdl:message>
+
+  <wsdl:message name="SearchProfessionalsRequest">
+    <wsdl:part element="addr:SearchProfessionalsRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SearchProfessionalsResponse">
+    <wsdl:part element="addr:SearchProfessionalsResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SearchOrganizationsRequest">
+    <wsdl:part element="addr:SearchOrganizationsRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="SearchOrganizationsResponse">
+    <wsdl:part element="addr:SearchOrganizationsResponse" name="body"/>
+  </wsdl:message>
+
+  <wsdl:message name="SystemError">
+    <wsdl:part element="err:SystemError" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="BusinessError">
+    <wsdl:part element="err:BusinessError" name="body"/>
+  </wsdl:message>
+
+  <wsdl:portType name="AddressbookPortType">
+    <wsdl:operation name="getOrganizationContactInfo">
+      <wsdl:input message="GetOrganizationContactInfoRequest"/>
+      <wsdl:output message="GetOrganizationContactInfoResponse"/>
+      <wsdl:fault message="SystemError" name="SystemError"/>
+      <wsdl:fault message="BusinessError" name="BusinessError"/>
+    </wsdl:operation>
+    <wsdl:operation name="getProfessionalContactInfo">
+      <wsdl:input message="GetProfessionalContactInfoRequest"/>
+      <wsdl:output message="GetProfessionalContactInfoResponse"/>
+      <wsdl:fault message="SystemError" name="SystemError"/>
+      <wsdl:fault message="BusinessError" name="BusinessError"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchProfessionals">
+      <wsdl:input message="SearchProfessionalsRequest"/>
+      <wsdl:output message="SearchProfessionalsResponse"/>
+      <wsdl:fault message="SystemError" name="SystemError"/>
+      <wsdl:fault message="BusinessError" name="BusinessError"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchOrganizations">
+      <wsdl:input message="SearchOrganizationsRequest"/>
+      <wsdl:output message="SearchOrganizationsResponse"/>
+      <wsdl:fault message="SystemError" name="SystemError"/>
+      <wsdl:fault message="BusinessError" name="BusinessError"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="AddressbookSOAPBinding" type="AddressbookPortType">
+    <soap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getProfessionalContactInfo">
+      <soap11:operation soapAction="urn:be:fgov:ehealth:addressbook:protocol:v1:getProfessionalContactInfo" style="document"/>
+      <wsdl:input>
+        <soap11:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SystemError">
+        <soap11:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="BusinessError">
+        <soap11:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOrganizationContactInfo">
+      <soap11:operation soapAction="urn:be:fgov:ehealth:addressbook:protocol:v1:getOrganizationContactInfo" style="document"/>
+      <wsdl:input>
+        <soap11:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SystemError">
+        <soap11:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="BusinessError">
+        <soap11:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchProfessionals">
+      <soap11:operation soapAction="urn:be:fgov:ehealth:addressbook:protocol:v1:searchProfessionals" style="document"/>
+      <wsdl:input>
+        <soap11:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SystemError">
+        <soap11:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="BusinessError">
+        <soap11:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchOrganizations">
+      <soap11:operation soapAction="urn:be:fgov:ehealth:addressbook:protocol:v1:searchOrganizations" style="document"/>
+      <wsdl:input>
+        <soap11:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap11:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SystemError">
+        <soap11:fault name="SystemError" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="BusinessError">
+        <soap11:fault name="BusinessError" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="AddressbookService">
+    <wsdl:port binding="AddressbookSOAPBinding" name="AddressbookSOAP11">
+      <soap11:address location="https://services-acpt.ehealth.fgov.be/AddressBook/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
