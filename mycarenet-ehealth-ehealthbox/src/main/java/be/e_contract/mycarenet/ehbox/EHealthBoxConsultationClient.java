@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2020 e-Contract.be BV.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -41,8 +41,8 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -73,8 +73,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  */
 public class EHealthBoxConsultationClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory
-			.getLog(EHealthBoxConsultationClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxConsultationClient.class);
 
 	private final EhBoxConsultationPortType ehBoxConsultationPort;
 
@@ -89,10 +88,8 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	/**
 	 * Sets the credentials to be used.
 	 * 
-	 * @param hokPrivateKey
-	 *            the eHealth holder-of-key authentication private key.
-	 * @param samlAssertion
-	 *            the eHealth SAML assertion as string.
+	 * @param hokPrivateKey the eHealth holder-of-key authentication private key.
+	 * @param samlAssertion the eHealth SAML assertion as string.
 	 */
 	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
@@ -103,35 +100,28 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location
-	 *            the URL of the eHealthBox Consultation version 3.0 web
-	 *            service.
+	 * @param location the URL of the eHealthBox Consultation version 3.0 web
+	 *                 service.
 	 */
 	public EHealthBoxConsultationClient(String location) {
-		EhBoxConsultationService consultationService = EhBoxConsultationServiceFactory
-				.newInstance();
-		this.ehBoxConsultationPort = consultationService
-				.getEhBoxConsultationPort();
+		EhBoxConsultationService consultationService = EhBoxConsultationServiceFactory.newInstance();
+		this.ehBoxConsultationPort = consultationService.getEhBoxConsultationPort();
 
-		QName consultationPortQName = new QName(
-				"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3",
+		QName consultationPortQName = new QName("urn:be:fgov:ehealth:ehbox:consultation:protocol:v3",
 				"ehBoxConsultationPort");
-		this.consultationDispatch = consultationService.createDispatch(
-				consultationPortQName, Source.class, Service.Mode.PAYLOAD);
+		this.consultationDispatch = consultationService.createDispatch(consultationPortQName, Source.class,
+				Service.Mode.PAYLOAD);
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 		this.inboundAttachmentsSOAPHandler = new InboundAttachmentsSOAPHandler();
-		configureBindingProvider((BindingProvider) this.ehBoxConsultationPort,
-				location);
+		configureBindingProvider((BindingProvider) this.ehBoxConsultationPort, location);
 		configureBindingProvider(this.consultationDispatch, location);
 		this.objectFactory = new ObjectFactory();
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configureBindingProvider(BindingProvider bindingProvider,
-			String location) {
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+	private void configureBindingProvider(BindingProvider bindingProvider, String location) {
+		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
@@ -152,12 +142,9 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetBoxInfoResponseType getBoxInfo() throws BusinessError,
-			SystemError {
-		GetBoxInfoRequestType getBoxInfoRequest = this.objectFactory
-				.createGetBoxInfoRequestType();
-		GetBoxInfoResponseType getBoxInfoResponse = this.ehBoxConsultationPort
-				.getBoxInfo(getBoxInfoRequest);
+	public GetBoxInfoResponseType getBoxInfo() throws BusinessError, SystemError {
+		GetBoxInfoRequestType getBoxInfoRequest = this.objectFactory.createGetBoxInfoRequestType();
+		GetBoxInfoResponseType getBoxInfoResponse = this.ehBoxConsultationPort.getBoxInfo(getBoxInfoRequest);
 		return getBoxInfoResponse;
 	}
 
@@ -168,24 +155,21 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetMessageListResponseType getMessagesList() throws BusinessError,
-			SystemError {
+	public GetMessageListResponseType getMessagesList() throws BusinessError, SystemError {
 		return getMessagesList("INBOX");
 	}
 
 	/**
-	 * Gives back the messages list for the given source. Source can be for
-	 * example "INBOX".
+	 * Gives back the messages list for the given source. Source can be for example
+	 * "INBOX".
 	 * 
 	 * @param source
 	 * @return
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetMessageListResponseType getMessagesList(String source)
-			throws BusinessError, SystemError {
-		GetMessagesListRequestType getMessagesListRequest = this.objectFactory
-				.createGetMessagesListRequestType();
+	public GetMessageListResponseType getMessagesList(String source) throws BusinessError, SystemError {
+		GetMessagesListRequestType getMessagesListRequest = this.objectFactory.createGetMessagesListRequestType();
 		getMessagesListRequest.setSource(source);
 		GetMessageListResponseType getMessageListResponse = this.ehBoxConsultationPort
 				.getMessagesList(getMessagesListRequest);
@@ -200,8 +184,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetFullMessageResponseType getMessage(String messageId)
-			throws BusinessError, SystemError {
+	public GetFullMessageResponseType getMessage(String messageId) throws BusinessError, SystemError {
 		return getMessage("INBOX", messageId);
 	}
 
@@ -214,14 +197,11 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public GetFullMessageResponseType getMessage(String source, String messageId)
-			throws BusinessError, SystemError {
-		MessageRequestType messageRequest = this.objectFactory
-				.createMessageRequestType();
+	public GetFullMessageResponseType getMessage(String source, String messageId) throws BusinessError, SystemError {
+		MessageRequestType messageRequest = this.objectFactory.createMessageRequestType();
 		messageRequest.setSource(source);
 		messageRequest.setMessageId(messageId);
-		GetFullMessageResponseType message = this.ehBoxConsultationPort
-				.getFullMessage(messageRequest);
+		GetFullMessageResponseType message = this.ehBoxConsultationPort.getFullMessage(messageRequest);
 		return message;
 	}
 
@@ -233,8 +213,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public DeleteMessageResponseType deleteMessage(String messageId)
-			throws BusinessError, SystemError {
+	public DeleteMessageResponseType deleteMessage(String messageId) throws BusinessError, SystemError {
 		return deleteMessage("INBOX", messageId);
 	}
 
@@ -247,10 +226,8 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public DeleteMessageResponseType deleteMessage(String source,
-			String messageId) throws BusinessError, SystemError {
-		DeleteMessageRequestType deleteMessageRequest = this.objectFactory
-				.createDeleteMessageRequestType();
+	public DeleteMessageResponseType deleteMessage(String source, String messageId) throws BusinessError, SystemError {
+		DeleteMessageRequestType deleteMessageRequest = this.objectFactory.createDeleteMessageRequestType();
 		deleteMessageRequest.setSource(source);
 		deleteMessageRequest.getMessageId().add(messageId);
 		return this.ehBoxConsultationPort.deleteMessage(deleteMessageRequest);
@@ -264,9 +241,8 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public MoveMessageResponseType moveMessage(
-			MoveMessageRequestType moveMessageRequest) throws BusinessError,
-			SystemError {
+	public MoveMessageResponseType moveMessage(MoveMessageRequestType moveMessageRequest)
+			throws BusinessError, SystemError {
 		return this.ehBoxConsultationPort.moveMessage(moveMessageRequest);
 	}
 
@@ -278,8 +254,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @return
 	 */
 	public Element invoke(Element request) {
-		Source responseSource = this.consultationDispatch.invoke(new DOMSource(
-				request));
+		Source responseSource = this.consultationDispatch.invoke(new DOMSource(request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
 	}
@@ -292,10 +267,8 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @return
 	 */
 	public String invoke(String request) {
-		Source responseSource = this.consultationDispatch
-				.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: "
-				+ responseSource.getClass().getName());
+		Source responseSource = this.consultationDispatch.invoke(new StreamSource(new StringReader(request)));
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 
@@ -305,13 +278,11 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	 * @return a map of data handlers keyed on attachment identifiers.
 	 */
 	public Map<String, DataHandler> getMessageAttachments() {
-		return this.inboundAttachmentsSOAPHandler
-				.getInboundMessageAttachments();
+		return this.inboundAttachmentsSOAPHandler.getInboundMessageAttachments();
 	}
 
 	private String toString(Source source) {
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
@@ -333,8 +304,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 			DOMSource domSource = (DOMSource) source;
 			return (Element) domSource.getNode();
 		}
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();

@@ -37,10 +37,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.sts.Attribute;
@@ -51,7 +51,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class RequestFactoryTest {
 
-	private static final Log LOG = LogFactory.getLog(RequestFactoryTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RequestFactoryTest.class);
 
 	private Config config;
 
@@ -97,7 +97,7 @@ public class RequestFactoryTest {
 
 		assertNotNull(requestElement);
 
-		LOG.debug("request: " + toString(requestElement));
+		LOGGER.debug("request: {}", toString(requestElement));
 	}
 
 	private String toString(Element element) throws TransformerException {

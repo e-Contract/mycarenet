@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2021 e-Contract.be BV.
+ * Copyright (C) 2021-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,8 +18,6 @@
 
 package be.e_contract.mycarenet.addressbook;
 
-import be.e_contract.mycarenet.addressbook.jaxws.AddressbookPortType;
-import be.e_contract.mycarenet.addressbook.jaxws.AddressbookService;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.PrivateKey;
@@ -40,13 +38,14 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
-import javax.xml.ws.soap.MTOMFeature;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import be.e_contract.mycarenet.addressbook.jaxws.AddressbookPortType;
+import be.e_contract.mycarenet.addressbook.jaxws.AddressbookService;
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.common.PayloadLogicalHandler;
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
@@ -61,7 +60,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  */
 public class AddressbookClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory.getLog(AddressbookClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AddressbookClient.class);
 
 	private final AddressbookPortType port;
 
@@ -122,7 +121,7 @@ public class AddressbookClient implements CredentialClient {
 
 	public String invoke(String request) {
 		Source responseSource = this.dispatch.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: " + responseSource.getClass().getName());
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 

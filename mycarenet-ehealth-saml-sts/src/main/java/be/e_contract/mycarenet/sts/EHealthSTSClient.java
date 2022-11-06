@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2018 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -39,9 +39,9 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.handler.Handler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -61,7 +61,7 @@ public class EHealthSTSClient {
 
 	public static final String CONFIRMATION_METHOD_HOLDER_OF_KEY = "urn:oasis:names:tc:SAML:1.0:cm:holder-of-key";
 
-	private static final Log LOG = LogFactory.getLog(EHealthSTSClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthSTSClient.class);
 
 	private final Dispatch<Source> dispatch;
 
@@ -70,8 +70,7 @@ public class EHealthSTSClient {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location
-	 *            the URL of the eHealth STS web service.
+	 * @param location the URL of the eHealth STS web service.
 	 */
 	public EHealthSTSClient(String location) {
 		EHealthSamlStsService service = EHealthSamlStsServiceFactory.newInstance();
@@ -93,23 +92,17 @@ public class EHealthSTSClient {
 	/**
 	 * Requests an eHealth SAML assertion from the eHealth STS.
 	 * 
-	 * @param authnCertificate
-	 *            the eID authentication certificate.
-	 * @param authnPrivateKey
-	 *            the eID authentication private key.
-	 * @param hokCertificate
-	 *            the eHealth holder-of-key authentication certificate.
-	 * @param hokPrivateKey
-	 *            the eHealth holder-of-key authentication private key.
-	 * @param attributes
-	 *            the identity attributes.
-	 * @param attributeDesignators
-	 *            the required attributes.
+	 * @param authnCertificate     the eID authentication certificate.
+	 * @param authnPrivateKey      the eID authentication private key.
+	 * @param hokCertificate       the eHealth holder-of-key authentication
+	 *                             certificate.
+	 * @param hokPrivateKey        the eHealth holder-of-key authentication private
+	 *                             key.
+	 * @param attributes           the identity attributes.
+	 * @param attributeDesignators the required attributes.
 	 * @return the SAML assertion as DOM element.
-	 * @throws Exception
-	 *             in case something goes wrong.
-	 * @throws EHealthSTSException
-	 *             in case the STS returned no SAML assertion.
+	 * @throws Exception           in case something goes wrong.
+	 * @throws EHealthSTSException in case the STS returned no SAML assertion.
 	 */
 	public Element requestAssertion(X509Certificate authnCertificate, PrivateKey authnPrivateKey,
 			X509Certificate hokCertificate, PrivateKey hokPrivateKey, List<Attribute> attributes,
@@ -128,7 +121,7 @@ public class EHealthSTSClient {
 		NodeList assertionNodeList = responseElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:1.0:assertion",
 				"Assertion");
 		if (assertionNodeList.getLength() == 0) {
-			LOG.error("no assertion in response");
+			LOGGER.error("no assertion in response");
 			NodeList statusNodeList = responseElement.getElementsByTagNameNS("urn:oasis:names:tc:SAML:1.0:protocol",
 					"Status");
 			if (statusNodeList.getLength() == 1) {

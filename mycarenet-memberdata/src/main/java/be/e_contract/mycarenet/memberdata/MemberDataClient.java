@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2020 e-Contract.be BV.
+ * Copyright (C) 2020-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -38,8 +38,8 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.AddressingFeature;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
@@ -50,7 +50,7 @@ import be.e_contract.mycarenet.memberdata.jaxws.MycarenetMemberDataService;
 
 public class MemberDataClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory.getLog(MemberDataClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MemberDataClient.class);
 
 	private final Dispatch<Source> dispatch;
 
@@ -112,7 +112,7 @@ public class MemberDataClient implements CredentialClient {
 	 */
 	public String invoke(String request) {
 		Source responseSource = this.dispatch.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: " + responseSource.getClass().getName());
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 

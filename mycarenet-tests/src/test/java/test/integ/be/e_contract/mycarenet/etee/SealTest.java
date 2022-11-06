@@ -35,8 +35,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSException;
@@ -59,12 +57,14 @@ import org.bouncycastle.util.Store;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import test.integ.be.e_contract.mycarenet.Config;
 
 public class SealTest {
 
-	private static final Log LOG = LogFactory.getLog(SealTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SealTest.class);
 
 	private Config config;
 
@@ -98,9 +98,9 @@ public class SealTest {
 			boolean signatureResult = signer.verify(signerInformationVerifier);
 			assertTrue(signatureResult);
 
-			LOG.debug("signer certificate: " + certificate);
+			LOGGER.debug("signer certificate: {}", certificate);
 		} else {
-			LOG.warn("no signer matched");
+			LOGGER.warn("no signer matched");
 		}
 
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
@@ -120,13 +120,13 @@ public class SealTest {
 		// decrypt content
 
 		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(data);
-		LOG.debug("content encryption algo: "
-				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
+		LOGGER.debug("content encryption algo: {}",
+				cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
 
 		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser.getRecipientInfos();
 		Collection<RecipientInformation> recipients = recipientInformationStore.getRecipients();
 		RecipientInformation recipientInformation = recipients.iterator().next();
-		LOG.debug("recipient info type: " + recipientInformation.getClass().getName());
+		LOGGER.debug("recipient info type: {}", recipientInformation.getClass().getName());
 		KeyTransRecipientInformation keyTransRecipientInformation = (KeyTransRecipientInformation) recipientInformation;
 
 		// load eHealth encryption certificate
@@ -144,9 +144,9 @@ public class SealTest {
 		BcRSAKeyTransEnvelopedRecipient recipient = new BcRSAKeyTransEnvelopedRecipient(privKeyParams);
 		byte[] decryptedContent = recipientInformation.getContent(recipient);
 		assertNotNull(decryptedContent);
-		LOG.debug("decrypted content size: " + decryptedContent.length);
+		LOGGER.debug("decrypted content size: {} bytes", decryptedContent.length);
 
 		byte[] result = getVerifiedContent(decryptedContent);
-		LOG.debug("result: " + new String(result));
+		LOGGER.debug("result: {}", new String(result));
 	}
 }

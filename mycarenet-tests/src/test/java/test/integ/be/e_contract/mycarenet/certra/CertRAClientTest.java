@@ -26,8 +26,6 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
 import org.bouncycastle.asn1.x500.RDN;
@@ -39,6 +37,8 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.certra.CertRAClient;
 import be.e_contract.mycarenet.certra.CertRASession;
@@ -53,7 +53,7 @@ import be.fedict.commons.eid.jca.BeIDProvider;
 
 public class CertRAClientTest {
 
-	private static final Log LOG = LogFactory.getLog(CertRAClientTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CertRAClientTest.class);
 
 	private PrivateKey signPrivateKey;
 
@@ -94,8 +94,8 @@ public class CertRAClientTest {
 		List<RevocableCertificateType> revocableCertificates = revocableCertificatesDataResponse
 				.getRevocablePersonalCertificate();
 		for (RevocableCertificateType revocableCertificate : revocableCertificates) {
-			LOG.debug("subject DN: " + revocableCertificate.getAuthDN());
-			LOG.debug("certificate serial number: " + revocableCertificate.getAuthSerial());
+			LOGGER.debug("subject DN: {}", revocableCertificate.getAuthDN());
+			LOGGER.debug("certificate serial number: {}", revocableCertificate.getAuthSerial());
 		}
 	}
 
@@ -107,8 +107,8 @@ public class CertRAClientTest {
 		NaturalPerson naturalPerson = response.getNaturalPerson();
 		List<Quality> qualities = naturalPerson.getQuality();
 		for (Quality quality : qualities) {
-			LOG.debug("NIHII: " + quality.getNIHII());
-			LOG.debug("quality: " + quality.getName());
+			LOGGER.debug("NIHII: {}", quality.getNIHII());
+			LOGGER.debug("quality: {}", quality.getName());
 		}
 	}
 
@@ -116,7 +116,7 @@ public class CertRAClientTest {
 	public void testGetOrganizationTypes() throws Exception {
 		List<OrganizationTypes> organizationTypesList = this.client.getOrganizationTypes();
 		for (OrganizationTypes organizationTypes : organizationTypesList) {
-			LOG.debug("organization type : " + organizationTypes.getIdentifierType());
+			LOGGER.debug("organization type: {}", organizationTypes.getIdentifierType());
 		}
 	}
 
@@ -137,15 +137,15 @@ public class CertRAClientTest {
 		byte[] encodedCsr = certRASession.generateCSR(name);
 
 		PKCS10CertificationRequest csr = new PKCS10CertificationRequest(encodedCsr);
-		LOG.debug("CSR subject: " + csr.getSubject());
+		LOGGER.debug("CSR subject: {}", csr.getSubject());
 		X500Name subjectName = csr.getSubject();
 		RDN[] rdns = subjectName.getRDNs();
 		for (RDN rdn : rdns) {
-			LOG.debug("--------");
+			LOGGER.debug("--------");
 			AttributeTypeAndValue[] attributes = rdn.getTypesAndValues();
 			for (AttributeTypeAndValue attribute : attributes) {
-				LOG.debug(attribute.getType() + " = " + attribute.getValue());
-				LOG.debug("value type: " + attribute.getValue().getClass().getName());
+				LOGGER.debug("{} = {}", attribute.getType(), attribute.getValue());
+				LOGGER.debug("value type: {}", attribute.getValue().getClass().getName());
 			}
 		}
 	}

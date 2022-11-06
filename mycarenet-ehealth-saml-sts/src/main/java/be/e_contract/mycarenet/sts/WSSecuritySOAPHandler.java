@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2015 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -33,8 +33,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
@@ -44,6 +42,8 @@ import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.util.WSSecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.WSSecurityCrypto;
 
@@ -56,8 +56,7 @@ import be.e_contract.mycarenet.common.WSSecurityCrypto;
  */
 public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(WSSecuritySOAPHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSecuritySOAPHandler.class);
 
 	private PrivateKey privateKey;
 
@@ -85,23 +84,21 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
-		Boolean outboundProperty = (Boolean) context
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		if (false == outboundProperty) {
 			return true;
 		}
 		try {
 			handleOutboundMessage(context);
 		} catch (Exception e) {
-			LOG.error("outbound exception: " + e.getMessage(), e);
+			LOGGER.error("outbound exception: " + e.getMessage(), e);
 			throw new ProtocolException(e);
 		}
 		return true;
 	}
 
-	private void handleOutboundMessage(SOAPMessageContext context)
-			throws WSSecurityException {
-		LOG.debug("adding WS-Security header");
+	private void handleOutboundMessage(SOAPMessageContext context) throws WSSecurityException {
+		LOGGER.debug("adding WS-Security header");
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
@@ -112,8 +109,7 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		wsSecTimeStamp.setTimeToLive(60);
 		wsSecTimeStamp.build(soapPart, wsSecHeader);
 
-		WSSecurityCrypto crypto = new WSSecurityCrypto(this.privateKey,
-				this.certificate);
+		WSSecurityCrypto crypto = new WSSecurityCrypto(this.privateKey, this.certificate);
 		WSSConfig wssConfig = new WSSConfig();
 		wssConfig.setWsiBSPCompliant(false);
 		WSSecSignature sign = new WSSecSignature(wssConfig);
@@ -122,16 +118,15 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		String bstId = sign.getBSTTokenId();
 		sign.appendBSTElementToHeader(wsSecHeader);
 		Vector<WSEncryptionPart> signParts = new Vector<>();
-		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart
-				.getDocumentElement());
-		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName()
-				.getLocalPart(), soapConstants.getEnvelopeURI(), "Content"));
+		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart.getDocumentElement());
+		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(), soapConstants.getEnvelopeURI(),
+				"Content"));
 		signParts.add(new WSEncryptionPart(bstId));
 		signParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
-		List<Reference> referenceList = sign.addReferencesToSign(signParts,
-				wsSecHeader);
+		List<Reference> referenceList = sign.addReferencesToSign(signParts, wsSecHeader);
 		sign.computeSignature(referenceList, false, null);
 	}
+
 	@Override
 	public boolean handleFault(SOAPMessageContext context) {
 		return true;

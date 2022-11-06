@@ -27,12 +27,12 @@ import java.io.InputStream;
 import java.security.Security;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.ehealth.common.EHealthKeyStore;
 import be.e_contract.mycarenet.etee.Unsealer;
@@ -40,7 +40,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class UnsealerTest {
 
-	private static final Log LOG = LogFactory.getLog(UnsealerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UnsealerTest.class);
 
 	private Config config;
 
@@ -73,7 +73,7 @@ public class UnsealerTest {
 			fail();
 		} catch (SecurityException e) {
 			// expected
-			LOG.debug(e.getMessage());
+			LOGGER.debug(e.getMessage());
 		}
 	}
 
@@ -92,8 +92,8 @@ public class UnsealerTest {
 				eHealthKeyStore.getEncryptionCertificate());
 
 		byte[] unsealedData = unsealer.unseal(sealedData);
-		LOG.debug("unsealed data: " + new String(unsealedData));
-		LOG.debug("sender certificate: " + unsealer.getSenderCertificate());
+		LOGGER.debug("unsealed data: {}", new String(unsealedData));
+		LOGGER.debug("sender certificate: {}", unsealer.getSenderCertificate());
 		assertEquals(unsealer.getSenderCertificate(), eHealthKeyStore.getAuthenticationCertificate());
 	}
 }

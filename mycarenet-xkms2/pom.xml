@@ -94,8 +94,8 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ws.security</groupId>
@@ -113,23 +113,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
 			<scope>test</scope>
 		</dependency>
-                <dependency>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-rt</artifactId>
-                    <scope>test</scope>
-                </dependency>
 	</dependencies>
 </project>

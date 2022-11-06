@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2016 e-Contract.be BVBA.
+ * Copyright (C) 2016-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,8 +32,6 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
@@ -43,6 +41,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.certra.cms.CMSSigner;
 import be.e_contract.mycarenet.certra.cms.aqdr.EHActorQualitiesDataRequest;
@@ -63,7 +63,7 @@ import be.e_contract.mycarenet.common.LoggingHandler;
 
 public class CertRAClient {
 
-	private static final Log LOG = LogFactory.getLog(CertRAClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CertRAClient.class);
 
 	private final CertRaPortType port;
 
@@ -132,7 +132,7 @@ public class CertRAClient {
 		// we trust SSL here, no need for explicit verification of CMS signing
 		// certificate
 
-		LOG.debug("CMS signing certificate subject: " + certificate.getSubjectX500Principal());
+		LOGGER.debug("CMS signing certificate subject: {}", certificate.getSubjectX500Principal());
 
 		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
 				.build(certificate);

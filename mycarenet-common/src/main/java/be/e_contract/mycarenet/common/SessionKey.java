@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -39,8 +39,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -54,6 +52,8 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MyCareNet session key.
@@ -63,7 +63,7 @@ import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
  */
 public class SessionKey {
 
-	private static final Log LOG = LogFactory.getLog(SessionKey.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SessionKey.class);
 
 	private static final int KEY_SIZE = 1024;
 
@@ -86,8 +86,7 @@ public class SessionKey {
 	/**
 	 * Generator constructor. Creates a new MyCareNet session key.
 	 * 
-	 * @param keySize
-	 *            the RSA key size.
+	 * @param keySize the RSA key size.
 	 */
 	public SessionKey(int keySize) {
 		KeyPairGenerator keyPairGenerator;
@@ -98,8 +97,7 @@ public class SessionKey {
 		}
 		SecureRandom random = new SecureRandom();
 		try {
-			keyPairGenerator.initialize(new RSAKeyGenParameterSpec(keySize,
-					RSAKeyGenParameterSpec.F4), random);
+			keyPairGenerator.initialize(new RSAKeyGenParameterSpec(keySize, RSAKeyGenParameterSpec.F4), random);
 		} catch (InvalidAlgorithmParameterException e) {
 			throw new RuntimeException("unsupported key size: " + keySize);
 		}
@@ -115,13 +113,12 @@ public class SessionKey {
 	 * @param notBefore
 	 * @param notAfter
 	 */
-	public SessionKey(byte[] encodedPrivateKey, byte[] encodedPublicKey,
-			byte[] encodedCertificate, Date notBefore, Date notAfter) {
+	public SessionKey(byte[] encodedPrivateKey, byte[] encodedPublicKey, byte[] encodedCertificate, Date notBefore,
+			Date notAfter) {
 		this.notBefore = notBefore;
 		this.notAfter = notAfter;
 
-		X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
-				encodedPublicKey);
+		X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(encodedPublicKey);
 		KeyFactory keyFactory;
 		try {
 			keyFactory = KeyFactory.getInstance("RSA");
@@ -132,18 +129,15 @@ public class SessionKey {
 		try {
 			publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
 		} catch (InvalidKeySpecException e) {
-			throw new RuntimeException("invalid public key: " + e.getMessage(),
-					e);
+			throw new RuntimeException("invalid public key: " + e.getMessage(), e);
 		}
 
-		PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
-				encodedPrivateKey);
+		PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
 		PrivateKey privateKey;
 		try {
 			privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
 		} catch (InvalidKeySpecException e) {
-			throw new RuntimeException(
-					"invalid private key: " + e.getMessage(), e);
+			throw new RuntimeException("invalid private key: " + e.getMessage(), e);
 		}
 
 		this.keyPair = new KeyPair(publicKey, privateKey);
@@ -156,11 +150,9 @@ public class SessionKey {
 		}
 		try {
 			this.certificate = (X509Certificate) certificateFactory
-					.generateCertificate(new ByteArrayInputStream(
-							encodedCertificate));
+					.generateCertificate(new ByteArrayInputStream(encodedCertificate));
 		} catch (CertificateException e) {
-			throw new RuntimeException("certificate decoding error: "
-					+ e.getMessage(), e);
+			throw new RuntimeException("certificate decoding error: " + e.getMessage(), e);
 		}
 	}
 
@@ -226,29 +218,29 @@ public class SessionKey {
 	}
 
 	/**
-	 * Checks whether this MyCareNet session key still operates within its
-	 * validity period.
+	 * Checks whether this MyCareNet session key still operates within its validity
+	 * period.
 	 * 
 	 * @return
 	 */
 	public boolean isValid() {
 		if (null == this.notBefore) {
-			LOG.debug("no notBefore");
+			LOGGER.debug("no notBefore");
 			return false;
 		}
 		if (null == this.notAfter) {
-			LOG.debug("no notAfter");
+			LOGGER.debug("no notAfter");
 			return false;
 		}
 		Date now = new Date();
 		if (now.before(this.notBefore)) {
-			LOG.debug("session key not yet active");
-			LOG.debug("now: " + now);
-			LOG.debug("notBefore: " + this.notBefore);
+			LOGGER.debug("session key not yet active");
+			LOGGER.debug("now: {}", now);
+			LOGGER.debug("notBefore: {}", this.notBefore);
 			return false;
 		}
 		if (now.after(this.notAfter)) {
-			LOG.debug("session key expired");
+			LOGGER.debug("session key expired");
 			return false;
 		}
 		return true;
@@ -280,31 +272,24 @@ public class SessionKey {
 	private void generateCertificate() {
 		X500Name name = new X500Name(this.name);
 		BigInteger serial = BigInteger.valueOf(1);
-		SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo
-				.getInstance(this.keyPair.getPublic().getEncoded());
-		X509v3CertificateBuilder x509v3CertificateBuilder = new X509v3CertificateBuilder(
-				name, serial, this.notBefore, this.notAfter, name,
-				publicKeyInfo);
-		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder()
-				.find("SHA1withRSA");
-		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
-				.find(sigAlgId);
+		SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo.getInstance(this.keyPair.getPublic().getEncoded());
+		X509v3CertificateBuilder x509v3CertificateBuilder = new X509v3CertificateBuilder(name, serial, this.notBefore,
+				this.notAfter, name, publicKeyInfo);
+		AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1withRSA");
+		AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
 		AsymmetricKeyParameter asymmetricKeyParameter;
 		try {
-			asymmetricKeyParameter = PrivateKeyFactory.createKey(this.keyPair
-					.getPrivate().getEncoded());
+			asymmetricKeyParameter = PrivateKeyFactory.createKey(this.keyPair.getPrivate().getEncoded());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		ContentSigner contentSigner;
 		try {
-			contentSigner = new BcRSAContentSignerBuilder(sigAlgId, digAlgId)
-					.build(asymmetricKeyParameter);
+			contentSigner = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(asymmetricKeyParameter);
 		} catch (OperatorCreationException e) {
 			throw new RuntimeException(e);
 		}
-		X509CertificateHolder x509CertificateHolder = x509v3CertificateBuilder
-				.build(contentSigner);
+		X509CertificateHolder x509CertificateHolder = x509v3CertificateBuilder.build(contentSigner);
 
 		byte[] encodedCertificate;
 		try {
@@ -320,8 +305,7 @@ public class SessionKey {
 		}
 		try {
 			this.certificate = (X509Certificate) certificateFactory
-					.generateCertificate(new ByteArrayInputStream(
-							encodedCertificate));
+					.generateCertificate(new ByteArrayInputStream(encodedCertificate));
 		} catch (CertificateException e) {
 			throw new RuntimeException(e);
 		}
@@ -332,8 +316,7 @@ public class SessionKey {
 		try {
 			return certificate.getEncoded();
 		} catch (CertificateEncodingException e) {
-			throw new RuntimeException("certificate encoding error: "
-					+ e.getMessage(), e);
+			throw new RuntimeException("certificate encoding error: " + e.getMessage(), e);
 		}
 	}
 }

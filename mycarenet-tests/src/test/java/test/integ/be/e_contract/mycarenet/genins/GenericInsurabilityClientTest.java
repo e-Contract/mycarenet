@@ -34,13 +34,13 @@ import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -73,7 +73,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class GenericInsurabilityClientTest {
 
-	static final Log LOG = LogFactory.getLog(GenericInsurabilityClientTest.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(GenericInsurabilityClientTest.class);
 
 	private Config config;
 
@@ -125,7 +125,7 @@ public class GenericInsurabilityClientTest {
 		assertNotNull(assertion);
 
 		String assertionString = client.toString(assertion);
-		LOG.debug("SAML assertion: " + assertionString);
+		LOGGER.debug("SAML assertion: {}", assertionString);
 	}
 
 	@Test
@@ -173,7 +173,7 @@ public class GenericInsurabilityClientTest {
 		assertNotNull(assertion);
 
 		String assertionString = client.toString(assertion);
-		LOG.debug("SAML assertion: " + assertionString);
+		LOGGER.debug("SAML assertion: {}", assertionString);
 	}
 
 	@Test
@@ -256,7 +256,7 @@ public class GenericInsurabilityClientTest {
 				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11']/saml:AttributeValue/text()",
 				namespaceElement);
 		String myNihii = nihiiNode.getTextContent();
-		LOG.debug("NIHII: " + myNihii);
+		LOGGER.debug("NIHII: {}", myNihii);
 		Node ssinNode = XPathAPI.selectSingleNode(assertion,
 				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin']/saml:AttributeValue/text()",
 				namespaceElement);

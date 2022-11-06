@@ -31,12 +31,12 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.ehealth.common.EHealthKeyStore;
 import be.e_contract.mycarenet.etee.Sealer;
@@ -45,7 +45,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class SealerTest {
 
-	private static final Log LOG = LogFactory.getLog(SealerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SealerTest.class);
 
 	private Config config;
 
@@ -94,6 +94,6 @@ public class SealerTest {
 
 		File sealFile = File.createTempFile("seal-fcorneli-", ".der");
 		FileUtils.writeByteArrayToFile(sealFile, sealedMessage);
-		LOG.debug("seal file: " + sealFile.getAbsolutePath());
+		LOGGER.debug("seal file: {}", sealFile.getAbsolutePath());
 	}
 }

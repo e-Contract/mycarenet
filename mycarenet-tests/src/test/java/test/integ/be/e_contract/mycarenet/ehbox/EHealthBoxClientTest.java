@@ -44,11 +44,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -71,7 +71,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class EHealthBoxClientTest {
 
-	static final Log LOG = LogFactory.getLog(EHealthBoxClientTest.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxClientTest.class);
 
 	private Config config;
 
@@ -134,7 +134,7 @@ public class EHealthBoxClientTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			eHealthBoxClient.getMessage(messageId);
 			eHealthBoxClient.deleteMessage(messageId);
 		}
@@ -197,7 +197,7 @@ public class EHealthBoxClientTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			GetFullMessageResponseType getFullMessageResponse = eHealthBoxClient.getMessage(messageId);
 			DataHandler dataHandler = getFullMessageResponse.getMessage().getContentContext().getContent().getDocument()
 					.getEncryptableBinaryContent();
@@ -208,7 +208,7 @@ public class EHealthBoxClientTest {
 				data = getFullMessageResponse.getMessage().getContentContext().getContent().getDocument()
 						.getEncryptableTextContent();
 			}
-			LOG.debug("data size: " + data.length);
+			LOGGER.debug("data size: {} bytes", data.length);
 			Unsealer unsealer = new Unsealer(encryptionPrivateKey, encryptionCertificate);
 			unsealer.unseal(data);
 		}
@@ -268,12 +268,12 @@ public class EHealthBoxClientTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			String request = "<ehbox:GetFullMessageRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\">"
 					+ "<Source>INBOX</Source>" + "<MessageId>" + messageId + "</MessageId>"
 					+ "</ehbox:GetFullMessageRequest>";
 			String response = eHealthBoxClient.invoke(request);
-			LOG.debug("response message: " + response);
+			LOGGER.debug("response message: {}", response);
 
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -285,9 +285,9 @@ public class EHealthBoxClientTest {
 			GetFullMessageResponseType getFullMessageResponse = getFullMessageResponseElement.getValue();
 			DataHandler dataHandler = getFullMessageResponse.getMessage().getContentContext().getContent().getDocument()
 					.getEncryptableBinaryContent();
-			LOG.debug("has data handler: " + (null != dataHandler));
+			LOGGER.debug("has data handler: {}", (null != dataHandler));
 			byte[] data = IOUtils.toByteArray(dataHandler.getInputStream());
-			LOG.debug("data: " + new String(data));
+			LOGGER.debug("data: {}", new String(data));
 		}
 	}
 
@@ -398,7 +398,7 @@ public class EHealthBoxClientTest {
 				"https://services-acpt.ehealth.fgov.be/ehBoxConsultation/v3");
 		eHealthBoxClient.setCredentials(eHealthPrivateKey, toString(assertion));
 		String result = eHealthBoxClient.invoke(request);
-		LOG.debug("result: " + result);
+		LOGGER.debug("result: {}", result);
 	}
 
 	/**

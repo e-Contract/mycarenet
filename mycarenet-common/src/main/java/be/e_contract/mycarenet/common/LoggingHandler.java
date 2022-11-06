@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -29,8 +29,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JAX-WS SOAP handler to provides logging of the SOAP messages using the
@@ -41,11 +41,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory.getLog(LoggingHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoggingHandler.class);
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
-		if (false == LOG.isDebugEnabled()) {
+		if (false == LOGGER.isDebugEnabled()) {
 			return true;
 		}
 		logMessage(context);
@@ -54,7 +54,7 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
 	@Override
 	public boolean handleFault(SOAPMessageContext context) {
-		if (false == LOG.isDebugEnabled()) {
+		if (false == LOGGER.isDebugEnabled()) {
 			return true;
 		}
 		logMessage(context);
@@ -62,25 +62,23 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 	}
 
 	private void logMessage(SOAPMessageContext context) {
-		Boolean outboundProperty = (Boolean) context
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		LOG.debug("outbound message: " + outboundProperty);
+		Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		LOGGER.debug("outbound message: {}", outboundProperty);
 		SOAPMessage soapMessage = context.getMessage();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			soapMessage.writeTo(outputStream);
 		} catch (Exception e) {
-			LOG.error("SOAP error: " + e.getMessage());
+			LOGGER.error("SOAP error: " + e.getMessage());
 		}
 		String message = outputStream.toString();
-		LOG.debug("SOAP message: " + message);
+		LOGGER.debug("SOAP message: {}", message);
 		if (false == outboundProperty) {
 			@SuppressWarnings("unchecked")
 			Map<String, DataHandler> inboundMessageAttachments = (Map<String, DataHandler>) context
 					.get(MessageContext.INBOUND_MESSAGE_ATTACHMENTS);
-			Set<String> attachmentContentIds = inboundMessageAttachments
-					.keySet();
-			LOG.debug("attachment content ids: " + attachmentContentIds);
+			Set<String> attachmentContentIds = inboundMessageAttachments.keySet();
+			LOGGER.debug("attachment content ids: {}", attachmentContentIds);
 		}
 	}
 

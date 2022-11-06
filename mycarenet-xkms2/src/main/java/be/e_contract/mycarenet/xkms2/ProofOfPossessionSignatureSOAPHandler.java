@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -45,8 +45,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,12 +60,9 @@ import be.e_contract.mycarenet.common.SessionKey;
  * @author Frank Cornelis
  * 
  */
-public class ProofOfPossessionSignatureSOAPHandler
-		implements
-			SOAPHandler<SOAPMessageContext> {
+public class ProofOfPossessionSignatureSOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(ProofOfPossessionSignatureSOAPHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProofOfPossessionSignatureSOAPHandler.class);
 
 	private SessionKey sessionKey;
 
@@ -80,99 +77,82 @@ public class ProofOfPossessionSignatureSOAPHandler
 			return true;
 		}
 
-		Boolean outboundProperty = (Boolean) context
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		if (false == outboundProperty) {
 			return true;
 		}
-		LOG.debug("adding proof of possession signature");
+		LOGGER.debug("adding proof of possession signature");
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		NodeList registerRequestNodeList = soapPart.getElementsByTagNameNS(
-				XKMS2ServiceFactory.XKMS2_NAMESPACE, "RegisterRequest");
-		Element registerRequestElement = (Element) registerRequestNodeList
-				.item(0);
+		NodeList registerRequestNodeList = soapPart.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
+				"RegisterRequest");
+		Element registerRequestElement = (Element) registerRequestNodeList.item(0);
 		Document xkmsDocument;
 		try {
 			xkmsDocument = copyDocument(registerRequestElement);
 		} catch (ParserConfigurationException e) {
-			LOG.error("error copying XKMS request: " + e.getMessage(), e);
+			LOGGER.error("error copying XKMS request: " + e.getMessage(), e);
 			return false;
 		}
 
-		NodeList proofOfPossessionNodeList = xkmsDocument
-				.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
-						"ProofOfPossession");
-		Element proofOfPossessionElement = (Element) proofOfPossessionNodeList
-				.item(0);
+		NodeList proofOfPossessionNodeList = xkmsDocument.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
+				"ProofOfPossession");
+		Element proofOfPossessionElement = (Element) proofOfPossessionNodeList.item(0);
 		try {
 			prepareDocument(xkmsDocument);
 			addSignature(proofOfPossessionElement);
 		} catch (Exception e) {
-			LOG.error("error adding proof signature: " + e.getMessage(), e);
+			LOGGER.error("error adding proof signature: " + e.getMessage(), e);
 			return false;
 		}
-		Node signatureNode = soapPart.importNode(
-				proofOfPossessionElement.getFirstChild(), true);
+		Node signatureNode = soapPart.importNode(proofOfPossessionElement.getFirstChild(), true);
 
-		proofOfPossessionNodeList = soapPart.getElementsByTagNameNS(
-				XKMS2ServiceFactory.XKMS2_NAMESPACE, "ProofOfPossession");
+		proofOfPossessionNodeList = soapPart.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
+				"ProofOfPossession");
 		proofOfPossessionElement = (Element) proofOfPossessionNodeList.item(0);
 		proofOfPossessionElement.appendChild(signatureNode);
 		return true;
 	}
 
 	private void prepareDocument(Document xkmsDocument) {
-		Element prototypeElement = xkmsDocument
-				.getElementById(this.prototypeKeyBindingId);
+		Element prototypeElement = xkmsDocument.getElementById(this.prototypeKeyBindingId);
 		if (null == prototypeElement) {
-			LOG.warn("Prototype element not found via Id");
-			prototypeElement = (Element) xkmsDocument.getElementsByTagNameNS(
-					XKMS2ServiceFactory.XKMS2_NAMESPACE, "PrototypeKeyBinding")
-					.item(0);
+			LOGGER.warn("Prototype element not found via Id");
+			prototypeElement = (Element) xkmsDocument
+					.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE, "PrototypeKeyBinding").item(0);
 			prototypeElement.setIdAttribute("Id", true);
 		}
 	}
 
-	private Document copyDocument(Element element)
-			throws ParserConfigurationException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
+	private Document copyDocument(Element element) throws ParserConfigurationException {
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document document = documentBuilder.newDocument();
 		Node importedNode = document.importNode(element, true);
 		document.appendChild(importedNode);
 		return document;
 	}
 
-	private void addSignature(Element parentElement)
-			throws NoSuchAlgorithmException,
-			InvalidAlgorithmParameterException, MarshalException,
-			XMLSignatureException {
-		DOMSignContext domSignContext = new DOMSignContext(
-				this.sessionKey.getPrivate(), parentElement);
-		XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory
-				.getInstance("DOM");
+	private void addSignature(Element parentElement) throws NoSuchAlgorithmException,
+			InvalidAlgorithmParameterException, MarshalException, XMLSignatureException {
+		DOMSignContext domSignContext = new DOMSignContext(this.sessionKey.getPrivate(), parentElement);
+		XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM");
 
-		Reference reference = xmlSignatureFactory.newReference("#"
-				+ this.prototypeKeyBindingId, xmlSignatureFactory
-				.newDigestMethod(DigestMethod.SHA1, null), Collections
-				.singletonList(xmlSignatureFactory.newTransform(
-						CanonicalizationMethod.EXCLUSIVE,
-						(TransformParameterSpec) null)), null, null);
+		Reference reference = xmlSignatureFactory.newReference("#" + this.prototypeKeyBindingId,
+				xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null),
+				Collections.singletonList(xmlSignatureFactory.newTransform(CanonicalizationMethod.EXCLUSIVE,
+						(TransformParameterSpec) null)),
+				null, null);
 
 		SignedInfo signedInfo = xmlSignatureFactory.newSignedInfo(
-				xmlSignatureFactory.newCanonicalizationMethod(
-						CanonicalizationMethod.EXCLUSIVE,
-						(C14NMethodParameterSpec) null), xmlSignatureFactory
-						.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
+				xmlSignatureFactory.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null),
+				xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
 				Collections.singletonList(reference));
 
-		XMLSignature xmlSignature = xmlSignatureFactory.newXMLSignature(
-				signedInfo, null);
+		XMLSignature xmlSignature = xmlSignatureFactory.newXMLSignature(signedInfo, null);
 		xmlSignature.sign(domSignContext);
 	}
 

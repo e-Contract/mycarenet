@@ -27,9 +27,9 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.async.AsyncClient;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
@@ -41,7 +41,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class AsyncClientTest {
 
-	private static final Log LOG = LogFactory.getLog(AsyncClientTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncClientTest.class);
 
 	@Test
 	public void testEcho() throws Exception {
@@ -72,8 +72,8 @@ public class AsyncClientTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
-			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			LOGGER.debug("package license key username: {}", packageLicenseKey.getUsername());
+			LOGGER.debug("package license key password: {}", packageLicenseKey.getPassword());
 			AsyncClient asyncClient = new AsyncClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
 					sessionKey, packageLicenseKey);
 			String message = "hello world";
@@ -83,7 +83,7 @@ public class AsyncClientTest {
 			try {
 				result = asyncClient.echo(message);
 			} finally {
-				LOG.debug("payload: " + asyncClient.getPayload());
+				LOGGER.debug("payload: {}", asyncClient.getPayload());
 			}
 
 			// verify

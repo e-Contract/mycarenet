@@ -37,10 +37,10 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.ehbox.EHealthBoxPublicationClient;
@@ -61,7 +61,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class EHealthBoxPublicationClientTest {
 
-	private static final Log LOG = LogFactory.getLog(EHealthBoxPublicationClientTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxPublicationClientTest.class);
 
 	private Config config;
 
@@ -123,7 +123,7 @@ public class EHealthBoxPublicationClientTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();
@@ -154,7 +154,7 @@ public class EHealthBoxPublicationClientTest {
 
 		publicationClient.setCredentials(eHealthPrivateKey, assertionString);
 		publicationClient.publish(publicationMessage);
-		LOG.debug("payload: " + publicationClient.getPayload());
+		LOGGER.debug("payload: {}", publicationClient.getPayload());
 	}
 
 	@Test
@@ -210,7 +210,7 @@ public class EHealthBoxPublicationClientTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();
@@ -308,7 +308,7 @@ public class EHealthBoxPublicationClientTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();

@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -31,8 +31,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  */
 public class WSAddressingSOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory.getLog(WSAddressingSOAPHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSAddressingSOAPHandler.class);
 
 	private final String to;
 
@@ -65,7 +65,7 @@ public class WSAddressingSOAPHandler implements SOAPHandler<SOAPMessageContext> 
 		try {
 			handleOutboundMessage(context);
 		} catch (Exception e) {
-			LOG.error("outbound exception: " + e.getMessage(), e);
+			LOGGER.error("outbound exception: " + e.getMessage(), e);
 			throw new ProtocolException(e);
 		}
 		return true;

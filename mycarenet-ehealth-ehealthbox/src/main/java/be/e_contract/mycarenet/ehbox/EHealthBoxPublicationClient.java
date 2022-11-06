@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2020 e-Contract.be BV.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -40,8 +40,8 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.MTOMFeature;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -65,8 +65,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  */
 public class EHealthBoxPublicationClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory
-			.getLog(EHealthBoxPublicationClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxPublicationClient.class);
 
 	private final EhBoxPublicationPortType ehBoxPublicationPort;
 
@@ -79,10 +78,8 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	/**
 	 * Sets the authentication credentials.
 	 * 
-	 * @param hokPrivateKey
-	 *            the eHealth authentication private key.
-	 * @param samlAssertion
-	 *            the eHealth STS SAML assertion as string.
+	 * @param hokPrivateKey the eHealth authentication private key.
+	 * @param samlAssertion the eHealth STS SAML assertion as string.
 	 */
 	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
@@ -93,29 +90,24 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location
-	 *            the URL of the eHealth Publication version 3.0 web service.
+	 * @param location the URL of the eHealth Publication version 3.0 web service.
 	 */
 	public EHealthBoxPublicationClient(String location) {
-		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory
-				.newInstance();
+		EhBoxPublicationService publicationService = EhBoxPublicationServiceFactory.newInstance();
 		/*
 		 * Nasty way to disable MTOM for Apache CXF.
 		 */
 		this.ehBoxPublicationPort = publicationService
-				.getEhBoxPublicationPort(new MTOMFeature(false,
-						1024 * 1024 * 1024));
+				.getEhBoxPublicationPort(new MTOMFeature(false, 1024 * 1024 * 1024));
 
-		QName publicationPortQName = new QName(
-				"urn:be:fgov:ehealth:ehbox:publication:protocol:v3",
+		QName publicationPortQName = new QName("urn:be:fgov:ehealth:ehbox:publication:protocol:v3",
 				"ehBoxPublicationPort");
-		this.publicationDispatch = publicationService.createDispatch(
-				publicationPortQName, Source.class, Service.Mode.PAYLOAD);
+		this.publicationDispatch = publicationService.createDispatch(publicationPortQName, Source.class,
+				Service.Mode.PAYLOAD);
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 		this.payloadLogicalHandler = new PayloadLogicalHandler();
-		configureBindingProvider((BindingProvider) this.ehBoxPublicationPort,
-				location);
+		configureBindingProvider((BindingProvider) this.ehBoxPublicationPort, location);
 		configureBindingProvider(this.publicationDispatch, location);
 	}
 
@@ -125,19 +117,15 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	 * @throws BusinessError
 	 * @throws SystemError
 	 */
-	public SendMessageResponse publish(PublicationMessageType publicationMessage)
-			throws BusinessError, SystemError {
+	public SendMessageResponse publish(PublicationMessageType publicationMessage) throws BusinessError, SystemError {
 
-		SendMessageResponse sendMessageResponse = this.ehBoxPublicationPort
-				.sendMessage(publicationMessage);
+		SendMessageResponse sendMessageResponse = this.ehBoxPublicationPort.sendMessage(publicationMessage);
 		return sendMessageResponse;
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configureBindingProvider(BindingProvider bindingProvider,
-			String location) {
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+	private void configureBindingProvider(BindingProvider bindingProvider, String location) {
+		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
@@ -149,17 +137,14 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	}
 
 	public Element invoke(Element request) {
-		Source responseSource = this.publicationDispatch.invoke(new DOMSource(
-				request));
+		Source responseSource = this.publicationDispatch.invoke(new DOMSource(request));
 		Element responseElement = toElement(responseSource);
 		return responseElement;
 	}
 
 	public String invoke(String request) {
-		Source responseSource = this.publicationDispatch
-				.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: "
-				+ responseSource.getClass().getName());
+		Source responseSource = this.publicationDispatch.invoke(new StreamSource(new StringReader(request)));
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 
@@ -173,8 +158,7 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	}
 
 	private String toString(Source source) {
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
@@ -196,8 +180,7 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 			DOMSource domSource = (DOMSource) source;
 			return (Element) domSource.getNode();
 		}
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();

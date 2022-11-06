@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -49,8 +49,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,12 +63,9 @@ import org.w3c.dom.NodeList;
  * @author Frank Cornelis
  * 
  */
-public class KeyBindingAuthenticationSignatureSOAPHandler
-		implements
-			SOAPHandler<SOAPMessageContext> {
+public class KeyBindingAuthenticationSignatureSOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(KeyBindingAuthenticationSignatureSOAPHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KeyBindingAuthenticationSignatureSOAPHandler.class);
 
 	private PrivateKey authnPrivateKey;
 
@@ -82,12 +79,11 @@ public class KeyBindingAuthenticationSignatureSOAPHandler
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
-		Boolean outboundProperty = (Boolean) context
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		if (false == outboundProperty) {
 			return true;
 		}
-		LOG.debug("adding key binding authentication signature");
+		LOGGER.debug("adding key binding authentication signature");
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
@@ -99,110 +95,90 @@ public class KeyBindingAuthenticationSignatureSOAPHandler
 			requestElementName = "RevokeRequest";
 			this.referenceUri = "#" + this.revokeKeyBindingId;
 		} else {
-			LOG.error("missing key binding id");
+			LOGGER.error("missing key binding id");
 			return false;
 		}
-		NodeList requestNodeList = soapPart.getElementsByTagNameNS(
-				XKMS2ServiceFactory.XKMS2_NAMESPACE, requestElementName);
+		NodeList requestNodeList = soapPart.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
+				requestElementName);
 		Element requestElement = (Element) requestNodeList.item(0);
 		if (null == requestElement) {
-			LOG.error("request element not present");
+			LOGGER.error("request element not present");
 			return false;
 		}
 		Document xkmsDocument;
 		try {
 			xkmsDocument = copyDocument(requestElement);
 		} catch (ParserConfigurationException e) {
-			LOG.error("error copying XKMS request: " + e.getMessage(), e);
+			LOGGER.error("error copying XKMS request: " + e.getMessage(), e);
 			return false;
 		}
 
 		NodeList keyBindingAuthenticationNodeList = xkmsDocument
-				.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
-						"KeyBindingAuthentication");
-		Element keyBindingAuthenticationElement = (Element) keyBindingAuthenticationNodeList
-				.item(0);
+				.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE, "KeyBindingAuthentication");
+		Element keyBindingAuthenticationElement = (Element) keyBindingAuthenticationNodeList.item(0);
 		try {
 			prepareDocument(xkmsDocument);
 			addSignature(keyBindingAuthenticationElement);
 		} catch (Exception e) {
-			LOG.error("error adding authn signature: " + e.getMessage(), e);
+			LOGGER.error("error adding authn signature: " + e.getMessage(), e);
 			return false;
 		}
 
-		Node signatureNode = soapPart.importNode(
-				keyBindingAuthenticationElement.getFirstChild(), true);
+		Node signatureNode = soapPart.importNode(keyBindingAuthenticationElement.getFirstChild(), true);
 
-		keyBindingAuthenticationNodeList = soapPart
-				.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
-						"KeyBindingAuthentication");
-		keyBindingAuthenticationElement = (Element) keyBindingAuthenticationNodeList
-				.item(0);
+		keyBindingAuthenticationNodeList = soapPart.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE,
+				"KeyBindingAuthentication");
+		keyBindingAuthenticationElement = (Element) keyBindingAuthenticationNodeList.item(0);
 		keyBindingAuthenticationElement.appendChild(signatureNode);
 		return true;
 	}
 
 	private void prepareDocument(Document xkmsDocument) {
-		Element prototypeElement = xkmsDocument
-				.getElementById(this.prototypeKeyBindingId);
+		Element prototypeElement = xkmsDocument.getElementById(this.prototypeKeyBindingId);
 		if (null == prototypeElement) {
-			LOG.warn("Prototype element not found via Id");
-			prototypeElement = (Element) xkmsDocument.getElementsByTagNameNS(
-					XKMS2ServiceFactory.XKMS2_NAMESPACE, "PrototypeKeyBinding")
-					.item(0);
+			LOGGER.warn("Prototype element not found via Id");
+			prototypeElement = (Element) xkmsDocument
+					.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE, "PrototypeKeyBinding").item(0);
 			if (null == prototypeElement) {
 				prototypeElement = (Element) xkmsDocument
-						.getElementsByTagNameNS(
-								XKMS2ServiceFactory.XKMS2_NAMESPACE,
-								"RevokeKeyBinding").item(0);
+						.getElementsByTagNameNS(XKMS2ServiceFactory.XKMS2_NAMESPACE, "RevokeKeyBinding").item(0);
 			}
 			prototypeElement.setIdAttribute("Id", true);
 		}
 	}
 
-	private Document copyDocument(Element element)
-			throws ParserConfigurationException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
+	private Document copyDocument(Element element) throws ParserConfigurationException {
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document document = documentBuilder.newDocument();
 		Node importedNode = document.importNode(element, true);
 		document.appendChild(importedNode);
 		return document;
 	}
 
-	private void addSignature(Element parentElement)
-			throws NoSuchAlgorithmException,
-			InvalidAlgorithmParameterException, MarshalException,
-			XMLSignatureException {
-		DOMSignContext domSignContext = new DOMSignContext(
-				this.authnPrivateKey, parentElement);
-		XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory
-				.getInstance("DOM");
+	private void addSignature(Element parentElement) throws NoSuchAlgorithmException,
+			InvalidAlgorithmParameterException, MarshalException, XMLSignatureException {
+		DOMSignContext domSignContext = new DOMSignContext(this.authnPrivateKey, parentElement);
+		XMLSignatureFactory xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM");
 
-		Reference reference = xmlSignatureFactory.newReference(
-				this.referenceUri, xmlSignatureFactory.newDigestMethod(
-						DigestMethod.SHA1, null), Collections
-						.singletonList(xmlSignatureFactory.newTransform(
-								CanonicalizationMethod.EXCLUSIVE,
-								(TransformParameterSpec) null)), null, null);
+		Reference reference = xmlSignatureFactory.newReference(this.referenceUri,
+				xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null),
+				Collections.singletonList(xmlSignatureFactory.newTransform(CanonicalizationMethod.EXCLUSIVE,
+						(TransformParameterSpec) null)),
+				null, null);
 
 		SignedInfo signedInfo = xmlSignatureFactory.newSignedInfo(
-				xmlSignatureFactory.newCanonicalizationMethod(
-						CanonicalizationMethod.EXCLUSIVE,
-						(C14NMethodParameterSpec) null), xmlSignatureFactory
-						.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
+				xmlSignatureFactory.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null),
+				xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
 				Collections.singletonList(reference));
 
 		KeyInfoFactory keyInfoFactory = xmlSignatureFactory.getKeyInfoFactory();
 		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections
-				.singletonList(keyInfoFactory.newX509Data(Collections
-						.singletonList(this.authnCertificate))));
+				.singletonList(keyInfoFactory.newX509Data(Collections.singletonList(this.authnCertificate))));
 
-		XMLSignature xmlSignature = xmlSignatureFactory.newXMLSignature(
-				signedInfo, keyInfo);
+		XMLSignature xmlSignature = xmlSignatureFactory.newXMLSignature(signedInfo, keyInfo);
 		xmlSignature.sign(domSignContext);
 	}
 
@@ -223,13 +199,10 @@ public class KeyBindingAuthenticationSignatureSOAPHandler
 	/**
 	 * Sets the signer identity.
 	 * 
-	 * @param authnPrivateKey
-	 *            the eID authentication private key.
-	 * @param authnCertificate
-	 *            the eID authentication certificate.
+	 * @param authnPrivateKey  the eID authentication private key.
+	 * @param authnCertificate the eID authentication certificate.
 	 */
-	public void setSigner(PrivateKey authnPrivateKey,
-			X509Certificate authnCertificate) {
+	public void setSigner(PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
 		this.authnPrivateKey = authnPrivateKey;
 		this.authnCertificate = authnCertificate;
 	}

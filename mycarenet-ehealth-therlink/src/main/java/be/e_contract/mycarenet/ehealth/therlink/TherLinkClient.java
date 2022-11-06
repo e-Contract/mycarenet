@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2018-2020 e-Contract.be BV.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -37,8 +37,8 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
@@ -47,7 +47,7 @@ import be.e_contract.mycarenet.ehealth.therlink.jaxws.TherLinkService;
 
 public class TherLinkClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory.getLog(TherLinkClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TherLinkClient.class);
 
 	private final Dispatch<Source> dispatch;
 
@@ -83,10 +83,8 @@ public class TherLinkClient implements CredentialClient {
 	/**
 	 * Sets the credentials to be used.
 	 * 
-	 * @param hokPrivateKey
-	 *            the eHealth holder-of-key authentication private key.
-	 * @param samlAssertion
-	 *            the eHealth SAML assertion as string.
+	 * @param hokPrivateKey the eHealth holder-of-key authentication private key.
+	 * @param samlAssertion the eHealth SAML assertion as string.
 	 */
 	@Override
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
@@ -103,7 +101,7 @@ public class TherLinkClient implements CredentialClient {
 	 */
 	public String invoke(String request) {
 		Source responseSource = this.dispatch.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: " + responseSource.getClass().getName());
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 

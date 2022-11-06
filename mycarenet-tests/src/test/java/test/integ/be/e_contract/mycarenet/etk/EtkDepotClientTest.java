@@ -25,9 +25,9 @@ import java.io.File;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 import be.e_contract.mycarenet.etk.EtkDepotClient;
@@ -39,7 +39,7 @@ import be.fedict.commons.eid.consumer.tlv.TlvParser;
 
 public class EtkDepotClientTest {
 
-	private static final Log LOG = LogFactory.getLog(EtkDepotClientTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EtkDepotClientTest.class);
 
 	@Test
 	public void testClient() throws Exception {
@@ -57,17 +57,17 @@ public class EtkDepotClientTest {
 
 		File tmpFile = File.createTempFile("etk-", ".der");
 		FileUtils.writeByteArrayToFile(tmpFile, etk);
-		LOG.debug("ETK file: " + tmpFile.getAbsolutePath());
+		LOGGER.debug("ETK file: {}", tmpFile.getAbsolutePath());
 
 		EncryptionToken encryptionToken = new EncryptionToken(etk);
 
 		X509Certificate encryptionCertificate = encryptionToken.getEncryptionCertificate();
-		LOG.debug("encryption certificate issuer: " + encryptionCertificate.getIssuerX500Principal());
-		LOG.debug("encryption certificate subject: " + encryptionCertificate.getSubjectX500Principal());
+		LOGGER.debug("encryption certificate issuer: {}", encryptionCertificate.getIssuerX500Principal());
+		LOGGER.debug("encryption certificate subject: {}", encryptionCertificate.getSubjectX500Principal());
 
 		X509Certificate authenticationCertificate = encryptionToken.getAuthenticationCertificate();
-		LOG.debug("authentication certificate issuer: " + authenticationCertificate.getIssuerX500Principal());
-		LOG.debug("authentication certificate subject: " + authenticationCertificate.getSubjectX500Principal());
+		LOGGER.debug("authentication certificate issuer: {}", authenticationCertificate.getIssuerX500Principal());
+		LOGGER.debug("authentication certificate subject: {}", authenticationCertificate.getSubjectX500Principal());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class EtkDepotClientTest {
 		assertNull(etk);
 
 		String payload = etkDepotClient.getPayload();
-		LOG.debug("payload: " + payload);
+		LOGGER.debug("payload: {}", payload);
 	}
 
 	@Test

@@ -36,17 +36,17 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 public class WSSecuritySOAPHandlerTest {
 
-	private static final Log LOG = LogFactory.getLog(WSSecuritySOAPHandlerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSecuritySOAPHandlerTest.class);
 
 	@Test
 	public void testHandleMessage() throws Exception {
@@ -81,7 +81,7 @@ public class WSSecuritySOAPHandlerTest {
 
 		// verify
 		EasyMock.verify(mockSoapMessageContext);
-		LOG.debug(toString(soapPart));
+		LOGGER.debug(toString(soapPart));
 	}
 
 	private String toString(Node node) throws Exception {

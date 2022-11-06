@@ -24,20 +24,20 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import test.integ.be.e_contract.mycarenet.Config;
 
 public class EHealthCertificateTest {
 
-	private static final Log LOG = LogFactory.getLog(EHealthCertificateTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthCertificateTest.class);
 
 	private Config config;
 
@@ -49,26 +49,26 @@ public class EHealthCertificateTest {
 	@Test
 	public void testReadCertificate() throws Exception {
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
-		LOG.debug("eHealth PKCS12 path: " + this.config.getEHealthPKCS12Path());
+		LOGGER.debug("eHealth PKCS12 path: {}", this.config.getEHealthPKCS12Path());
 		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
 		keyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = keyStore.aliases();
 		while (aliasesEnum.hasMoreElements()) {
 			String alias = aliasesEnum.nextElement();
-			LOG.debug("alias: " + alias);
+			LOGGER.debug("alias: {}", alias);
 			X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
 			// LOG.debug("certificate: " + certificate);
-			LOG.debug("certificate subject: " + certificate.getSubjectX500Principal());
+			LOGGER.debug("certificate subject: {}", certificate.getSubjectX500Principal());
 
 			X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
 			X500Name subjectName = certificateHolder.getSubject();
 			RDN[] rdns = subjectName.getRDNs();
 			for (RDN rdn : rdns) {
-				LOG.debug("--------");
+				LOGGER.debug("--------");
 				AttributeTypeAndValue[] attributes = rdn.getTypesAndValues();
 				for (AttributeTypeAndValue attribute : attributes) {
-					LOG.debug(attribute.getType() + " = " + attribute.getValue());
-					LOG.debug("value type: " + attribute.getValue().getClass().getName());
+					LOGGER.debug("{} = {}", attribute.getType(), attribute.getValue());
+					LOGGER.debug("value type: {}", attribute.getValue().getClass().getName());
 				}
 			}
 

@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,9 +32,9 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.common.SessionKey;
@@ -69,7 +69,7 @@ import be.e_contract.mycarenet.jaxws.xkms2.XMLKeyManagementService;
  */
 public class XKMS2Client {
 
-	private static final Log LOG = LogFactory.getLog(XKMS2Client.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XKMS2Client.class);
 
 	private static final String SIGNATURE_KEY_USAGE = "http://www.w3.org/2002/03/xkms#Signature";
 
@@ -92,15 +92,13 @@ public class XKMS2Client {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location
-	 *            the URL of the MyCareNet XKMS 2.0 web service.
+	 * @param location the URL of the MyCareNet XKMS 2.0 web service.
 	 */
 	public XKMS2Client(String location) {
 		XMLKeyManagementService service = XKMS2ServiceFactory.newInstance();
 		this.keyServicePort = service.getKeyServiceSoapPort();
 		BindingProvider bindingProvider = (BindingProvider) this.keyServicePort;
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
@@ -118,8 +116,7 @@ public class XKMS2Client {
 		try {
 			this.datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException("DatatypeFactory error: "
-					+ e.getMessage(), e);
+			throw new RuntimeException("DatatypeFactory error: " + e.getMessage(), e);
 		}
 
 	}
@@ -127,93 +124,76 @@ public class XKMS2Client {
 	/**
 	 * Register the given session key.
 	 * 
-	 * @param sessionKey
-	 *            the session key to be registered.
-	 * @param authnPrivateKey
-	 *            the eID authentication private key.
-	 * @param authnCertificate
-	 *            the eID authentication certificate.
+	 * @param sessionKey       the session key to be registered.
+	 * @param authnPrivateKey  the eID authentication private key.
+	 * @param authnCertificate the eID authentication certificate.
 	 */
-	public void registerSessionKey(SessionKey sessionKey,
-			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
-		LOG.debug("register session key");
-		RegisterRequestType request = this.objectFactory
-				.createRegisterRequestType();
+	public void registerSessionKey(SessionKey sessionKey, PrivateKey authnPrivateKey,
+			X509Certificate authnCertificate) {
+		LOGGER.debug("register session key");
+		RegisterRequestType request = this.objectFactory.createRegisterRequestType();
 
-		String prototypeKeyBindingId = addPrototypeKeyBinding(request,
-				sessionKey);
+		String prototypeKeyBindingId = addPrototypeKeyBinding(request, sessionKey);
 
 		addProofOfPossession(request, sessionKey, prototypeKeyBindingId);
 
-		addAuthentication(request, prototypeKeyBindingId, authnPrivateKey,
-				authnCertificate);
+		addAuthentication(request, prototypeKeyBindingId, authnPrivateKey, authnCertificate);
 
 		RegisterResultType registerResult;
 		try {
 			registerResult = this.keyServicePort.register(request);
 		} catch (RegisterResult e) {
-			LOG.error("RegisterResult exception");
+			LOGGER.error("RegisterResult exception");
 			return;
 		}
 
 		List<KeyBindingType> keyBindingList = registerResult.getKeyBinding();
 		if (keyBindingList.isEmpty()) {
-			LOG.error("missing KeyBinding");
+			LOGGER.error("missing KeyBinding");
 			return;
 		}
 		KeyBindingType keyBinding = keyBindingList.get(0);
 		StatusType status = keyBinding.getStatus();
 		if (null == status) {
-			LOG.error("missing KeyBinding/Status");
+			LOGGER.error("missing KeyBinding/Status");
 			return;
 		}
 		String statusValue = status.getStatusValue();
 		if (false == VALID_STATUS.equals(statusValue)) {
-			LOG.error("status not valid");
+			LOGGER.error("status not valid");
 			return;
 		}
-		ValidityIntervalType validityInterval = keyBinding
-				.getValidityInterval();
+		ValidityIntervalType validityInterval = keyBinding.getValidityInterval();
 		if (null == validityInterval) {
-			LOG.error("missing KeyBinding/ValidityInterval");
+			LOGGER.error("missing KeyBinding/ValidityInterval");
 			return;
 		}
-		Date notBefore = validityInterval.getNotBefore().toGregorianCalendar()
-				.getTime();
-		Date notAfter = validityInterval.getNotOnOrAfter()
-				.toGregorianCalendar().getTime();
+		Date notBefore = validityInterval.getNotBefore().toGregorianCalendar().getTime();
+		Date notAfter = validityInterval.getNotOnOrAfter().toGregorianCalendar().getTime();
 		sessionKey.setValidity(notBefore, notAfter);
 	}
 
 	/**
 	 * Revoke the given MyCareNet session key.
 	 * 
-	 * @param sessionKey
-	 *            the session key to be revoked.
-	 * @param authnPrivateKey
-	 *            the eID authentication private key.
-	 * @param authnCertificate
-	 *            the eID authentication certificate.
+	 * @param sessionKey       the session key to be revoked.
+	 * @param authnPrivateKey  the eID authentication private key.
+	 * @param authnCertificate the eID authentication certificate.
 	 */
-	public void revokeSessionKey(SessionKey sessionKey,
-			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
-		LOG.debug("revoke session key");
-		RevokeRequestType revokeRequest = this.objectFactory
-				.createRevokeRequestType();
-		String revokeKeyBindingId = addRevokeKeyBinding(revokeRequest,
-				sessionKey);
-		addAuthentication(revokeRequest, revokeKeyBindingId, authnPrivateKey,
-				authnCertificate);
+	public void revokeSessionKey(SessionKey sessionKey, PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
+		LOGGER.debug("revoke session key");
+		RevokeRequestType revokeRequest = this.objectFactory.createRevokeRequestType();
+		String revokeKeyBindingId = addRevokeKeyBinding(revokeRequest, sessionKey);
+		addAuthentication(revokeRequest, revokeKeyBindingId, authnPrivateKey, authnCertificate);
 
-		this.proofOfPossessionSignatureSOAPHandler
-				.setPrototypeKeyBindingId(null);
+		this.proofOfPossessionSignatureSOAPHandler.setPrototypeKeyBindingId(null);
 		this.proofOfPossessionSignatureSOAPHandler.setSessionKey(null);
 
 		RevokeResultType revokeResult;
 		try {
 			revokeResult = this.keyServicePort.revoke(revokeRequest);
 		} catch (RevokeResult e) {
-			LOG.error("revoke error: " + e.getMessage(), e);
+			LOGGER.error("revoke error: " + e.getMessage(), e);
 			return;
 		}
 		String resultMajor = revokeResult.getResultMajor();
@@ -222,26 +202,19 @@ public class XKMS2Client {
 		}
 	}
 
-	private void addAuthentication(RevokeRequestType revokeRequest,
-			String revokeKeyBindingId, PrivateKey authnPrivateKey,
-			X509Certificate authnCertificate) {
-		AuthenticationType authentication = this.objectFactory
-				.createAuthenticationType();
+	private void addAuthentication(RevokeRequestType revokeRequest, String revokeKeyBindingId,
+			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
+		AuthenticationType authentication = this.objectFactory.createAuthenticationType();
 		revokeRequest.setAuthentication(authentication);
 
-		KeyBindingAuthenticationType keyBindingAuthentication = this.objectFactory
-				.createKeyBindingAuthenticationType();
+		KeyBindingAuthenticationType keyBindingAuthentication = this.objectFactory.createKeyBindingAuthenticationType();
 		authentication.setKeyBindingAuthentication(keyBindingAuthentication);
-		this.keyBindingAuthenticationSignatureSOAPHandler.setSigner(
-				authnPrivateKey, authnCertificate);
-		this.keyBindingAuthenticationSignatureSOAPHandler
-				.setRevokeKeyBindingId(revokeKeyBindingId);
+		this.keyBindingAuthenticationSignatureSOAPHandler.setSigner(authnPrivateKey, authnCertificate);
+		this.keyBindingAuthenticationSignatureSOAPHandler.setRevokeKeyBindingId(revokeKeyBindingId);
 	}
 
-	private String addRevokeKeyBinding(RevokeRequestType revokeRequest,
-			SessionKey sessionKey) {
-		KeyBindingType revokeKeyBinding = this.objectFactory
-				.createKeyBindingType();
+	private String addRevokeKeyBinding(RevokeRequestType revokeRequest, SessionKey sessionKey) {
+		KeyBindingType revokeKeyBinding = this.objectFactory.createKeyBindingType();
 		revokeRequest.setRevokeKeyBinding(revokeKeyBinding);
 
 		String revokeKeyBindingId = "revoke-" + UUID.randomUUID().toString();
@@ -251,13 +224,10 @@ public class XKMS2Client {
 		revokeKeyBinding.setKeyInfo(keyInfo);
 
 		KeyValueType keyValue = this.xmldsigObjectFactory.createKeyValueType();
-		keyInfo.getContent().add(
-				this.xmldsigObjectFactory.createKeyValue(keyValue));
+		keyInfo.getContent().add(this.xmldsigObjectFactory.createKeyValue(keyValue));
 
-		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory
-				.createRSAKeyValueType();
-		keyValue.getContent().add(
-				this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
+		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory.createRSAKeyValueType();
+		keyValue.getContent().add(this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
 
 		rsaKeyValue.setModulus(sessionKey.getModulus());
 		rsaKeyValue.setExponent(sessionKey.getExponent());
@@ -265,61 +235,47 @@ public class XKMS2Client {
 		return revokeKeyBindingId;
 	}
 
-	private void addAuthentication(RegisterRequestType request,
-			String prototypeKeyBindingId, PrivateKey authnPrivateKey,
-			X509Certificate authnCertificate) {
-		AuthenticationType authentication = this.objectFactory
-				.createAuthenticationType();
+	private void addAuthentication(RegisterRequestType request, String prototypeKeyBindingId,
+			PrivateKey authnPrivateKey, X509Certificate authnCertificate) {
+		AuthenticationType authentication = this.objectFactory.createAuthenticationType();
 		request.setAuthentication(authentication);
 
-		KeyBindingAuthenticationType keyBindingAuthentication = this.objectFactory
-				.createKeyBindingAuthenticationType();
+		KeyBindingAuthenticationType keyBindingAuthentication = this.objectFactory.createKeyBindingAuthenticationType();
 		authentication.setKeyBindingAuthentication(keyBindingAuthentication);
-		this.keyBindingAuthenticationSignatureSOAPHandler.setSigner(
-				authnPrivateKey, authnCertificate);
-		this.keyBindingAuthenticationSignatureSOAPHandler
-				.setPrototypeKeyBindingId(prototypeKeyBindingId);
+		this.keyBindingAuthenticationSignatureSOAPHandler.setSigner(authnPrivateKey, authnCertificate);
+		this.keyBindingAuthenticationSignatureSOAPHandler.setPrototypeKeyBindingId(prototypeKeyBindingId);
 	}
 
-	private void addProofOfPossession(RegisterRequestType request,
-			SessionKey sessionKey, String prototypeKeyBindingId) {
-		ProofOfPossessionType proofOfPossession = this.objectFactory
-				.createProofOfPossessionType();
+	private void addProofOfPossession(RegisterRequestType request, SessionKey sessionKey,
+			String prototypeKeyBindingId) {
+		ProofOfPossessionType proofOfPossession = this.objectFactory.createProofOfPossessionType();
 		request.setProofOfPossession(proofOfPossession);
 		this.proofOfPossessionSignatureSOAPHandler.setSessionKey(sessionKey);
-		this.proofOfPossessionSignatureSOAPHandler
-				.setPrototypeKeyBindingId(prototypeKeyBindingId);
+		this.proofOfPossessionSignatureSOAPHandler.setPrototypeKeyBindingId(prototypeKeyBindingId);
 	}
 
-	private String addPrototypeKeyBinding(RegisterRequestType registerRequest,
-			SessionKey sessionKey) {
-		PrototypeKeyBindingType prototypeKeyBinding = this.objectFactory
-				.createPrototypeKeyBindingType();
+	private String addPrototypeKeyBinding(RegisterRequestType registerRequest, SessionKey sessionKey) {
+		PrototypeKeyBindingType prototypeKeyBinding = this.objectFactory.createPrototypeKeyBindingType();
 		registerRequest.setPrototypeKeyBinding(prototypeKeyBinding);
 
-		String prototypeKeyBindingId = "keybinding-"
-				+ UUID.randomUUID().toString();
+		String prototypeKeyBindingId = "keybinding-" + UUID.randomUUID().toString();
 		prototypeKeyBinding.setId(prototypeKeyBindingId);
 
 		KeyInfoType keyInfo = this.xmldsigObjectFactory.createKeyInfoType();
 		prototypeKeyBinding.setKeyInfo(keyInfo);
 
 		KeyValueType keyValue = this.xmldsigObjectFactory.createKeyValueType();
-		keyInfo.getContent().add(
-				this.xmldsigObjectFactory.createKeyValue(keyValue));
+		keyInfo.getContent().add(this.xmldsigObjectFactory.createKeyValue(keyValue));
 
-		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory
-				.createRSAKeyValueType();
-		keyValue.getContent().add(
-				this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
+		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory.createRSAKeyValueType();
+		keyValue.getContent().add(this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
 
 		rsaKeyValue.setModulus(sessionKey.getModulus());
 		rsaKeyValue.setExponent(sessionKey.getExponent());
 
 		prototypeKeyBinding.getKeyUsage().add(SIGNATURE_KEY_USAGE);
 
-		ValidityIntervalType validityInterval = this.objectFactory
-				.createValidityIntervalType();
+		ValidityIntervalType validityInterval = this.objectFactory.createValidityIntervalType();
 		prototypeKeyBinding.setValidityInterval(validityInterval);
 
 		DateTime notBefore = new DateTime();
@@ -333,8 +289,7 @@ public class XKMS2Client {
 	private XMLGregorianCalendar toXMLGregorianCalendar(DateTime dateTime) {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		gregorianCalendar.setTime(dateTime.toDate());
-		XMLGregorianCalendar xmlGregorianCalendar = this.datatypeFactory
-				.newXMLGregorianCalendar(gregorianCalendar);
+		XMLGregorianCalendar xmlGregorianCalendar = this.datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		return xmlGregorianCalendar;
 	}
 }

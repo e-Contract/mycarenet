@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2015 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -26,11 +26,11 @@ import java.security.cert.X509Certificate;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generic WSS4J Crypto implementation.
@@ -40,7 +40,7 @@ import org.apache.ws.security.components.crypto.CryptoType;
  */
 public class WSSecurityCrypto implements Crypto {
 
-	private static final Log LOG = LogFactory.getLog(WSSecurityCrypto.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSecurityCrypto.class);
 
 	private final PrivateKey privateKey;
 
@@ -57,114 +57,103 @@ public class WSSecurityCrypto implements Crypto {
 	}
 
 	@Override
-	public byte[] getBytesFromCertificates(X509Certificate[] certs)
-			throws WSSecurityException {
-		LOG.debug("getBytesFromCertificates");
+	public byte[] getBytesFromCertificates(X509Certificate[] certs) throws WSSecurityException {
+		LOGGER.debug("getBytesFromCertificates");
 		return null;
 	}
 
 	@Override
-	public CertificateFactory getCertificateFactory()
-			throws WSSecurityException {
-		LOG.debug("getCertificateFactory");
+	public CertificateFactory getCertificateFactory() throws WSSecurityException {
+		LOGGER.debug("getCertificateFactory");
 		return null;
 	}
 
 	@Override
-	public X509Certificate[] getCertificatesFromBytes(byte[] data)
-			throws WSSecurityException {
-		LOG.debug("getCertificatesFromBytes");
+	public X509Certificate[] getCertificatesFromBytes(byte[] data) throws WSSecurityException {
+		LOGGER.debug("getCertificatesFromBytes");
 		return null;
 	}
 
 	@Override
 	public String getCryptoProvider() {
-		LOG.debug("getCryptoProvider");
+		LOGGER.debug("getCryptoProvider");
 		return null;
 	}
 
 	@Override
 	public String getDefaultX509Identifier() throws WSSecurityException {
-		LOG.debug("getDefaultX509Identifier");
+		LOGGER.debug("getDefaultX509Identifier");
 		return null;
 	}
 
 	@Override
-	public PrivateKey getPrivateKey(X509Certificate certificate,
-			CallbackHandler callbackHandler) throws WSSecurityException {
-		LOG.debug("getPrivateKey(cert, callback)");
-		return null;
-	}
-
-	@Override
-	public PrivateKey getPrivateKey(String identifier, String password)
+	public PrivateKey getPrivateKey(X509Certificate certificate, CallbackHandler callbackHandler)
 			throws WSSecurityException {
-		LOG.debug("getPrivateKey(identifier, password)");
+		LOGGER.debug("getPrivateKey(cert, callback)");
+		return null;
+	}
+
+	@Override
+	public PrivateKey getPrivateKey(String identifier, String password) throws WSSecurityException {
+		LOGGER.debug("getPrivateKey(identifier, password)");
 		return this.privateKey;
 	}
 
 	@Override
-	public byte[] getSKIBytesFromCert(X509Certificate cert)
-			throws WSSecurityException {
-		LOG.debug("getSKIBytesFromCert");
+	public byte[] getSKIBytesFromCert(X509Certificate cert) throws WSSecurityException {
+		LOGGER.debug("getSKIBytesFromCert");
 		return null;
 	}
 
 	@Override
-	public X509Certificate[] getX509Certificates(CryptoType cryptoType)
-			throws WSSecurityException {
-		LOG.debug("getX509Certificates");
-		X509Certificate[] certificates = new X509Certificate[]{this.certificate};
+	public X509Certificate[] getX509Certificates(CryptoType cryptoType) throws WSSecurityException {
+		LOGGER.debug("getX509Certificates");
+		X509Certificate[] certificates = new X509Certificate[] { this.certificate };
 		return certificates;
 	}
 
 	@Override
-	public String getX509Identifier(X509Certificate cert)
-			throws WSSecurityException {
-		LOG.debug("getX509Identifier");
+	public String getX509Identifier(X509Certificate cert) throws WSSecurityException {
+		LOGGER.debug("getX509Identifier");
 		return null;
 	}
 
 	@Override
-	public X509Certificate loadCertificate(InputStream in)
-			throws WSSecurityException {
-		LOG.debug("loadCertificate");
+	public X509Certificate loadCertificate(InputStream in) throws WSSecurityException {
+		LOGGER.debug("loadCertificate");
 		return null;
 	}
 
 	@Override
-	public void setCertificateFactory(String provider,
-			CertificateFactory certFactory) {
-		LOG.debug("setCertifiateFactory");
+	public void setCertificateFactory(String provider, CertificateFactory certFactory) {
+		LOGGER.debug("setCertifiateFactory");
 	}
 
 	@Override
 	public void setCryptoProvider(String provider) {
-		LOG.debug("setCryptoProvider");
+		LOGGER.debug("setCryptoProvider");
 	}
 
 	@Override
 	public void setDefaultX509Identifier(String identifier) {
-		LOG.debug("setDefaultX509Identifier");
+		LOGGER.debug("setDefaultX509Identifier");
 	}
 
 	@Override
-	public boolean verifyTrust(X509Certificate[] certs)
-			throws WSSecurityException {
-		LOG.debug("verifyTrust(certs)");
+	public boolean verifyTrust(X509Certificate[] certs) throws WSSecurityException {
+		LOGGER.debug("verifyTrust(certs)");
 		return false;
 	}
 
 	@Override
 	public boolean verifyTrust(PublicKey publicKey) throws WSSecurityException {
-		LOG.debug("verifyTrust(publicKey)");
+		LOGGER.debug("verifyTrust(publicKey)");
 		return false;
 	}
 
 	@Override
-	public boolean verifyTrust(X509Certificate[] certs, boolean enableRevocation)
-			throws WSSecurityException {
-		LOG.debug("verifyTrust(certs, enableRevocation)");
+	public boolean verifyTrust(X509Certificate[] certs, boolean enableRevocation) throws WSSecurityException {
+		LOGGER.debug("verifyTrust(certs, enableRevocation)");
 		return false;
 	}
 }

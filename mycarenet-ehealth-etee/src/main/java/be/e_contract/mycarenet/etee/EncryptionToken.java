@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2015 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -28,8 +28,6 @@ import java.util.Iterator;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
@@ -43,6 +41,8 @@ import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Selector;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parser for the eHealth encryption token. This class does not perform any PKI
@@ -55,7 +55,7 @@ import org.bouncycastle.util.Store;
  */
 public class EncryptionToken {
 
-	private static final Log LOG = LogFactory.getLog(EncryptionToken.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EncryptionToken.class);
 
 	private X509Certificate encryptionCertificate;
 
@@ -85,14 +85,14 @@ public class EncryptionToken {
 
 		// get signer certificate
 		Store certificateStore = cmsSignedData.getCertificates();
-		LOG.debug("certificate store type: " + certificateStore.getClass().getName());
+		LOGGER.debug("certificate store type: {}", certificateStore.getClass().getName());
 		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> signingCertificateCollection = certificateStore.getMatches(signerId);
 		X509CertificateHolder signingCertificateHolder = signingCertificateCollection.iterator().next();
 		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate signingCertificate = (X509Certificate) certificateFactory
 				.generateCertificate(new ByteArrayInputStream(signingCertificateHolder.getEncoded()));
-		LOG.debug("signing certificate: " + signingCertificate.getSubjectX500Principal());
+		LOGGER.debug("signing certificate: {}", signingCertificate.getSubjectX500Principal());
 
 		// verify CMS signature
 		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
@@ -108,7 +108,7 @@ public class EncryptionToken {
 		X509Certificate encryptionCertificate = (X509Certificate) certificateFactory
 				.generateCertificate(new ByteArrayInputStream(data));
 
-		LOG.debug("all available certificates:");
+		LOGGER.debug("all available certificates:");
 		logCertificates(certificateStore, null);
 
 		// get authentication certificate
@@ -118,7 +118,8 @@ public class EncryptionToken {
 		Collection<X509CertificateHolder> authenticationCertificates = certificateStore
 				.getMatches(authenticationSelector);
 		if (authenticationCertificates.size() != 1) {
-			LOG.debug("no authentication certificate match");
+			LOGGER.debug("no authentication certificate match");
+			throw new SecurityException("no authentication certificate match");
 		}
 		X509CertificateHolder authenticationCertificateHolder = authenticationCertificates.iterator().next();
 		this.authenticationCertificate = (X509Certificate) certificateFactory
@@ -139,13 +140,13 @@ public class EncryptionToken {
 		try {
 			certificate.verify(issuer.getPublicKey());
 		} catch (Exception e) {
-			LOG.error("invalid proxy certificate signature");
+			LOGGER.error("invalid proxy certificate signature");
 			throw new SecurityException("not a proxy certificate");
 		}
 		try {
 			issuer.checkValidity();
 		} catch (Exception e) {
-			LOG.error("invalid proxy certificate issuer validity");
+			LOGGER.error("invalid proxy certificate issuer validity");
 			throw new SecurityException("not a proxy certificate");
 		}
 	}
@@ -153,12 +154,12 @@ public class EncryptionToken {
 	private void logCertificates(Store store, Selector selector) {
 		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificates = store.getMatches(selector);
-		LOG.debug("match size: " + certificates.size());
+		LOGGER.debug("match size: {}", certificates.size());
 		Iterator<X509CertificateHolder> certificatesIterator = certificates.iterator();
 		while (certificatesIterator.hasNext()) {
 			X509CertificateHolder certificateHolder = certificatesIterator.next();
-			LOG.debug("certificate issuer: " + certificateHolder.getIssuer());
-			LOG.debug("certificate subject: " + certificateHolder.getSubject());
+			LOGGER.debug("certificate issuer: {}", certificateHolder.getIssuer());
+			LOGGER.debug("certificate subject: {}", certificateHolder.getSubject());
 		}
 	}
 

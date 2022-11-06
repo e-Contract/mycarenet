@@ -28,8 +28,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSSignedData;
@@ -45,10 +43,12 @@ import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Store;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SealTest {
 
-	private static final Log LOG = LogFactory.getLog(SealTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SealTest.class);
 
 	@Test
 	public void testSeal() throws Exception {
@@ -76,7 +76,7 @@ public class SealTest {
 		boolean signatureResult = signer.verify(signerInformationVerifier);
 		assertTrue(signatureResult);
 
-		LOG.debug("signer certificate: " + certificate);
+		LOGGER.debug("signer certificate: {}", certificate);
 
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		byte[] data = (byte[]) signedContent.getContent();
@@ -84,14 +84,14 @@ public class SealTest {
 		// decrypt content
 
 		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(data);
-		LOG.debug("content encryption algo: "
-				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
+		LOGGER.debug("content encryption algo: {}",
+				cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
 
 		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser.getRecipientInfos();
 		@SuppressWarnings("unchecked")
 		Collection<RecipientInformation> recipients = recipientInformationStore.getRecipients();
 		RecipientInformation recipientInformation = recipients.iterator().next();
-		LOG.debug("recipient info type: " + recipientInformation.getClass().getName());
+		LOGGER.debug("recipient info type: {}", recipientInformation.getClass().getName());
 		KeyTransRecipientInformation keyTransRecipientInformation = (KeyTransRecipientInformation) recipientInformation;
 
 	}

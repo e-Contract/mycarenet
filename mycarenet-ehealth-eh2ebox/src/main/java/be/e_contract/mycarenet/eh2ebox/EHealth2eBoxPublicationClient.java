@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2021 e-Contract.be BV.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -40,8 +40,8 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.MTOMFeature;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -65,7 +65,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  */
 public class EHealth2eBoxPublicationClient implements CredentialClient {
 
-	private static final Log LOG = LogFactory.getLog(EHealth2eBoxPublicationClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealth2eBoxPublicationClient.class);
 
 	private final EhBoxPublicationPortType ehBoxPublicationPort;
 
@@ -144,7 +144,7 @@ public class EHealth2eBoxPublicationClient implements CredentialClient {
 
 	public String invoke(String request) {
 		Source responseSource = this.publicationDispatch.invoke(new StreamSource(new StringReader(request)));
-		LOG.debug("response Source type: " + responseSource.getClass().getName());
+		LOGGER.debug("response Source type: {}", responseSource.getClass().getName());
 		return toString(responseSource);
 	}
 

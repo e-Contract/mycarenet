@@ -37,10 +37,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.sts.Attribute;
@@ -52,7 +52,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class EHealthSTSClientTest {
 
-	private static final Log LOG = LogFactory.getLog(EHealthSTSClientTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthSTSClientTest.class);
 
 	private Config config;
 
@@ -105,9 +105,9 @@ public class EHealthSTSClientTest {
 
 		assertNotNull(assertionElement);
 
-		LOG.debug("assertion: " + toString(assertionElement));
+		LOGGER.debug("assertion: {}", toString(assertionElement));
 
-		LOG.debug("not after: " + client.getNotAfter(assertionElement));
+		LOGGER.debug("not after: {}", client.getNotAfter(assertionElement));
 	}
 
 	private String toString(Element element) throws TransformerException {

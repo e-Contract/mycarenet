@@ -23,15 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.SessionKey;
 
 public class SessionKeyTest {
 
-	private static final Log LOG = LogFactory.getLog(SessionKeyTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SessionKeyTest.class);
 
 	@Test
 	public void testSelfSignedCertificate() {
@@ -41,7 +41,6 @@ public class SessionKeyTest {
 		sessionKey.setValidity(notBefore, notAfter);
 		X509Certificate certificate = sessionKey.getCertificate();
 		assertNotNull(certificate);
-		LOG.debug("self-signed certificate: " + certificate);
+		LOGGER.debug("self-signed certificate: {}", certificate);
 	}
-
 }

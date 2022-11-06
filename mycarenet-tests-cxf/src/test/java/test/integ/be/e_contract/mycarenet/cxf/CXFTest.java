@@ -30,13 +30,13 @@ import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.spi.Provider;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.async.AsyncClient;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
@@ -48,12 +48,12 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class CXFTest {
 
-	private static final Log LOG = LogFactory.getLog(CXFTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CXFTest.class);
 
 	@Test
 	public void testProvider() {
 		Provider provider = Provider.provider();
-		LOG.debug("provider class: " + provider.getClass().getName());
+		LOGGER.debug("provider class: {}", provider.getClass().getName());
 		assertEquals("org.apache.cxf.jaxws22.spi.ProviderImpl", provider.getClass().getName());
 	}
 
@@ -135,8 +135,8 @@ public class CXFTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
-			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			LOGGER.debug("package license key username: {}", packageLicenseKey.getUsername());
+			LOGGER.debug("package license key password: {}", packageLicenseKey.getPassword());
 			AsyncClient asyncClient = new AsyncClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
 					sessionKey, packageLicenseKey);
 
@@ -155,7 +155,7 @@ public class CXFTest {
 			try {
 				result = asyncClient.echo(message);
 			} finally {
-				LOG.debug("payload: " + asyncClient.getPayload());
+				LOGGER.debug("payload: {}", asyncClient.getPayload());
 			}
 
 			// verify

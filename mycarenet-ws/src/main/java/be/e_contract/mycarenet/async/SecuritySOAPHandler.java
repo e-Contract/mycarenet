@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2015 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,8 +32,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
@@ -44,6 +42,8 @@ import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.message.WSSecUsernameToken;
 import org.apache.ws.security.util.WSSecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.common.WSSecurityCrypto;
@@ -57,7 +57,7 @@ import be.e_contract.mycarenet.common.WSSecurityCrypto;
  */
 public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory.getLog(SecuritySOAPHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecuritySOAPHandler.class);
 
 	private final SessionKey sessionKey;
 
@@ -66,36 +66,31 @@ public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param sessionKey
-	 *            the registered MyCareNet session key.
-	 * @param packageLicenseKey
-	 *            the MyCareNet package license key.
+	 * @param sessionKey        the registered MyCareNet session key.
+	 * @param packageLicenseKey the MyCareNet package license key.
 	 */
-	public SecuritySOAPHandler(SessionKey sessionKey,
-			PackageLicenseKey packageLicenseKey) {
+	public SecuritySOAPHandler(SessionKey sessionKey, PackageLicenseKey packageLicenseKey) {
 		this.sessionKey = sessionKey;
 		this.packageLicenseKey = packageLicenseKey;
 	}
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
-		Boolean outboundProperty = (Boolean) context
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		Boolean outboundProperty = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		if (false == outboundProperty) {
 			return true;
 		}
 		try {
 			handleOutboundMessage(context);
 		} catch (Exception e) {
-			LOG.error("outbound exception: " + e.getMessage(), e);
+			LOGGER.error("outbound exception:" + e.getMessage(), e);
 			throw new ProtocolException(e);
 		}
 		return true;
 	}
 
-	private void handleOutboundMessage(SOAPMessageContext context)
-			throws SOAPException, WSSecurityException {
-		LOG.debug("adding WS-Security header");
+	private void handleOutboundMessage(SOAPMessageContext context) throws SOAPException, WSSecurityException {
+		LOGGER.debug("adding WS-Security header");
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
@@ -103,8 +98,7 @@ public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		wsSecHeader.insertSecurityHeader(soapPart);
 
 		WSSecUsernameToken usernameToken = new WSSecUsernameToken();
-		usernameToken.setUserInfo(this.packageLicenseKey.getUsername(),
-				this.packageLicenseKey.getPassword());
+		usernameToken.setUserInfo(this.packageLicenseKey.getUsername(), this.packageLicenseKey.getPassword());
 		usernameToken.setPasswordType(WSConstants.PASSWORD_TEXT);
 		usernameToken.prepare(soapPart);
 		usernameToken.prependToHeader(wsSecHeader);
@@ -122,15 +116,14 @@ public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		Vector<WSEncryptionPart> signParts = new Vector<>();
 		signParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
 		signParts.add(new WSEncryptionPart(usernameToken.getId()));
-		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart
-				.getDocumentElement());
-		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName()
-				.getLocalPart(), soapConstants.getEnvelopeURI(), "Content"));
+		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart.getDocumentElement());
+		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(), soapConstants.getEnvelopeURI(),
+				"Content"));
 		sign.addReferencesToSign(signParts, wsSecHeader);
-		List<Reference> referenceList = sign.addReferencesToSign(signParts,
-				wsSecHeader);
+		List<Reference> referenceList = sign.addReferencesToSign(signParts, wsSecHeader);
 		sign.computeSignature(referenceList, false, null);
 	}
+
 	@Override
 	public boolean handleFault(SOAPMessageContext context) {
 		return true;

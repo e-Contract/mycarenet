@@ -33,11 +33,11 @@ import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.sts.Attribute;
@@ -52,7 +52,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class TarificationClientTest {
 
-	static final Log LOG = LogFactory.getLog(TarificationClientTest.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(TarificationClientTest.class);
 
 	private Config config;
 

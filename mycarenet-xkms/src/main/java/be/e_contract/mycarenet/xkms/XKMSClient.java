@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -25,8 +25,8 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.common.LoggingHandler;
 import be.e_contract.mycarenet.common.SessionKey;
@@ -58,7 +58,7 @@ import be.e_contract.mycarenet.jaxws.xkms.XMLKeyManagementService;
  */
 public class XKMSClient {
 
-	private static final Log LOG = LogFactory.getLog(XKMSClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XKMSClient.class);
 
 	private final KeyServicePortType port;
 
@@ -71,15 +71,13 @@ public class XKMSClient {
 	/**
 	 * Main constructor.
 	 * 
-	 * @param location
-	 *            the URL of the MyCareNet XKMS web service.
+	 * @param location the URL of the MyCareNet XKMS web service.
 	 */
 	public XKMSClient(String location) {
 		XMLKeyManagementService service = XKMSServiceFactory.newInstance();
 		this.port = service.getKeyServiceSoapPort();
 		BindingProvider bindingProvider = (BindingProvider) this.port;
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
 
 		Binding binding = bindingProvider.getBinding();
 		@SuppressWarnings("rawtypes")
@@ -112,7 +110,7 @@ public class XKMSClient {
 		try {
 			registerResult = this.port.register(register);
 		} catch (RegisterResult e) {
-			LOG.error("revocation error: " + e.getMessage(), e);
+			LOGGER.error("revocation error: " + e.getMessage(), e);
 			return;
 		}
 		if (ResultCodeType.SUCCESS == registerResult.getResult()) {
@@ -133,13 +131,10 @@ public class XKMSClient {
 		prototype.setKeyInfo(keyInfo);
 
 		KeyValueType keyValue = this.xmldsigObjectFactory.createKeyValueType();
-		keyInfo.getContent().add(
-				this.xmldsigObjectFactory.createKeyValue(keyValue));
+		keyInfo.getContent().add(this.xmldsigObjectFactory.createKeyValue(keyValue));
 
-		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory
-				.createRSAKeyValueType();
-		keyValue.getContent().add(
-				this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
+		RSAKeyValueType rsaKeyValue = this.xmldsigObjectFactory.createRSAKeyValueType();
+		keyValue.getContent().add(this.xmldsigObjectFactory.createRSAKeyValue(rsaKeyValue));
 
 		rsaKeyValue.setModulus(sessionKey.getModulus());
 		rsaKeyValue.setExponent(sessionKey.getExponent());
@@ -153,15 +148,12 @@ public class XKMSClient {
 		register.setRespond(respond);
 	}
 
-	private void addProofOfPossession(SessionKey sessionKey,
-			RegisterType register, String prototypeId) {
+	private void addProofOfPossession(SessionKey sessionKey, RegisterType register, String prototypeId) {
 		AuthInfoType authInfo = this.objectFactory.createAuthInfoType();
 		register.setAuthInfo(authInfo);
-		AuthUserInfoType authUserInfo = this.objectFactory
-				.createAuthUserInfoType();
+		AuthUserInfoType authUserInfo = this.objectFactory.createAuthUserInfoType();
 		authInfo.setAuthUserInfo(authUserInfo);
-		ProofOfPossessionType proofOfPossession = this.objectFactory
-				.createProofOfPossessionType();
+		ProofOfPossessionType proofOfPossession = this.objectFactory.createProofOfPossessionType();
 		authUserInfo.setProofOfPossession(proofOfPossession);
 		this.proofOfPossessionSignatureSOAPHandler.setSessionKey(sessionKey);
 		this.proofOfPossessionSignatureSOAPHandler.setPrototypeId(prototypeId);

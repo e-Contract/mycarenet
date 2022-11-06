@@ -17,9 +17,11 @@
  */
 package be.e_contract.mycarenet.addressbook;
 
-import be.e_contract.mycarenet.addressbook.jaxws.AddressbookService;
 import java.net.URL;
+
 import javax.xml.namespace.QName;
+
+import be.e_contract.mycarenet.addressbook.jaxws.AddressbookService;
 
 public class AddressbookServiceFactory {
 

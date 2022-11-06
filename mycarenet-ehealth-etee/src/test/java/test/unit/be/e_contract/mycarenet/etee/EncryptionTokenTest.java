@@ -27,8 +27,6 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
@@ -37,12 +35,14 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.Store;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 
 public class EncryptionTokenTest {
 
-	private static final Log LOG = LogFactory.getLog(EncryptionTokenTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EncryptionTokenTest.class);
 
 	@Test
 	public void testReadEncryptionToken() throws Exception {
@@ -50,32 +50,32 @@ public class EncryptionTokenTest {
 		assertNotNull(etkInputStream);
 
 		CMSSignedData cmsSignedData = new CMSSignedData(etkInputStream);
-		LOG.debug("SignedData version: " + cmsSignedData.getVersion());
+		LOGGER.debug("SignedData version: {}", cmsSignedData.getVersion());
 
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
-		LOG.debug("signers: " + signers.size());
+		LOGGER.debug("signers: {}", signers.size());
 		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
-		LOG.debug("signer Id: " + signerId.getIssuer());
+		LOGGER.debug("signer Id: {}", signerId.getIssuer());
 
 		Store certificateStore = cmsSignedData.getCertificates();
 		@SuppressWarnings("unchecked")
 		Collection<X509CertificateHolder> certificateCollection = certificateStore.getMatches(signerId);
 		X509CertificateHolder certificateHolder = certificateCollection.iterator().next();
 
-		LOG.debug("certificate collection size: " + certificateCollection.size());
+		LOGGER.debug("certificate collection size: {}", certificateCollection.size());
 
 		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) certificateFactory
 				.generateCertificate(new ByteArrayInputStream(certificateHolder.getEncoded()));
-		LOG.debug("signer certificate: " + certificate);
+		LOGGER.debug("signer certificate: {}", certificate);
 
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		byte[] data = (byte[]) signedContent.getContent();
 
 		X509Certificate encryptionCertificate = (X509Certificate) certificateFactory
 				.generateCertificate(new ByteArrayInputStream(data));
-		LOG.debug("encryption certificate: " + encryptionCertificate);
+		LOGGER.debug("encryption certificate: {}", encryptionCertificate);
 	}
 
 	// @Test
@@ -86,6 +86,6 @@ public class EncryptionTokenTest {
 
 		EncryptionToken encryptionToken = new EncryptionToken(data);
 		X509Certificate encryptionCertificate = encryptionToken.getEncryptionCertificate();
-		LOG.debug("encryption certificate: " + encryptionCertificate);
+		LOGGER.debug("encryption certificate: {}", encryptionCertificate);
 	}
 }

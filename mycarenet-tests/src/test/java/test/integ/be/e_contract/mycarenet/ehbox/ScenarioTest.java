@@ -43,10 +43,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.ehbox.EHealthBoxConsultationClient;
@@ -74,7 +74,7 @@ import test.integ.be.e_contract.mycarenet.Config;
 
 public class ScenarioTest {
 
-	static final Log LOG = LogFactory.getLog(ScenarioTest.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(ScenarioTest.class);
 
 	private Config config;
 
@@ -142,7 +142,7 @@ public class ScenarioTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 
@@ -153,7 +153,7 @@ public class ScenarioTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();
@@ -189,12 +189,12 @@ public class ScenarioTest {
 
 		Thread.sleep(1000 * 5);
 
-		LOG.debug("GET MESSAGES LIST");
+		LOGGER.debug("GET MESSAGES LIST");
 		messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
-			LOG.debug("GET FULL MESSAGE");
+			LOGGER.debug("message id: {}", messageId);
+			LOGGER.debug("GET FULL MESSAGE");
 			GetFullMessageResponseType getFullMessageResponse = eHealthBoxClient.getMessage(messageId);
 			ConsultationMessageType consultationMessage = getFullMessageResponse.getMessage();
 			be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.ContentContextType consultationContentContext = consultationMessage
@@ -203,17 +203,17 @@ public class ScenarioTest {
 			ConsultationDocumentType consultationDocument = consultationContent.getDocument();
 			byte[] encryptableTextContent = consultationDocument.getEncryptableTextContent();
 			if (null != encryptableTextContent) {
-				LOG.debug("result EncryptableTextContent: " + encryptableTextContent.length);
+				LOGGER.debug("result EncryptableTextContent: {}", encryptableTextContent.length);
 			} else {
-				LOG.debug("no EncryptableTextContent");
+				LOGGER.debug("no EncryptableTextContent");
 			}
 			DataHandler resultDataHandler = consultationDocument.getEncryptableBinaryContent();
 			if (null != resultDataHandler) {
-				LOG.debug("result EncryptableBinaryContent");
+				LOGGER.debug("result EncryptableBinaryContent");
 				byte[] resultData = IOUtils.toByteArray(resultDataHandler.getInputStream());
-				LOG.debug("result data size: " + resultData.length);
+				LOGGER.debug("result data size: {} bytes", resultData.length);
 			}
-			LOG.debug("DELETE MESSAGE");
+			LOGGER.debug("DELETE MESSAGE");
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
@@ -277,7 +277,7 @@ public class ScenarioTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 
@@ -288,7 +288,7 @@ public class ScenarioTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();
@@ -325,17 +325,17 @@ public class ScenarioTest {
 		// give eHealthBox some time.
 		Thread.sleep(1000 * 5);
 
-		LOG.debug("GET MESSAGES LIST");
+		LOGGER.debug("GET MESSAGES LIST");
 		messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
-			LOG.debug("GET FULL MESSAGE");
+			LOGGER.debug("message id: {}", messageId);
+			LOGGER.debug("GET FULL MESSAGE");
 			String request = "<ehbox:GetFullMessageRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\">"
 					+ "<Source>INBOX</Source>" + "<MessageId>" + messageId + "</MessageId>"
 					+ "</ehbox:GetFullMessageRequest>";
 			String response = eHealthBoxClient.invoke(request);
-			LOG.debug("RESPONSE: " + response);
+			LOGGER.debug("RESPONSE: {}", response);
 			JAXBContext consultationContext = JAXBContext
 					.newInstance(be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.ObjectFactory.class);
 			Unmarshaller consultationUnmarshaller = consultationContext.createUnmarshaller();
@@ -351,17 +351,17 @@ public class ScenarioTest {
 			ConsultationDocumentType consultationDocument = consultationContent.getDocument();
 			byte[] encryptableTextContent = consultationDocument.getEncryptableTextContent();
 			if (null != encryptableTextContent) {
-				LOG.debug("result EncryptableTextContent: " + encryptableTextContent.length);
+				LOGGER.debug("result EncryptableTextContent: {}", encryptableTextContent.length);
 			} else {
-				LOG.debug("no EncryptableTextContent");
+				LOGGER.debug("no EncryptableTextContent");
 			}
 			DataHandler resultDataHandler = consultationDocument.getEncryptableBinaryContent();
 			if (null != resultDataHandler) {
-				LOG.debug("result EncryptableBinaryContent");
+				LOGGER.debug("result EncryptableBinaryContent");
 				byte[] resultData = IOUtils.toByteArray(resultDataHandler.getInputStream());
-				LOG.debug("result data size: " + resultData.length);
+				LOGGER.debug("result data size: {} bytes", resultData.length);
 			}
-			LOG.debug("DELETE MESSAGE");
+			LOGGER.debug("DELETE MESSAGE");
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
@@ -425,7 +425,7 @@ public class ScenarioTest {
 		GetMessageListResponseType messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
+			LOGGER.debug("message id: {}", messageId);
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 
@@ -436,7 +436,7 @@ public class ScenarioTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		PublicationMessageType publicationMessage = objectFactory.createPublicationMessageType();
 		String publicationId = UUID.randomUUID().toString().substring(1, 13);
-		LOG.debug("publication id: " + publicationId);
+		LOGGER.debug("publication id: {}", publicationId);
 		publicationMessage.setPublicationId(publicationId);
 
 		DestinationContextType destinationContext = objectFactory.createDestinationContextType();
@@ -471,28 +471,28 @@ public class ScenarioTest {
 		// give eHealthBox some time.
 		Thread.sleep(1000 * 5);
 
-		LOG.debug("GET MESSAGES LIST");
+		LOGGER.debug("GET MESSAGES LIST");
 		messageList = eHealthBoxClient.getMessagesList();
 		for (Message message : messageList.getMessage()) {
 			String messageId = message.getMessageId();
-			LOG.debug("message id: " + messageId);
-			LOG.debug("GET FULL MESSAGE");
+			LOGGER.debug("message id: {}", messageId);
+			LOGGER.debug("GET FULL MESSAGE");
 			String request = "<ehbox:GetFullMessageRequest xmlns:ehbox=\"urn:be:fgov:ehealth:ehbox:consultation:protocol:v3\">"
 					+ "<Source>INBOX</Source>" + "<MessageId>" + messageId + "</MessageId>"
 					+ "</ehbox:GetFullMessageRequest>";
 			String response = eHealthBoxClient.invoke(request);
-			LOG.debug("RESPONSE: " + response);
+			LOGGER.debug("RESPONSE: {}", response);
 			JAXBContext consultationContext = JAXBContext
 					.newInstance(be.e_contract.mycarenet.ehbox.jaxb.consultation.protocol.ObjectFactory.class);
 			Unmarshaller consultationUnmarshaller = consultationContext.createUnmarshaller();
 			Map<String, DataHandler> messageAttachments = eHealthBoxClient.getMessageAttachments();
 			for (Map.Entry<String, DataHandler> messageAttachment : messageAttachments.entrySet()) {
-				LOG.debug("message attachment id: " + messageAttachment.getKey());
-				LOG.debug("message data handler: " + messageAttachment.getValue());
+				LOGGER.debug("message attachment id: {}", messageAttachment.getKey());
+				LOGGER.debug("message data handler: {}", messageAttachment.getValue());
 				DataHandler resultDataHandler = messageAttachment.getValue();
 				DataSource resultDataSource = resultDataHandler.getDataSource();
 				byte[] attachmentData = IOUtils.toByteArray(resultDataSource.getInputStream());
-				LOG.debug("DataHandler.DataSource.getInputStream length: " + attachmentData.length);
+				LOGGER.debug("DataHandler.DataSource.getInputStream length: {} bytes", attachmentData.length);
 			}
 			consultationUnmarshaller.setAttachmentUnmarshaller(new SOAPAttachmentUnmarshaller(messageAttachments));
 			JAXBElement<GetFullMessageResponseType> jaxbElement = (JAXBElement<GetFullMessageResponseType>) consultationUnmarshaller
@@ -505,17 +505,17 @@ public class ScenarioTest {
 			ConsultationDocumentType consultationDocument = consultationContent.getDocument();
 			byte[] encryptableTextContent = consultationDocument.getEncryptableTextContent();
 			if (null != encryptableTextContent) {
-				LOG.debug("result EncryptableTextContent: " + encryptableTextContent.length);
+				LOGGER.debug("result EncryptableTextContent: {}", encryptableTextContent.length);
 			} else {
-				LOG.debug("no EncryptableTextContent");
+				LOGGER.debug("no EncryptableTextContent");
 			}
 			DataHandler resultDataHandler = consultationDocument.getEncryptableBinaryContent();
 			if (null != resultDataHandler) {
-				LOG.debug("result EncryptableBinaryContent");
+				LOGGER.debug("result EncryptableBinaryContent");
 				byte[] resultData = IOUtils.toByteArray(resultDataHandler.getInputStream());
-				LOG.debug("result data size: " + resultData.length);
+				LOGGER.debug("result data size: {} bytes", resultData.length);
 			}
-			LOG.debug("DELETE MESSAGE");
+			LOGGER.debug("DELETE MESSAGE");
 			eHealthBoxClient.deleteMessage(messageId);
 		}
 	}
