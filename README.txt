@@ -10,8 +10,8 @@ The source code is hosted at: https://github.com/e-Contract/mycarenet
 === 2. Requirements
 
 The following is required for compiling the software:
-* Oracle Java 1.7.0_72 or 1.8.0_162
-* Apache Maven 3.5.3
+* Java 1.8.0_351
+* Apache Maven 3.8.6
 
 
 === 3. Build

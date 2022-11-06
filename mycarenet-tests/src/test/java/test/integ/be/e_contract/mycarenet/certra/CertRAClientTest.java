@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2016 e-Contract.be BVBA.
+ * Copyright (C) 2016-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -36,9 +36,9 @@ import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.certra.CertRAClient;
 import be.e_contract.mycarenet.certra.CertRASession;
@@ -61,13 +61,13 @@ public class CertRAClientTest {
 
 	private CertRAClient client;
 
-	@BeforeClass
+	@BeforeAll
 	public static void beforeClass() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		Security.addProvider(new BeIDProvider());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		BeIDKeyStoreParameter beIDKeyStoreParameter = new BeIDKeyStoreParameter();

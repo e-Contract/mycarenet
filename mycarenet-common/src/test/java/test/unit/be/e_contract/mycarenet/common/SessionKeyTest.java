@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,11 +18,11 @@
 
 package test.unit.be.e_contract.mycarenet.common;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.common.SessionKey;
 
@@ -40,16 +40,13 @@ public class SessionKeyTest {
 		byte[] encodedCertificate = sessionKey.getEncodedCertificate();
 
 		// operate
-		SessionKey loadedSessionKey = new SessionKey(encodedPrivateKey,
-				encodedPublicKey, encodedCertificate, notBefore, notAfter);
+		SessionKey loadedSessionKey = new SessionKey(encodedPrivateKey, encodedPublicKey, encodedCertificate, notBefore,
+				notAfter);
 
 		// verify
-		assertArrayEquals(encodedPrivateKey,
-				loadedSessionKey.getEncodedPrivateKey());
-		assertArrayEquals(encodedPublicKey,
-				loadedSessionKey.getEncodedPublicKey());
-		assertArrayEquals(encodedCertificate,
-				loadedSessionKey.getEncodedCertificate());
+		assertArrayEquals(encodedPrivateKey, loadedSessionKey.getEncodedPrivateKey());
+		assertArrayEquals(encodedPublicKey, loadedSessionKey.getEncodedPublicKey());
+		assertArrayEquals(encodedCertificate, loadedSessionKey.getEncodedCertificate());
 	}
 
 }

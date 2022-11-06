@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2014-2015 e-Contract.be BVBA.
+ * Copyright (C) 2014-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,7 +18,7 @@
 
 package test.integ.be.e_contract.mycarenet.genins;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileInputStream;
 import java.math.BigDecimal;
@@ -39,12 +39,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
 import be.e_contract.mycarenet.genins.GenericInsurabilityClient;
 import be.e_contract.mycarenet.genins.jaxb.core.CareProviderType;
@@ -70,15 +69,15 @@ import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.EHealthSTSClient;
 import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class GenericInsurabilityClientTest {
 
-	static final Log LOG = LogFactory
-			.getLog(GenericInsurabilityClientTest.class);
+	static final Log LOG = LogFactory.getLog(GenericInsurabilityClientTest.class);
 
 	private Config config;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.config = new Config();
 	}
@@ -95,49 +94,40 @@ public class GenericInsurabilityClientTest {
 		beIDKeyStoreParameter.addPPDUName("digipass 875");
 		beIDKeyStoreParameter.addPPDUName("digipass 920");
 		keyStore.load(beIDKeyStoreParameter);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		eHealthKeyStore.load(fileInputStream, this.config
-				.getEHealthPKCS12Password().toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
 		String alias = aliasesEnum.nextElement();
-		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
-				.getCertificate(alias);
-		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
-				alias, this.config.getEHealthPKCS12Password().toCharArray());
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(alias,
+				this.config.getEHealthPKCS12Password().toCharArray());
 
 		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
 
 		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators
+				.add(new AttributeDesignator("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:nurse:boolean"));
 
-		Element assertion = client.requestAssertion(authnCertificate,
-				authnPrivateKey, eHealthCertificate, eHealthPrivateKey,
-				attributes, attributeDesignators);
+		Element assertion = client.requestAssertion(authnCertificate, authnPrivateKey, eHealthCertificate,
+				eHealthPrivateKey, attributes, attributeDesignators);
 
 		assertNotNull(assertion);
 
 		String assertionString = client.toString(assertion);
 		LOG.debug("SAML assertion: " + assertionString);
 	}
+
 	@Test
 	public void testSTSDoctor() throws Exception {
 		EHealthSTSClient client = new EHealthSTSClient(
@@ -150,52 +140,42 @@ public class GenericInsurabilityClientTest {
 		beIDKeyStoreParameter.addPPDUName("digipass 875");
 		beIDKeyStoreParameter.addPPDUName("digipass 920");
 		keyStore.load(beIDKeyStoreParameter);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		eHealthKeyStore.load(fileInputStream, this.config
-				.getEHealthPKCS12Password().toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
 		String alias = aliasesEnum.nextElement();
-		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
-				.getCertificate(alias);
-		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
-				alias, this.config.getEHealthPKCS12Password().toCharArray());
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(alias,
+				this.config.getEHealthPKCS12Password().toCharArray());
 
 		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
 
 		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators
+				.add(new AttributeDesignator("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:doctor:boolean"));
 
-		Element assertion = client.requestAssertion(authnCertificate,
-				authnPrivateKey, eHealthCertificate, eHealthPrivateKey,
-				attributes, attributeDesignators);
+		Element assertion = client.requestAssertion(authnCertificate, authnPrivateKey, eHealthCertificate,
+				eHealthPrivateKey, attributes, attributeDesignators);
 
 		assertNotNull(assertion);
 
 		String assertionString = client.toString(assertion);
 		LOG.debug("SAML assertion: " + assertionString);
 	}
+
 	@Test
 	public void testInvoke() throws Exception {
 		EHealthSTSClient client = new EHealthSTSClient(
@@ -208,46 +188,35 @@ public class GenericInsurabilityClientTest {
 		beIDKeyStoreParameter.addPPDUName("digipass 875");
 		beIDKeyStoreParameter.addPPDUName("digipass 920");
 		keyStore.load(beIDKeyStoreParameter);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		eHealthKeyStore.load(fileInputStream, this.config
-				.getEHealthPKCS12Password().toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
 		String alias = aliasesEnum.nextElement();
-		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
-				.getCertificate(alias);
-		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
-				alias, this.config.getEHealthPKCS12Password().toCharArray());
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(alias,
+				this.config.getEHealthPKCS12Password().toCharArray());
 
 		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
 
 		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators
+				.add(new AttributeDesignator("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:doctor:boolean"));
 
-		Element assertion = client.requestAssertion(authnCertificate,
-				authnPrivateKey, eHealthCertificate, eHealthPrivateKey,
-				attributes, attributeDesignators);
+		Element assertion = client.requestAssertion(authnCertificate, authnPrivateKey, eHealthCertificate,
+				eHealthPrivateKey, attributes, attributeDesignators);
 
 		assertNotNull(assertion);
 
@@ -256,13 +225,11 @@ public class GenericInsurabilityClientTest {
 		// String location =
 		// "https://services-int.ehealth.fgov.be/GenericInsurability/v1";
 		String location = "https://services-acpt.ehealth.fgov.be/GenericInsurability/v1";
-		GenericInsurabilityClient genInsClient = new GenericInsurabilityClient(
-				location);
+		GenericInsurabilityClient genInsClient = new GenericInsurabilityClient(location);
 		genInsClient.setCredentials(eHealthPrivateKey, assertionString);
 
 		ObjectFactory objectFactory = new ObjectFactory();
-		GetInsurabilityAsXmlOrFlatRequestType body = objectFactory
-				.createGetInsurabilityAsXmlOrFlatRequestType();
+		GetInsurabilityAsXmlOrFlatRequestType body = objectFactory.createGetInsurabilityAsXmlOrFlatRequestType();
 
 		be.e_contract.mycarenet.genins.jaxb.core.ObjectFactory coreObjectFactory = new be.e_contract.mycarenet.genins.jaxb.core.ObjectFactory();
 		CommonInputType commonInput = coreObjectFactory.createCommonInputType();
@@ -278,31 +245,24 @@ public class GenericInsurabilityClientTest {
 		origin.setPackage(packageObject);
 		LicenseType license = coreObjectFactory.createLicenseType();
 		packageObject.setLicense(license);
-		PackageLicenseKey packageLicenseKey = this.config
-				.getPackageLicenseKey();
+		PackageLicenseKey packageLicenseKey = this.config.getPackageLicenseKey();
 		license.setUsername(packageLicenseKey.getUsername());
 		license.setPassword(packageLicenseKey.getPassword());
 
-		Element namespaceElement = assertion.getOwnerDocument().createElement(
-				"ns");
-		namespaceElement.setAttributeNS(Constants.NamespaceSpecNS,
-				"xmlns:saml", "urn:oasis:names:tc:SAML:1.0:assertion");
-		Node nihiiNode = XPathAPI
-				.selectSingleNode(
-						assertion,
-						"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11']/saml:AttributeValue/text()",
-						namespaceElement);
+		Element namespaceElement = assertion.getOwnerDocument().createElement("ns");
+		namespaceElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+				"urn:oasis:names:tc:SAML:1.0:assertion");
+		Node nihiiNode = XPathAPI.selectSingleNode(assertion,
+				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11']/saml:AttributeValue/text()",
+				namespaceElement);
 		String myNihii = nihiiNode.getTextContent();
 		LOG.debug("NIHII: " + myNihii);
-		Node ssinNode = XPathAPI
-				.selectSingleNode(
-						assertion,
-						"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin']/saml:AttributeValue/text()",
-						namespaceElement);
+		Node ssinNode = XPathAPI.selectSingleNode(assertion,
+				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin']/saml:AttributeValue/text()",
+				namespaceElement);
 		String mySsin = ssinNode.getTextContent();
 
-		CareProviderType careProvider = coreObjectFactory
-				.createCareProviderType();
+		CareProviderType careProvider = coreObjectFactory.createCareProviderType();
 		origin.setCareProvider(careProvider);
 		NihiiType nihii = coreObjectFactory.createNihiiType();
 		careProvider.setNihii(nihii);
@@ -317,42 +277,35 @@ public class GenericInsurabilityClientTest {
 		ssinValue.setValue(mySsin);
 
 		commonInput.setInputReference("PRIG1234567890");
-		RecordCommonInputType recordCommonInput = coreObjectFactory
-				.createRecordCommonInputType();
+		RecordCommonInputType recordCommonInput = coreObjectFactory.createRecordCommonInputType();
 		body.setRecordCommonInput(recordCommonInput);
 		recordCommonInput.setInputReference(new BigDecimal("1234567890123"));
 
 		SingleInsurabilityRequestType singleInsurabilityRequest = coreObjectFactory
 				.createSingleInsurabilityRequestType();
 		body.setRequest(singleInsurabilityRequest);
-		CareReceiverIdType careReceiverId = coreObjectFactory
-				.createCareReceiverIdType();
+		CareReceiverIdType careReceiverId = coreObjectFactory.createCareReceiverIdType();
 		singleInsurabilityRequest.setCareReceiverId(careReceiverId);
 		careReceiverId.setInss(mySsin);
 		InsurabilityRequestDetailType insurabilityRequestDetail = coreObjectFactory
 				.createInsurabilityRequestDetailType();
-		singleInsurabilityRequest
-				.setInsurabilityRequestDetail(insurabilityRequestDetail);
+		singleInsurabilityRequest.setInsurabilityRequestDetail(insurabilityRequestDetail);
 		InsurabilityRequestTypeType insurabilityRequestType = InsurabilityRequestTypeType.INFORMATION;
-		insurabilityRequestDetail
-				.setInsurabilityRequestType(insurabilityRequestType);
+		insurabilityRequestDetail.setInsurabilityRequestType(insurabilityRequestType);
 		PeriodType period = coreObjectFactory.createPeriodType();
 		insurabilityRequestDetail.setPeriod(period);
 		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 		GregorianCalendar periodStartCal = new GregorianCalendar();
 		DateTime periodStartDateTime = new DateTime();
 		periodStartCal.setTime(periodStartDateTime.toDate());
-		XMLGregorianCalendar periodStart = datatypeFactory
-				.newXMLGregorianCalendar(periodStartCal);
+		XMLGregorianCalendar periodStart = datatypeFactory.newXMLGregorianCalendar(periodStartCal);
 		period.setPeriodStart(periodStart);
 		DateTime periodEndDateTime = periodStartDateTime;
 		GregorianCalendar periodEndCal = new GregorianCalendar();
 		periodEndCal.setTime(periodEndDateTime.toDate());
-		XMLGregorianCalendar periodEnd = datatypeFactory
-				.newXMLGregorianCalendar(periodEndCal);
+		XMLGregorianCalendar periodEnd = datatypeFactory.newXMLGregorianCalendar(periodEndCal);
 		period.setPeriodEnd(periodEnd);
-		insurabilityRequestDetail
-				.setInsurabilityContactType(InsurabilityContactTypeType.HOSPITALIZED_FOR_DAY);
+		insurabilityRequestDetail.setInsurabilityContactType(InsurabilityContactTypeType.HOSPITALIZED_FOR_DAY);
 
 		genInsClient.getInsurability(body);
 	}

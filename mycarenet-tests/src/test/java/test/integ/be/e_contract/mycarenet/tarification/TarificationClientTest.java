@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2016 e-Contract.be BVBA.
+ * Copyright (C) 2016-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,7 +18,7 @@
 
 package test.integ.be.e_contract.mycarenet.tarification;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;
@@ -36,8 +36,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 import be.e_contract.mycarenet.sts.Attribute;
@@ -56,7 +56,7 @@ public class TarificationClientTest {
 
 	private Config config;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.config = new Config();
 	}

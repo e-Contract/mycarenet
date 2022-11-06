@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,7 +18,7 @@
 
 package test.integ.be.e_contract.mycarenet.sts;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.StringWriter;
@@ -39,15 +39,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.sts.Attribute;
 import be.e_contract.mycarenet.sts.AttributeDesignator;
 import be.e_contract.mycarenet.sts.RequestFactory;
 import be.fedict.commons.eid.jca.BeIDProvider;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class RequestFactoryTest {
 
@@ -55,7 +55,7 @@ public class RequestFactoryTest {
 
 	private Config config;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.config = new Config();
 	}
@@ -65,53 +65,43 @@ public class RequestFactoryTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		eHealthKeyStore.load(fileInputStream, this.config
-				.getEHealthPKCS12Password().toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
 		String alias = aliasesEnum.nextElement();
-		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
-				.getCertificate(alias);
-		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
-				alias, this.config.getEHealthPKCS12Password().toCharArray());
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(alias,
+				this.config.getEHealthPKCS12Password().toCharArray());
 
 		RequestFactory requestFactory = new RequestFactory();
 
 		List<Attribute> attributes = new LinkedList<>();
 		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributes.add(new Attribute("urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
+		attributes.add(new Attribute("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
 
 		List<AttributeDesignator> attributeDesignators = new LinkedList<>();
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:identification-namespace",
 				"urn:be:fgov:ehealth:1.0:certificateholder:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:identification-namespace",
-				"urn:be:fgov:person:ssin"));
-		attributeDesignators.add(new AttributeDesignator(
-				"urn:be:fgov:certified-namespace:ehealth",
+		attributeDesignators
+				.add(new AttributeDesignator("urn:be:fgov:identification-namespace", "urn:be:fgov:person:ssin"));
+		attributeDesignators.add(new AttributeDesignator("urn:be:fgov:certified-namespace:ehealth",
 				"urn:be:fgov:person:ssin:nurse:boolean"));
 
-		Element requestElement = requestFactory.createRequest(authnCertificate,
-				eHealthPrivateKey, eHealthCertificate, attributes,
-				attributeDesignators);
+		Element requestElement = requestFactory.createRequest(authnCertificate, eHealthPrivateKey, eHealthCertificate,
+				attributes, attributeDesignators);
 
 		assertNotNull(requestElement);
 
 		LOG.debug("request: " + toString(requestElement));
 	}
+
 	private String toString(Element element) throws TransformerException {
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 		StringWriter writer = new StringWriter();

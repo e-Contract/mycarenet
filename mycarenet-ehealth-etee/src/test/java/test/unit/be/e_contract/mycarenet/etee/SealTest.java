@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,8 +18,8 @@
 
 package test.unit.be.e_contract.mycarenet.etee;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Store;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SealTest {
 
@@ -52,29 +52,23 @@ public class SealTest {
 
 	@Test
 	public void testSeal() throws Exception {
-		InputStream sealInputStream = SealTest.class
-				.getResourceAsStream("/seal-fcorneli.der");
+		InputStream sealInputStream = SealTest.class.getResourceAsStream("/seal-fcorneli.der");
 		assertNotNull(sealInputStream);
 
 		// check outer signature
 
 		CMSSignedData cmsSignedData = new CMSSignedData(sealInputStream);
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
-		SignerInformation signer = (SignerInformation) signers.getSigners()
-				.iterator().next();
+		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
 
 		Store certificateStore = cmsSignedData.getCertificates();
 		@SuppressWarnings("unchecked")
-		Collection<X509CertificateHolder> certificateCollection = certificateStore
-				.getMatches(signerId);
-		X509CertificateHolder certificateHolder = certificateCollection
-				.iterator().next();
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("X.509");
+		Collection<X509CertificateHolder> certificateCollection = certificateStore.getMatches(signerId);
+		X509CertificateHolder certificateHolder = certificateCollection.iterator().next();
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(certificateHolder
-						.getEncoded()));
+				.generateCertificate(new ByteArrayInputStream(certificateHolder.getEncoded()));
 
 		Security.addProvider(new BouncyCastleProvider());
 		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
@@ -89,21 +83,15 @@ public class SealTest {
 
 		// decrypt content
 
-		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(
-				data);
+		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(data);
 		LOG.debug("content encryption algo: "
-				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm()
-						.getAlgorithm().getId());
+				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
 
-		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser
-				.getRecipientInfos();
+		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser.getRecipientInfos();
 		@SuppressWarnings("unchecked")
-		Collection<RecipientInformation> recipients = recipientInformationStore
-				.getRecipients();
-		RecipientInformation recipientInformation = recipients.iterator()
-				.next();
-		LOG.debug("recipient info type: "
-				+ recipientInformation.getClass().getName());
+		Collection<RecipientInformation> recipients = recipientInformationStore.getRecipients();
+		RecipientInformation recipientInformation = recipients.iterator().next();
+		LOG.debug("recipient info type: " + recipientInformation.getClass().getName());
 		KeyTransRecipientInformation keyTransRecipientInformation = (KeyTransRecipientInformation) recipientInformation;
 
 	}

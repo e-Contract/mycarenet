@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2015 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,8 +18,8 @@
 
 package test.integ.be.e_contract.mycarenet.etk;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.security.cert.X509Certificate;
@@ -27,7 +27,7 @@ import java.security.cert.X509Certificate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 import be.e_contract.mycarenet.etk.EtkDepotClient;
@@ -43,8 +43,7 @@ public class EtkDepotClientTest {
 
 	@Test
 	public void testClient() throws Exception {
-		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
+		EtkDepotClient etkDepotClient = new EtkDepotClient("https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		BeIDCards beIDCards = new BeIDCards();
 		BeIDCard beIDCard = beIDCards.getOneBeIDCard();
@@ -62,25 +61,18 @@ public class EtkDepotClientTest {
 
 		EncryptionToken encryptionToken = new EncryptionToken(etk);
 
-		X509Certificate encryptionCertificate = encryptionToken
-				.getEncryptionCertificate();
-		LOG.debug("encryption certificate issuer: "
-				+ encryptionCertificate.getIssuerX500Principal());
-		LOG.debug("encryption certificate subject: "
-				+ encryptionCertificate.getSubjectX500Principal());
+		X509Certificate encryptionCertificate = encryptionToken.getEncryptionCertificate();
+		LOG.debug("encryption certificate issuer: " + encryptionCertificate.getIssuerX500Principal());
+		LOG.debug("encryption certificate subject: " + encryptionCertificate.getSubjectX500Principal());
 
-		X509Certificate authenticationCertificate = encryptionToken
-				.getAuthenticationCertificate();
-		LOG.debug("authentication certificate issuer: "
-				+ authenticationCertificate.getIssuerX500Principal());
-		LOG.debug("authentication certificate subject: "
-				+ authenticationCertificate.getSubjectX500Principal());
+		X509Certificate authenticationCertificate = encryptionToken.getAuthenticationCertificate();
+		LOG.debug("authentication certificate issuer: " + authenticationCertificate.getIssuerX500Principal());
+		LOG.debug("authentication certificate subject: " + authenticationCertificate.getSubjectX500Principal());
 	}
 
 	@Test
 	public void testScenario1() throws Exception {
-		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
+		EtkDepotClient etkDepotClient = new EtkDepotClient("https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
 		assertNotNull(etk);
@@ -88,8 +80,7 @@ public class EtkDepotClientTest {
 
 	@Test
 	public void testNonExitingSSIN() throws Exception {
-		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
+		EtkDepotClient etkDepotClient = new EtkDepotClient("https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("SSIN", "23491519151");
 		assertNull(etk);
@@ -100,8 +91,7 @@ public class EtkDepotClientTest {
 
 	@Test
 	public void testScenario2() throws Exception {
-		EtkDepotClient etkDepotClient = new EtkDepotClient(
-				"https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
+		EtkDepotClient etkDepotClient = new EtkDepotClient("https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
 		byte[] etk = etkDepotClient.getEtk("SSIN", "85040309180");
 		assertNotNull(etk);

@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.integ.be.e_contract.mycarenet.cxf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -36,15 +36,15 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.async.AsyncClient;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.xkms.XKMSClient;
 import be.e_contract.mycarenet.xkms2.XKMS2Client;
 import be.fedict.commons.eid.jca.BeIDProvider;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class CXFTest {
 
@@ -54,8 +54,7 @@ public class CXFTest {
 	public void testProvider() {
 		Provider provider = Provider.provider();
 		LOG.debug("provider class: " + provider.getClass().getName());
-		assertEquals("org.apache.cxf.jaxws22.spi.ProviderImpl", provider
-				.getClass().getName());
+		assertEquals("org.apache.cxf.jaxws22.spi.ProviderImpl", provider.getClass().getName());
 	}
 
 	@Test
@@ -68,21 +67,17 @@ public class CXFTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
 
 		// operate
-		xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertFalse(sessionKey.isValid());
@@ -101,14 +96,11 @@ public class CXFTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
@@ -130,14 +122,11 @@ public class CXFTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
@@ -146,12 +135,9 @@ public class CXFTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: "
-					+ packageLicenseKey.getUsername());
-			LOG.debug("package license key password: "
-					+ packageLicenseKey.getPassword());
-			AsyncClient asyncClient = new AsyncClient(
-					"https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
+			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
+			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			AsyncClient asyncClient = new AsyncClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
 					sessionKey, packageLicenseKey);
 
 			BindingProvider bindingProvider = asyncClient.getBindingProvider();
@@ -176,8 +162,7 @@ public class CXFTest {
 			assertEquals(result, message);
 		} finally {
 			// operate
-			XKMSClient xkmsClient = new XKMSClient(
-					"https://pilot.mycarenet.be/mycarenet-ws/care-provider/xkms");
+			XKMSClient xkmsClient = new XKMSClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/xkms");
 			xkmsClient.revokeSessionKey(sessionKey);
 
 			// verify

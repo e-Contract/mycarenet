@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2015 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.integ.be.e_contract.mycarenet.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -29,15 +29,15 @@ import java.security.cert.X509Certificate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.async.AsyncClient;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.xkms2.XKMS2Client;
 import be.fedict.commons.eid.jca.BeIDKeyStoreParameter;
 import be.fedict.commons.eid.jca.BeIDProvider;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class AsyncClientTest {
 
@@ -59,14 +59,11 @@ public class AsyncClientTest {
 		beIDKeyStoreParameter.addPPDUName("digipass 920");
 		keyStore.load(beIDKeyStoreParameter);
 
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
@@ -75,12 +72,9 @@ public class AsyncClientTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: "
-					+ packageLicenseKey.getUsername());
-			LOG.debug("package license key password: "
-					+ packageLicenseKey.getPassword());
-			AsyncClient asyncClient = new AsyncClient(
-					"https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
+			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
+			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			AsyncClient asyncClient = new AsyncClient("https://pilot.mycarenet.be/mycarenet-ws/care-provider/async",
 					sessionKey, packageLicenseKey);
 			String message = "hello world";
 
@@ -96,8 +90,7 @@ public class AsyncClientTest {
 			assertEquals(result, message);
 		} finally {
 			// operate
-			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey,
-					authnCertificate);
+			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 			// verify
 			assertFalse(sessionKey.isValid());

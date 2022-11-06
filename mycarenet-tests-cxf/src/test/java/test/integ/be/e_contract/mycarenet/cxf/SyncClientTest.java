@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2014 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.integ.be.e_contract.mycarenet.cxf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -32,11 +32,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.async.PackageLicenseKey;
 import be.e_contract.mycarenet.common.SessionKey;
 import be.e_contract.mycarenet.jaxb.sync.ObjectFactory;
@@ -44,6 +43,7 @@ import be.e_contract.mycarenet.jaxb.sync.XmlDocumentWrapperType;
 import be.e_contract.mycarenet.sync.SyncClient;
 import be.e_contract.mycarenet.xkms2.XKMS2Client;
 import be.fedict.commons.eid.jca.BeIDProvider;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class SyncClientTest {
 
@@ -59,14 +59,11 @@ public class SyncClientTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
@@ -75,22 +72,16 @@ public class SyncClientTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: "
-					+ packageLicenseKey.getUsername());
-			LOG.debug("package license key password: "
-					+ packageLicenseKey.getPassword());
-			SyncClient syncClient = new SyncClient(
-					"https://pilot.mycarenet.be/services/care-provider/sync",
-					sessionKey, packageLicenseKey);
+			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
+			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			SyncClient syncClient = new SyncClient("https://pilot.mycarenet.be/services/care-provider/sync", sessionKey,
+					packageLicenseKey);
 
 			ObjectFactory objectFactory = new ObjectFactory();
-			XmlDocumentWrapperType request = objectFactory
-					.createXmlDocumentWrapperType();
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-					.newInstance();
+			XmlDocumentWrapperType request = objectFactory.createXmlDocumentWrapperType();
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilderFactory.setNamespaceAware(true);
-			DocumentBuilder documentBuilder = documentBuilderFactory
-					.newDocumentBuilder();
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document document = documentBuilder.newDocument();
 			Element element = document.createElement("test");
 			request.setAny(element);
@@ -107,8 +98,7 @@ public class SyncClientTest {
 			assertEquals(result.getAny().getNodeName(), "test");
 		} finally {
 			// operate
-			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey,
-					authnCertificate);
+			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 			// verify
 			assertFalse(sessionKey.isValid());
@@ -125,14 +115,11 @@ public class SyncClientTest {
 		Security.addProvider(new BeIDProvider());
 		KeyStore keyStore = KeyStore.getInstance("BeID");
 		keyStore.load(null);
-		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey(
-				"Authentication", null);
-		X509Certificate authnCertificate = (X509Certificate) keyStore
-				.getCertificate("Authentication");
+		PrivateKey authnPrivateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		X509Certificate authnCertificate = (X509Certificate) keyStore.getCertificate("Authentication");
 
 		// operate
-		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey,
-				authnCertificate);
+		xkms2Client.registerSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 		// verify
 		assertTrue(sessionKey.isValid());
@@ -141,24 +128,20 @@ public class SyncClientTest {
 			// setup
 			Config config = new Config();
 			PackageLicenseKey packageLicenseKey = config.getPackageLicenseKey();
-			LOG.debug("package license key username: "
-					+ packageLicenseKey.getUsername());
-			LOG.debug("package license key password: "
-					+ packageLicenseKey.getPassword());
-			SyncClient syncClient = new SyncClient(
-					"https://pilot.mycarenet.be/services/care-provider/sync",
-					sessionKey, packageLicenseKey);
+			LOG.debug("package license key username: " + packageLicenseKey.getUsername());
+			LOG.debug("package license key password: " + packageLicenseKey.getPassword());
+			SyncClient syncClient = new SyncClient("https://pilot.mycarenet.be/services/care-provider/sync", sessionKey,
+					packageLicenseKey);
 
 			String result = syncClient
-					.invoke("<EchoRequest xmlns=\"urn:be:cin:mycarenet:1.0:sync:types\" xml:lang=\"en\">"
-							+ "<test/>" + "</EchoRequest>");
+					.invoke("<EchoRequest xmlns=\"urn:be:cin:mycarenet:1.0:sync:types\" xml:lang=\"en\">" + "<test/>"
+							+ "</EchoRequest>");
 
 			// verify
 			LOG.debug("result: " + result);
 		} finally {
 			// operate
-			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey,
-					authnCertificate);
+			xkms2Client.revokeSessionKey(sessionKey, authnPrivateKey, authnCertificate);
 
 			// verify
 			assertFalse(sessionKey.isValid());

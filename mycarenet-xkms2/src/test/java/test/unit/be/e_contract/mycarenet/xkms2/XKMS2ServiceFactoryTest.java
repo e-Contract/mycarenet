@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012 e-Contract.be BVBA.
+ * Copyright (C) 2012-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.unit.be.e_contract.mycarenet.xkms2;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.jaxws.xkms2.XMLKeyManagementService;
 import be.e_contract.mycarenet.xkms2.XKMS2ServiceFactory;

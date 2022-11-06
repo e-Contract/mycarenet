@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2014 e-Contract.be BVBA.
+ * Copyright (C) 2014-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.unit.be.e_contract.mycarenet.sync;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.jaxws.sync.MyCarenetCareProviderSyncService;
 import be.e_contract.mycarenet.sync.MyCareNetSyncServiceFactory;
@@ -30,8 +30,7 @@ public class MyCareNetSyncServiceFactoryTest {
 	@Test
 	public void testNewInstance() {
 		// operate
-		MyCarenetCareProviderSyncService service = MyCareNetSyncServiceFactory
-				.newInstance();
+		MyCarenetCareProviderSyncService service = MyCareNetSyncServiceFactory.newInstance();
 
 		// verify
 		assertNotNull(service);

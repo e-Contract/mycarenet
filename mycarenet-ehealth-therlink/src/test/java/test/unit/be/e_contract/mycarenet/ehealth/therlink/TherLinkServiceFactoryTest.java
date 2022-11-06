@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2018 e-Contract.be BVBA.
+ * Copyright (C) 2018-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,7 +18,7 @@
 
 package test.unit.be.e_contract.mycarenet.ehealth.therlink;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.ehealth.therlink.TherLinkServiceFactory;
 

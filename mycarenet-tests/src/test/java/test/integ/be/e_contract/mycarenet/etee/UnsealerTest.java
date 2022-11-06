@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2014 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,9 +18,9 @@
 
 package test.integ.be.e_contract.mycarenet.etee;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -30,12 +30,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import test.integ.be.e_contract.mycarenet.Config;
 import be.e_contract.mycarenet.ehealth.common.EHealthKeyStore;
 import be.e_contract.mycarenet.etee.Unsealer;
+import test.integ.be.e_contract.mycarenet.Config;
 
 public class UnsealerTest {
 
@@ -43,28 +44,28 @@ public class UnsealerTest {
 
 	private Config config;
 
-	@Before
+	@BeforeAll
+	public static void registerBC() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+	}
+
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.config = new Config();
-		Security.addProvider(new BouncyCastleProvider());
 	}
 
 	@Test
 	public void testUnsealing() throws Exception {
-		InputStream sealInputStream = SealTest.class
-				.getResourceAsStream("/seal-fcorneli.der");
+		InputStream sealInputStream = SealTest.class.getResourceAsStream("/seal-fcorneli.der");
 		assertNotNull(sealInputStream);
 		byte[] sealedData = IOUtils.toByteArray(sealInputStream);
 
-		FileInputStream keyStoreInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
+		FileInputStream keyStoreInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
 		byte[] keyStoreData = IOUtils.toByteArray(keyStoreInputStream);
 		String keyStorePassword = this.config.getEHealthPKCS12Password();
-		EHealthKeyStore eHealthKeyStore = new EHealthKeyStore(keyStoreData,
-				keyStorePassword);
+		EHealthKeyStore eHealthKeyStore = new EHealthKeyStore(keyStoreData, keyStorePassword);
 
-		Unsealer unsealer = new Unsealer(
-				eHealthKeyStore.getEncryptionPrivateKey(),
+		Unsealer unsealer = new Unsealer(eHealthKeyStore.getEncryptionPrivateKey(),
 				eHealthKeyStore.getEncryptionCertificate());
 
 		try {
@@ -78,26 +79,21 @@ public class UnsealerTest {
 
 	@Test
 	public void testUnsealing2014() throws Exception {
-		InputStream sealInputStream = SealTest.class
-				.getResourceAsStream("/seal-fcorneli-2014.der");
+		InputStream sealInputStream = SealTest.class.getResourceAsStream("/seal-fcorneli-2014.der");
 		assertNotNull(sealInputStream);
 		byte[] sealedData = IOUtils.toByteArray(sealInputStream);
 
-		FileInputStream keyStoreInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
+		FileInputStream keyStoreInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
 		byte[] keyStoreData = IOUtils.toByteArray(keyStoreInputStream);
 		String keyStorePassword = this.config.getEHealthPKCS12Password();
-		EHealthKeyStore eHealthKeyStore = new EHealthKeyStore(keyStoreData,
-				keyStorePassword);
+		EHealthKeyStore eHealthKeyStore = new EHealthKeyStore(keyStoreData, keyStorePassword);
 
-		Unsealer unsealer = new Unsealer(
-				eHealthKeyStore.getEncryptionPrivateKey(),
+		Unsealer unsealer = new Unsealer(eHealthKeyStore.getEncryptionPrivateKey(),
 				eHealthKeyStore.getEncryptionCertificate());
 
 		byte[] unsealedData = unsealer.unseal(sealedData);
 		LOG.debug("unsealed data: " + new String(unsealedData));
 		LOG.debug("sender certificate: " + unsealer.getSenderCertificate());
-		assertEquals(unsealer.getSenderCertificate(),
-				eHealthKeyStore.getAuthenticationCertificate());
+		assertEquals(unsealer.getSenderCertificate(), eHealthKeyStore.getAuthenticationCertificate());
 	}
 }

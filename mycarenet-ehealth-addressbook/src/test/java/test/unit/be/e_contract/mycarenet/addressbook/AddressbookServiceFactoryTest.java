@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2021 e-Contract.be BV.
+ * Copyright (C) 2021-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -17,10 +17,12 @@
  */
 package test.unit.be.e_contract.mycarenet.addressbook;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
 import be.e_contract.mycarenet.addressbook.AddressbookServiceFactory;
 import be.e_contract.mycarenet.addressbook.jaxws.AddressbookService;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
 
 public class AddressbookServiceFactoryTest {
 

@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -39,15 +39,14 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 public class WSSecuritySOAPHandlerTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(WSSecuritySOAPHandlerTest.class);
+	private static final Log LOG = LogFactory.getLog(WSSecuritySOAPHandlerTest.class);
 
 	@Test
 	public void testHandleMessage() throws Exception {
@@ -56,19 +55,14 @@ public class WSSecuritySOAPHandlerTest {
 		PrivateKey privateKey = keyPair.getPrivate();
 
 		String samlAssertion = "<Assertion xmlns=\"urn:oasis:names:tc:SAML:1.0:assertion\""
-				+ " AssertionID=\"_42e7a00652420d86ee884f295a3fbf02\">"
-				+ "</Assertion>";
+				+ " AssertionID=\"_42e7a00652420d86ee884f295a3fbf02\">" + "</Assertion>";
 
 		WSSecuritySOAPHandler testedInstance = new WSSecuritySOAPHandler();
 		testedInstance.setPrivateKey(privateKey);
 		testedInstance.setAssertion(samlAssertion);
 
-		SOAPMessageContext mockSoapMessageContext = EasyMock
-				.createMock(SOAPMessageContext.class);
-		EasyMock.expect(
-				mockSoapMessageContext
-						.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY))
-				.andReturn(true);
+		SOAPMessageContext mockSoapMessageContext = EasyMock.createMock(SOAPMessageContext.class);
+		EasyMock.expect(mockSoapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY)).andReturn(true);
 
 		MessageFactory messageFactory = MessageFactory.newInstance();
 		SOAPMessage soapMessage = messageFactory.createMessage();
@@ -77,8 +71,7 @@ public class WSSecuritySOAPHandlerTest {
 		SOAPBody soapBody = soapEnvelope.getBody();
 		soapBody.addBodyElement(new QName("http://www.example.com", "Test"));
 
-		EasyMock.expect(mockSoapMessageContext.getMessage()).andReturn(
-				soapMessage);
+		EasyMock.expect(mockSoapMessageContext.getMessage()).andReturn(soapMessage);
 
 		// prepare
 		EasyMock.replay(mockSoapMessageContext);
@@ -92,12 +85,10 @@ public class WSSecuritySOAPHandlerTest {
 	}
 
 	private String toString(Node node) throws Exception {
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		StringWriter stringWriter = new StringWriter();
-		transformer.transform(new DOMSource(node), new StreamResult(
-				stringWriter));
+		transformer.transform(new DOMSource(node), new StreamResult(stringWriter));
 		return stringWriter.toString();
 	}
 }

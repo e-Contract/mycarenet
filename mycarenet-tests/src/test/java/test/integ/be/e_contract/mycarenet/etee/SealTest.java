@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,8 +18,8 @@
 
 package test.integ.be.e_contract.mycarenet.etee;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -56,8 +56,9 @@ import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import test.integ.be.e_contract.mycarenet.Config;
 
@@ -67,32 +68,30 @@ public class SealTest {
 
 	private Config config;
 
-	@Before
-	public void setUp() throws Exception {
-		this.config = new Config();
+	@BeforeAll
+	public static void registerBC() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
+	@BeforeEach
+	public void setUp() throws Exception {
+		this.config = new Config();
+	}
+
 	private byte[] getVerifiedContent(byte[] cmsData)
-			throws CertificateException, CMSException, IOException,
-			OperatorCreationException {
+			throws CertificateException, CMSException, IOException, OperatorCreationException {
 		CMSSignedData cmsSignedData = new CMSSignedData(cmsData);
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
-		SignerInformation signer = (SignerInformation) signers.getSigners()
-				.iterator().next();
+		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
 
 		Store certificateStore = cmsSignedData.getCertificates();
-		Collection<X509CertificateHolder> certificateCollection = certificateStore
-				.getMatches(signerId);
+		Collection<X509CertificateHolder> certificateCollection = certificateStore.getMatches(signerId);
 		if (false == certificateCollection.isEmpty()) {
-			X509CertificateHolder certificateHolder = certificateCollection
-					.iterator().next();
-			CertificateFactory certificateFactory = CertificateFactory
-					.getInstance("X.509");
+			X509CertificateHolder certificateHolder = certificateCollection.iterator().next();
+			CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 			X509Certificate certificate = (X509Certificate) certificateFactory
-					.generateCertificate(new ByteArrayInputStream(
-							certificateHolder.getEncoded()));
+					.generateCertificate(new ByteArrayInputStream(certificateHolder.getEncoded()));
 
 			SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
 					.build(certificate);
@@ -111,8 +110,7 @@ public class SealTest {
 
 	@Test
 	public void testSeal() throws Exception {
-		InputStream sealInputStream = SealTest.class
-				.getResourceAsStream("/seal-fcorneli.der");
+		InputStream sealInputStream = SealTest.class.getResourceAsStream("/seal-fcorneli.der");
 		assertNotNull(sealInputStream);
 		byte[] cmsData = IOUtils.toByteArray(sealInputStream);
 
@@ -121,40 +119,29 @@ public class SealTest {
 
 		// decrypt content
 
-		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(
-				data);
+		CMSEnvelopedDataParser cmsEnvelopedDataParser = new CMSEnvelopedDataParser(data);
 		LOG.debug("content encryption algo: "
-				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm()
-						.getAlgorithm().getId());
+				+ cmsEnvelopedDataParser.getContentEncryptionAlgorithm().getAlgorithm().getId());
 
-		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser
-				.getRecipientInfos();
-		Collection<RecipientInformation> recipients = recipientInformationStore
-				.getRecipients();
-		RecipientInformation recipientInformation = recipients.iterator()
-				.next();
-		LOG.debug("recipient info type: "
-				+ recipientInformation.getClass().getName());
+		RecipientInformationStore recipientInformationStore = cmsEnvelopedDataParser.getRecipientInfos();
+		Collection<RecipientInformation> recipients = recipientInformationStore.getRecipients();
+		RecipientInformation recipientInformation = recipients.iterator().next();
+		LOG.debug("recipient info type: " + recipientInformation.getClass().getName());
 		KeyTransRecipientInformation keyTransRecipientInformation = (KeyTransRecipientInformation) recipientInformation;
 
 		// load eHealth encryption certificate
 		KeyStore eHealthKeyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream fileInputStream = new FileInputStream(
-				this.config.getEHealthPKCS12Path());
-		eHealthKeyStore.load(fileInputStream, this.config
-				.getEHealthPKCS12Password().toCharArray());
+		FileInputStream fileInputStream = new FileInputStream(this.config.getEHealthPKCS12Path());
+		eHealthKeyStore.load(fileInputStream, this.config.getEHealthPKCS12Password().toCharArray());
 		Enumeration<String> aliasesEnum = eHealthKeyStore.aliases();
 		aliasesEnum.nextElement(); // skip authentication certificate.
 		String alias = aliasesEnum.nextElement();
-		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore
-				.getCertificate(alias);
-		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(
-				alias, this.config.getEHealthPKCS12Password().toCharArray());
+		X509Certificate eHealthCertificate = (X509Certificate) eHealthKeyStore.getCertificate(alias);
+		PrivateKey eHealthPrivateKey = (PrivateKey) eHealthKeyStore.getKey(alias,
+				this.config.getEHealthPKCS12Password().toCharArray());
 
-		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory
-				.createKey(eHealthPrivateKey.getEncoded());
-		BcRSAKeyTransEnvelopedRecipient recipient = new BcRSAKeyTransEnvelopedRecipient(
-				privKeyParams);
+		AsymmetricKeyParameter privKeyParams = PrivateKeyFactory.createKey(eHealthPrivateKey.getEncoded());
+		BcRSAKeyTransEnvelopedRecipient recipient = new BcRSAKeyTransEnvelopedRecipient(privKeyParams);
 		byte[] decryptedContent = recipientInformation.getContent(recipient);
 		assertNotNull(decryptedContent);
 		LOG.debug("decrypted content size: " + decryptedContent.length);

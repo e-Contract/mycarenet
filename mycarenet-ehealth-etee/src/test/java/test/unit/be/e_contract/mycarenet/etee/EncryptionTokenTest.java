@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013 e-Contract.be BVBA.
+ * Copyright (C) 2013-2022 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -18,7 +18,7 @@
 
 package test.unit.be.e_contract.mycarenet.etee;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.Store;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import be.e_contract.mycarenet.etee.EncryptionToken;
 
@@ -46,8 +46,7 @@ public class EncryptionTokenTest {
 
 	@Test
 	public void testReadEncryptionToken() throws Exception {
-		InputStream etkInputStream = EncryptionTokenTest.class
-				.getResourceAsStream("/etk-fcorneli.der");
+		InputStream etkInputStream = EncryptionTokenTest.class.getResourceAsStream("/etk-fcorneli.der");
 		assertNotNull(etkInputStream);
 
 		CMSSignedData cmsSignedData = new CMSSignedData(etkInputStream);
@@ -55,26 +54,20 @@ public class EncryptionTokenTest {
 
 		SignerInformationStore signers = cmsSignedData.getSignerInfos();
 		LOG.debug("signers: " + signers.size());
-		SignerInformation signer = (SignerInformation) signers.getSigners()
-				.iterator().next();
+		SignerInformation signer = (SignerInformation) signers.getSigners().iterator().next();
 		SignerId signerId = signer.getSID();
 		LOG.debug("signer Id: " + signerId.getIssuer());
 
 		Store certificateStore = cmsSignedData.getCertificates();
 		@SuppressWarnings("unchecked")
-		Collection<X509CertificateHolder> certificateCollection = certificateStore
-				.getMatches(signerId);
-		X509CertificateHolder certificateHolder = certificateCollection
-				.iterator().next();
+		Collection<X509CertificateHolder> certificateCollection = certificateStore.getMatches(signerId);
+		X509CertificateHolder certificateHolder = certificateCollection.iterator().next();
 
-		LOG.debug("certificate collection size: "
-				+ certificateCollection.size());
+		LOG.debug("certificate collection size: " + certificateCollection.size());
 
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("X.509");
+		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(certificateHolder
-						.getEncoded()));
+				.generateCertificate(new ByteArrayInputStream(certificateHolder.getEncoded()));
 		LOG.debug("signer certificate: " + certificate);
 
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
@@ -85,16 +78,14 @@ public class EncryptionTokenTest {
 		LOG.debug("encryption certificate: " + encryptionCertificate);
 	}
 
-	//@Test
+	// @Test
 	// expired CA in T&A at eHealth
 	public void testEncryptionToken() throws Exception {
-		InputStream etkInputStream = EncryptionTokenTest.class
-				.getResourceAsStream("/etk-fcorneli.der");
+		InputStream etkInputStream = EncryptionTokenTest.class.getResourceAsStream("/etk-fcorneli.der");
 		byte[] data = IOUtils.toByteArray(etkInputStream);
 
 		EncryptionToken encryptionToken = new EncryptionToken(data);
-		X509Certificate encryptionCertificate = encryptionToken
-				.getEncryptionCertificate();
+		X509Certificate encryptionCertificate = encryptionToken.getEncryptionCertificate();
 		LOG.debug("encryption certificate: " + encryptionCertificate);
 	}
 }
