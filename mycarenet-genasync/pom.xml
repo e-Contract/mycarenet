@@ -49,32 +49,32 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-                        <plugin>
-                                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                                <artifactId>maven-jaxb2-plugin</artifactId>
-                                <executions>
-                                    <execution>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                        <configuration>
-                                            <verbose>true</verbose>
-                                            <specVersion>2.2</specVersion>
-                                            <extension>true</extension>
-                                            <args>
-                                                <arg>-Xnamespace-prefix</arg>
-                                            </args>
-                                        </configuration>
-                                    </execution>
-                                </executions>
-                                <dependencies>
-                                    <dependency>
-                                        <groupId>org.jvnet.jaxb2_commons</groupId>
-                                        <artifactId>jaxb2-namespace-prefix</artifactId>
-                                        <version>1.2</version>
-                                    </dependency>
-                                </dependencies>
-                        </plugin>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<verbose>true</verbose>
+							<specVersion>2.2</specVersion>
+							<extension>true</extension>
+							<args>
+								<arg>-Xnamespace-prefix</arg>
+							</args>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.jvnet.jaxb2_commons</groupId>
+						<artifactId>jaxb2-namespace-prefix</artifactId>
+						<version>1.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -127,6 +127,16 @@
 		<dependency>
 			<groupId>org.apache.ws.security</groupId>
 			<artifactId>wss4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.jws</groupId>
+			<artifactId>javax.jws-api</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
