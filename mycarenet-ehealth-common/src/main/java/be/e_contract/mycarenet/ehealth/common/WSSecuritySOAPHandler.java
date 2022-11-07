@@ -118,6 +118,10 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 	private void handleOutboundMessage(SOAPMessageContext context)
 			throws WSSecurityException, SAXException, IOException {
 		LOGGER.debug("adding WS-Security header");
+		if (null == this.samlAssertion) {
+			LOGGER.error("missing SAML assertion");
+			return;
+		}
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
