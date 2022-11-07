@@ -15,7 +15,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -29,7 +29,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<skip>false</skip>
+							<skipTests>false</skipTests>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -42,12 +42,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven-project-info-reports-plugin.version}</version>
 				<configuration>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 				</configuration>
@@ -55,7 +53,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>${maven-surefire-report-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -134,11 +131,6 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

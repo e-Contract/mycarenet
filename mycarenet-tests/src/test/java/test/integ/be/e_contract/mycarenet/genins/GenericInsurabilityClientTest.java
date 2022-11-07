@@ -33,9 +33,11 @@ import java.util.List;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -252,14 +254,17 @@ public class GenericInsurabilityClientTest {
 		Element namespaceElement = assertion.getOwnerDocument().createElement("ns");
 		namespaceElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
 				"urn:oasis:names:tc:SAML:1.0:assertion");
-		Node nihiiNode = XPathAPI.selectSingleNode(assertion,
-				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11']/saml:AttributeValue/text()",
-				namespaceElement);
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		Node nihiiNode = (Node) xPath.compile(
+				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin:ehealth:1.0:doctor:nihii11']/saml:AttributeValue/text()")
+				.evaluate(assertion, XPathConstants.NODE);
+		// namespaceElement);
 		String myNihii = nihiiNode.getTextContent();
 		LOGGER.debug("NIHII: {}", myNihii);
-		Node ssinNode = XPathAPI.selectSingleNode(assertion,
-				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin']/saml:AttributeValue/text()",
-				namespaceElement);
+		Node ssinNode = (Node) xPath.compile(
+				"saml:AttributeStatement/saml:Attribute[@AttributeName='urn:be:fgov:person:ssin']/saml:AttributeValue/text()")
+				.evaluate(assertion, XPathConstants.NODE);
+		// namespaceElement);
 		String mySsin = ssinNode.getTextContent();
 
 		CareProviderType careProvider = coreObjectFactory.createCareProviderType();
