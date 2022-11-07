@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>be.e_contract</groupId>
 		<artifactId>mycarenet</artifactId>
-		<version>1.2.17-SNAPSHOT</version>
+		<version>1.3.0</version>
 	</parent>
 	<name>MyCareNet eHealth Consent Client</name>
 	<groupId>be.e_contract.mycarenet</groupId>
