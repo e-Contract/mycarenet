@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>be.e_contract</groupId>
 		<artifactId>mycarenet</artifactId>
-		<version>1.3.1-SNAPSHOT</version>
+		<version>1.4.0</version>
 	</parent>
 	<name>MyCareNet eHealth Generic Insurability Client</name>
 	<groupId>be.e_contract.mycarenet</groupId>
