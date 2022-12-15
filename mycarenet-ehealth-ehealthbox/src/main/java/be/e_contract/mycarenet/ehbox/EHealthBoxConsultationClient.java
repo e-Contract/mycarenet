@@ -62,6 +62,8 @@ import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationPortTyp
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.EhBoxConsultationService;
 import be.e_contract.mycarenet.ehbox.jaxws.consultation.SystemError;
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
+import be.e_contract.mycarenet.ehealth.common.TracingClient;
+import be.e_contract.mycarenet.ehealth.common.TracingSOAPHandler;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 /**
@@ -71,7 +73,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  * @author Frank Cornelis
  * 
  */
-public class EHealthBoxConsultationClient implements CredentialClient {
+public class EHealthBoxConsultationClient implements CredentialClient, TracingClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxConsultationClient.class);
 
@@ -85,6 +87,8 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 
 	private final InboundAttachmentsSOAPHandler inboundAttachmentsSOAPHandler;
 
+	private final TracingSOAPHandler tracingSOAPHandler;
+
 	/**
 	 * Sets the credentials to be used.
 	 * 
@@ -95,6 +99,11 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	}
+
+	@Override
+	public void setTracing(String userAgent, String from) {
+		this.tracingSOAPHandler.setTracing(userAgent, from);
 	}
 
 	/**
@@ -114,6 +123,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 		this.inboundAttachmentsSOAPHandler = new InboundAttachmentsSOAPHandler();
+		this.tracingSOAPHandler = new TracingSOAPHandler();
 		configureBindingProvider((BindingProvider) this.ehBoxConsultationPort, location);
 		configureBindingProvider(this.consultationDispatch, location);
 		this.objectFactory = new ObjectFactory();
@@ -128,6 +138,7 @@ public class EHealthBoxConsultationClient implements CredentialClient {
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(this.inboundAttachmentsSOAPHandler);
+		handlerChain.add(this.tracingSOAPHandler);
 		// handlerChain.add(new LoggingHandler());
 		// LoggingHandler makes CXF fail on the attachments.
 		// https://issues.apache.org/jira/browse/CXF-5496

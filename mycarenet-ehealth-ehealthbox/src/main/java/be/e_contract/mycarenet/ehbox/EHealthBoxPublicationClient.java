@@ -54,6 +54,8 @@ import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationPortType;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.EhBoxPublicationService;
 import be.e_contract.mycarenet.ehbox.jaxws.publication.SystemError;
 import be.e_contract.mycarenet.ehealth.common.CredentialClient;
+import be.e_contract.mycarenet.ehealth.common.TracingClient;
+import be.e_contract.mycarenet.ehealth.common.TracingSOAPHandler;
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
 
 /**
@@ -63,7 +65,7 @@ import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
  * @author Frank Cornelis
  * 
  */
-public class EHealthBoxPublicationClient implements CredentialClient {
+public class EHealthBoxPublicationClient implements CredentialClient, TracingClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EHealthBoxPublicationClient.class);
 
@@ -75,6 +77,8 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 
 	private final PayloadLogicalHandler payloadLogicalHandler;
 
+	private final TracingSOAPHandler tracingSOAPHandler;
+
 	/**
 	 * Sets the authentication credentials.
 	 * 
@@ -85,6 +89,11 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 	public void setCredentials(PrivateKey hokPrivateKey, String samlAssertion) {
 		this.wsSecuritySOAPHandler.setPrivateKey(hokPrivateKey);
 		this.wsSecuritySOAPHandler.setAssertion(samlAssertion);
+	}
+
+	@Override
+	public void setTracing(String userAgent, String from) {
+		this.tracingSOAPHandler.setTracing(userAgent, from);
 	}
 
 	/**
@@ -107,6 +116,7 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 
 		this.wsSecuritySOAPHandler = new WSSecuritySOAPHandler();
 		this.payloadLogicalHandler = new PayloadLogicalHandler();
+		this.tracingSOAPHandler = new TracingSOAPHandler();
 		configureBindingProvider((BindingProvider) this.ehBoxPublicationPort, location);
 		configureBindingProvider(this.publicationDispatch, location);
 	}
@@ -133,6 +143,7 @@ public class EHealthBoxPublicationClient implements CredentialClient {
 		handlerChain.add(this.wsSecuritySOAPHandler);
 		handlerChain.add(new LoggingHandler());
 		handlerChain.add(this.payloadLogicalHandler);
+		handlerChain.add(this.tracingSOAPHandler);
 		binding.setHandlerChain(handlerChain);
 	}
 
