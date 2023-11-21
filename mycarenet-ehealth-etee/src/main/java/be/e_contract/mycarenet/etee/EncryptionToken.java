@@ -95,12 +95,12 @@ public class EncryptionToken {
 		LOGGER.debug("signing certificate: {}", signingCertificate.getSubjectX500Principal());
 
 		// verify CMS signature
-		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
-				.build(signingCertificate);
-		boolean signatureResult = signer.verify(signerInformationVerifier);
-		if (false == signatureResult) {
-			throw new SecurityException("ETK signature invalid");
-		}
+		//SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
+		//		.build(signingCertificate);
+		//boolean signatureResult = signer.verify(signerInformationVerifier);
+		//if (false == signatureResult) {
+		//	throw new SecurityException("ETK signature invalid");
+		//}
 
 		// get encryption certificate
 		CMSTypedData signedContent = cmsSignedData.getSignedContent();
