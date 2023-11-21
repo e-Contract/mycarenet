@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2022 e-Contract.be BV.
+ * Copyright (C) 2013-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -140,7 +140,8 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		securityHeaderElement.appendChild(importedAssertionElement);
 
 		WSSecSignature wsSecSignature = new WSSecSignature();
-		wsSecSignature.setSignatureAlgorithm(WSConstants.RSA);
+		wsSecSignature.setDigestAlgo("http://www.w3.org/2001/04/xmlenc#sha256");
+		wsSecSignature.setSignatureAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
 		wsSecSignature.setKeyIdentifierType(WSConstants.CUSTOM_KEY_IDENTIFIER);
 		wsSecSignature.setCustomTokenValueType(WSConstants.WSS_SAML_KI_VALUE_TYPE);
 		wsSecSignature.setCustomTokenId(assertionId);

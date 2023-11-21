@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2022 e-Contract.be BV.
+ * Copyright (C) 2013-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 import be.e_contract.mycarenet.ehealth.common.WSSecuritySOAPHandler;
+import javax.xml.transform.OutputKeys;
 
 public class WSSecuritySOAPHandlerTest {
 
@@ -50,6 +51,7 @@ public class WSSecuritySOAPHandlerTest {
 
 	@Test
 	public void testHandleMessage() throws Exception {
+		LOGGER.debug("testing");
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		PrivateKey privateKey = keyPair.getPrivate();
@@ -86,7 +88,9 @@ public class WSSecuritySOAPHandlerTest {
 
 	private String toString(Node node) throws Exception {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", 4);
 		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		StringWriter stringWriter = new StringWriter();
 		transformer.transform(new DOMSource(node), new StreamResult(stringWriter));
 		return stringWriter.toString();
