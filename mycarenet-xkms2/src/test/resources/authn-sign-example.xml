@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Header/>
+    <SOAP-ENV:Body>
+        <RegisterRequest xmlns="http://www.w3.org/2002/03/xkms#">
+            <KeyBindingAuthentication>
+                <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                    <SignedInfo>
+                        <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                        <Reference URI="#prototype-key-binding-id">
+                            <Transforms>
+                                <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                            </Transforms>
+                            <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                            <DigestValue>NxkWB1hERnOH5v5I8rBY9s76k7M=</DigestValue>
+                        </Reference>
+                    </SignedInfo>
+                    <SignatureValue>P642aWg36gXuy4hnwN1HbDfg1otvXWgkf3kly8clHcQ1KI/pQZUqZutzmj3Zkf8z5jLLNCS4NtJZ&#13;
+                        tlRWennX65nvxu/qdeYdPbMH1Qa8v1TUxlhmHdNDYfHLo6D0fM+qtkLYf8QEjyU3q+zNdVIJ7YU6&#13;
+                        MaV9cH7wtXx1MFgm9Xg=</SignatureValue>
+                    <KeyInfo>
+                        <X509Data>
+                            <X509Certificate>MIIBoTCCAQqgAwIBAgIQClAHw0qX8GEjEe1cHh4bcjANBgkqhkiG9w0BAQsFADAPMQ0wCwYDVQQD&#13;
+                                DARUZXN0MB4XDTIzMTIxMjA4MzUxN1oXDTMzMTIxMjA4MzUxN1owDzENMAsGA1UEAwwEVGVzdDCB&#13;
+                                nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAnVWEYpnghi9TfuXzlug3zv8N1vKZ4QJkPFyjYARO&#13;
+                                Di+oTAcXS8qshon6a+J5qm6OPSyoGAoHe7kc9g7nnpNXeXG1uj6nnn8y4IJNXpZ9uqOqqdNjtpDV&#13;
+                                Rd/TaX/tNgYbW4m3eKs7wZO+H80R1u7IT0ErajAXh4s6mIf2toNZ1e0CAwEAATANBgkqhkiG9w0B&#13;
+                                AQsFAAOBgQCEcsTL9X6CEIYX02MB1Sa1yZ0QLfGMv5oHE3F6Np6nm2Dalcfx4Y9O/KjzvlcyVARF&#13;
+                                Ijw6gTjO/+SgIID8PchZDKhhtKVvulVJRtJs6/qg2L6US+GROG34H03QaJaC8+iNWMg9JLi0ND1P&#13;
+                                r5GinSC6+FNKhH8o4nxYpOWbVtiCtQ==</X509Certificate>
+                        </X509Data>
+                    </KeyInfo>
+                </Signature>
+            </KeyBindingAuthentication>
+            <ProofOfPossession/>
+            <PrototypeKeyBinding Id="prototype-key-binding-id"/>
+        </RegisterRequest>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

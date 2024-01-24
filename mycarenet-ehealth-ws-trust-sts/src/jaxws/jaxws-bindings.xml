@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	MyCareNet/eHealth Connector Project.
+	Copyright (C) 2023 e-Contract.be BV.
+
+	This is free software; you can redistribute it and/or modify it
+	under the terms of the GNU Lesser General Public License version
+	3.0 as published by the Free Software Foundation.
+
+	This software is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public
+	License along with this software; if not, see
+	http://www.gnu.org/licenses/.
+-->
+<jaxws:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+        http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
+
+	<jaxws:bindings
+		node="wsdl:definitions[@targetNamespace='http://docs.oasis-open.org/ws-sx/ws-trust/200512']">
+		<jaxws:package name="be.e_contract.ehealth.sts.ws.jaxws">
+			<jaxws:javadoc><![CDATA[<body>WS-Trust web service definition</body>]]></jaxws:javadoc>
+		</jaxws:package>
+	</jaxws:bindings>
+
+</jaxws:bindings>

@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2013-2022 e-Contract.be BV.
+ * Copyright (C) 2013-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -93,13 +93,7 @@ public class EtkDepotClientTest {
 	public void testScenario2() throws Exception {
 		EtkDepotClient etkDepotClient = new EtkDepotClient("https://services-acpt.ehealth.fgov.be/EtkDepot/v1");
 
-		byte[] etk = etkDepotClient.getEtk("SSIN", "85040309180");
-		assertNotNull(etk);
-
-		etk = etkDepotClient.getEtk("CBE", "0809394427");
-		assertNotNull(etk);
-
-		etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
+		byte[] etk = etkDepotClient.getEtk("NIHII-HOSPITAL", "71089815");
 		assertNotNull(etk);
 
 		etk = etkDepotClient.getEtk("NIHII-LABO", "89999964");

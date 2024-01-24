@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" SOAP-ENV:mustUnderstand="1">
+            <wsu:Timestamp wsu:Id="TS-66197DF9AAF0E2089617023625241371">
+                <wsu:Created>2023-12-12T06:28:44.136Z</wsu:Created>
+                <wsu:Expires>2023-12-12T06:29:44.136Z</wsu:Expires>
+            </wsu:Timestamp>
+            <Assertion xmlns="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="_42e7a00652420d86ee884f295a3fbf02"/>
+            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="SIG-66197DF9AAF0E2089617023625241495">
+                <ds:SignedInfo>
+                    <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                        <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="SOAP-ENV"/>
+                    </ds:CanonicalizationMethod>
+                    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                    <ds:Reference URI="#id-66197DF9AAF0E2089617023625241464">
+                        <ds:Transforms>
+                            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                                <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList=""/>
+                            </ds:Transform>
+                        </ds:Transforms>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>95Cuf+VJHX0fIvgEiauWIemMoQYr6OOi7e5fbVGQuFg=</ds:DigestValue>
+                    </ds:Reference>
+                    <ds:Reference URI="#TS-66197DF9AAF0E2089617023625241371">
+                        <ds:Transforms>
+                            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                                <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="wsse SOAP-ENV"/>
+                            </ds:Transform>
+                        </ds:Transforms>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>2NqR6Yg3CfvrOqfwM1uV0rp22HknEyAzfXeV2bSfyF4=</ds:DigestValue>
+                    </ds:Reference>
+                </ds:SignedInfo>
+                <ds:SignatureValue>HOknAKguT6ambSAyOJV7+BNhA/7L4oVBzPhzB6p0s0wAogM4OjT0N/XAR5EV4EoO6ZGoe2n5KuDkQ9SJY+GXQvnk23x8VVOZ2Ej3QNhDMJmZ/XanBPfwBVYdn2DuHVUNazNWf/JRDHJRtTr95yIN8JgtVd8CXvoWg2jjE49qQihz0eCd0uEkhpUXVxRAziAZmAYDJBuNY9ZfyHxXaxbH3RPcJb9vctrQLmXZfy6EZzD6h40OSJ4gcibJcn8WhPYvzjjv+Rf6/y1ZeL3x47jNlkCenjYqFpP2+AvgufywfWFGqyRdjwYcnqIjNErvgKfQT8DFQrI+nlcB+LYNlYV1iQ==</ds:SignatureValue>
+                <ds:KeyInfo Id="KI-66197DF9AAF0E2089617023625241442">
+                    <wsse:SecurityTokenReference xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd" wsse11:TokenType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1" wsu:Id="STR-66197DF9AAF0E2089617023625241453">
+                        <wsse:KeyIdentifier ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.0#SAMLAssertionID">_42e7a00652420d86ee884f295a3fbf02</wsse:KeyIdentifier>
+                    </wsse:SecurityTokenReference>
+                </ds:KeyInfo>
+            </ds:Signature>
+        </wsse:Security>
+    </SOAP-ENV:Header>
+    <SOAP-ENV:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="id-66197DF9AAF0E2089617023625241464">
+        <Test xmlns="http://www.example.com"/>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>·

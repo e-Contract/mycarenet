@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2022 e-Contract.be BV.
+ * Copyright (C) 2012-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -49,6 +49,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.apache.wss4j.dom.WSConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -168,11 +169,17 @@ public class KeyBindingAuthenticationSignatureSOAPHandler implements SOAPHandler
 						(TransformParameterSpec) null)),
 				null, null);
 
+		String signatureAlgorithm;
+		if (this.authnCertificate.getPublicKey().getAlgorithm().equals("EC")) {
+			// XKMS2 does not seem to support ECDSA
+			signatureAlgorithm = WSConstants.ECDSA_SHA256;
+		} else {
+			signatureAlgorithm = SignatureMethod.RSA_SHA1;
+		}
 		SignedInfo signedInfo = xmlSignatureFactory.newSignedInfo(
 				xmlSignatureFactory.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
 						(C14NMethodParameterSpec) null),
-				xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
-				Collections.singletonList(reference));
+				xmlSignatureFactory.newSignatureMethod(signatureAlgorithm, null), Collections.singletonList(reference));
 
 		KeyInfoFactory keyInfoFactory = xmlSignatureFactory.getKeyInfoFactory();
 		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(Collections

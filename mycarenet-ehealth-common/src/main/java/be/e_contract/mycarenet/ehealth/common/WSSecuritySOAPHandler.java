@@ -15,7 +15,6 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-
 package be.e_contract.mycarenet.ehealth.common;
 
 import java.io.IOException;
@@ -37,15 +36,15 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.ws.security.SOAPConstants;
-import org.apache.ws.security.WSConstants;
-import org.apache.ws.security.WSEncryptionPart;
-import org.apache.ws.security.WSSecurityException;
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.message.WSSecHeader;
-import org.apache.ws.security.message.WSSecSignature;
-import org.apache.ws.security.message.WSSecTimestamp;
-import org.apache.ws.security.util.WSSecurityUtil;
+import org.apache.wss4j.common.WSEncryptionPart;
+import org.apache.wss4j.common.crypto.Crypto;
+import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.wss4j.dom.SOAPConstants;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.message.WSSecHeader;
+import org.apache.wss4j.dom.message.WSSecSignature;
+import org.apache.wss4j.dom.message.WSSecTimestamp;
+import org.apache.wss4j.dom.util.WSSecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -58,9 +57,9 @@ import be.e_contract.mycarenet.common.WSSecurityCrypto;
 /**
  * WS-Security JAX-WS SOAP handler implementation for eHealth web services that
  * are secured using the eHealth STS SAML assertion and holder-of-key.
- * 
+ *
  * @author Frank Cornelis
- * 
+ *
  */
 public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -84,7 +83,7 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	/**
 	 * Sets the eHealth holder-of-key private key.
-	 * 
+	 *
 	 * @param privateKey
 	 */
 	public void setPrivateKey(PrivateKey privateKey) {
@@ -93,7 +92,7 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 
 	/**
 	 * Sets the eHealth STS SAML assertion.
-	 * 
+	 *
 	 * @param samlAssertion
 	 */
 	public void setAssertion(String samlAssertion) {
@@ -125,34 +124,38 @@ public class WSSecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		WSSecHeader wsSecHeader = new WSSecHeader();
-		wsSecHeader.insertSecurityHeader(soapPart);
+		WSSecHeader wsSecHeader = new WSSecHeader(soapPart);
+		Element securityHeaderElement = wsSecHeader.insertSecurityHeader();
 
-		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp(wsSecHeader);
 		wsSecTimeStamp.setTimeToLive(60);
-		wsSecTimeStamp.build(soapPart, wsSecHeader);
+		wsSecTimeStamp.build();
 
 		Document assertionDocument = this.documentBuilder.parse(new InputSource(new StringReader(this.samlAssertion)));
 		Element assertionElement = assertionDocument.getDocumentElement();
 		String assertionId = assertionElement.getAttribute("AssertionID");
 		Element importedAssertionElement = (Element) soapPart.importNode(assertionElement, true);
-		Element securityHeaderElement = wsSecHeader.getSecurityHeader();
 		securityHeaderElement.appendChild(importedAssertionElement);
 
-		WSSecSignature wsSecSignature = new WSSecSignature();
+		WSSecSignature wsSecSignature = new WSSecSignature(wsSecHeader);
+		if (this.privateKey.getAlgorithm().equals("EC")) {
+			wsSecSignature.setSignatureAlgorithm(WSConstants.ECDSA_SHA256);
+		} else {
+			wsSecSignature.setSignatureAlgorithm(WSConstants.RSA_SHA256);
+		}
 		wsSecSignature.setDigestAlgo("http://www.w3.org/2001/04/xmlenc#sha256");
-		wsSecSignature.setSignatureAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
 		wsSecSignature.setKeyIdentifierType(WSConstants.CUSTOM_KEY_IDENTIFIER);
 		wsSecSignature.setCustomTokenValueType(WSConstants.WSS_SAML_KI_VALUE_TYPE);
 		wsSecSignature.setCustomTokenId(assertionId);
 		Crypto crypto = new WSSecurityCrypto(this.privateKey, null);
-		wsSecSignature.prepare(soapPart, crypto, wsSecHeader);
+		wsSecSignature.prepare(crypto);
+
 		Vector<WSEncryptionPart> signParts = new Vector<>();
 		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart.getDocumentElement());
 		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(), soapConstants.getEnvelopeURI(),
 				"Content"));
 		signParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
-		List<Reference> referenceList = wsSecSignature.addReferencesToSign(signParts, wsSecHeader);
+		List<Reference> referenceList = wsSecSignature.addReferencesToSign(signParts);
 		wsSecSignature.computeSignature(referenceList, false, null);
 	}
 

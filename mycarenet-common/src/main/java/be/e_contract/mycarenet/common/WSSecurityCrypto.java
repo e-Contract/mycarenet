@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2022 e-Contract.be BV.
+ * Copyright (C) 2012-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -15,7 +15,6 @@
  * License along with this software; if not, see 
  * http://www.gnu.org/licenses/.
  */
-
 package be.e_contract.mycarenet.common;
 
 import java.io.InputStream;
@@ -23,20 +22,22 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.regex.Pattern;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.apache.ws.security.WSSecurityException;
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoType;
+import org.apache.wss4j.common.crypto.Crypto;
+import org.apache.wss4j.common.crypto.CryptoType;
+import org.apache.wss4j.common.ext.WSSecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Generic WSS4J Crypto implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
+ *
  */
 public class WSSecurityCrypto implements Crypto {
 
@@ -125,11 +126,6 @@ public class WSSecurityCrypto implements Crypto {
 	}
 
 	@Override
-	public void setCertificateFactory(String provider, CertificateFactory certFactory) {
-		LOGGER.debug("setCertifiateFactory");
-	}
-
-	@Override
 	public void setCryptoProvider(String provider) {
 		LOGGER.debug("setCryptoProvider");
 	}
@@ -140,20 +136,36 @@ public class WSSecurityCrypto implements Crypto {
 	}
 
 	@Override
-	public boolean verifyTrust(X509Certificate[] certs) throws WSSecurityException {
-		LOGGER.debug("verifyTrust(certs)");
-		return false;
-	}
-
-	@Override
-	public boolean verifyTrust(PublicKey publicKey) throws WSSecurityException {
+	public void verifyTrust(PublicKey publicKey) throws WSSecurityException {
 		LOGGER.debug("verifyTrust(publicKey)");
-		return false;
 	}
 
 	@Override
-	public boolean verifyTrust(X509Certificate[] certs, boolean enableRevocation) throws WSSecurityException {
-		LOGGER.debug("verifyTrust(certs, enableRevocation)");
-		return false;
+	public String getTrustProvider() {
+		LOGGER.debug("getTrustProvider");
+		return null;
+	}
+
+	@Override
+	public void setTrustProvider(String provider) {
+		LOGGER.debug("setTrustProvider: {}", provider);
+	}
+
+	@Override
+	public void setCertificateFactory(CertificateFactory certFactory) {
+		LOGGER.debug("setCertificateFactory");
+	}
+
+	@Override
+	public PrivateKey getPrivateKey(PublicKey publicKey, CallbackHandler callbackHandler) throws WSSecurityException {
+		LOGGER.debug("getPrivateKey");
+		return null;
+	}
+
+	@Override
+	public void verifyTrust(X509Certificate[] certs, boolean enableRevocation,
+			Collection<Pattern> subjectCertConstraints, Collection<Pattern> issuerCertConstraints)
+			throws WSSecurityException {
+		LOGGER.debug("verifyTrust");
 	}
 }

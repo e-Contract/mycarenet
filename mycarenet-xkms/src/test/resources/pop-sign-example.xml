@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Header/>
+    <SOAP-ENV:Body>
+        <Register xmlns="http://www.xkms.org/schema/xkms-2001-01-20">
+            <ProofOfPossession>
+                <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                    <SignedInfo>
+                        <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                        <Reference URI="#prototype-key-binding-id">
+                            <Transforms>
+                                <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                            </Transforms>
+                            <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                            <DigestValue>xvXav6WdanVGPm1iWj1QGBGhLMs=</DigestValue>
+                        </Reference>
+                    </SignedInfo>
+                    <SignatureValue>KaNI5Bq0A3QRmrWNkyGkEX9tXkArp2454EahMwtJ1RU1e9ZpU7Y7gXJeg7q6R5R46X/62BJGotWI&#13;
+                        ZTIcUsAmJHMzerbhg0THOCh8WJnn72FgY8x0ytX0o1yS45S8Z6KfXAcwfxzRjA8JVmCEKQF3W+W4&#13;
+                        UGSS7tJnJ7e4ibVF2po=</SignatureValue>
+                </Signature>
+            </ProofOfPossession>
+            <Prototype Id="prototype-key-binding-id"/>
+        </Register>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

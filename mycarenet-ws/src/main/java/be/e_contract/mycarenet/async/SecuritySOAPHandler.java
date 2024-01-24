@@ -1,6 +1,6 @@
 /*
  * Java MyCareNet Project.
- * Copyright (C) 2012-2022 e-Contract.be BV.
+ * Copyright (C) 2012-2023 e-Contract.be BV.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License version
@@ -32,16 +32,15 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.ws.security.SOAPConstants;
-import org.apache.ws.security.WSConstants;
-import org.apache.ws.security.WSEncryptionPart;
-import org.apache.ws.security.WSSConfig;
-import org.apache.ws.security.WSSecurityException;
-import org.apache.ws.security.message.WSSecHeader;
-import org.apache.ws.security.message.WSSecSignature;
-import org.apache.ws.security.message.WSSecTimestamp;
-import org.apache.ws.security.message.WSSecUsernameToken;
-import org.apache.ws.security.util.WSSecurityUtil;
+import org.apache.wss4j.common.WSEncryptionPart;
+import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.wss4j.dom.SOAPConstants;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.message.WSSecHeader;
+import org.apache.wss4j.dom.message.WSSecSignature;
+import org.apache.wss4j.dom.message.WSSecTimestamp;
+import org.apache.wss4j.dom.message.WSSecUsernameToken;
+import org.apache.wss4j.dom.util.WSSecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,33 +93,31 @@ public class SecuritySOAPHandler implements SOAPHandler<SOAPMessageContext> {
 		SOAPMessage soapMessage = context.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		WSSecHeader wsSecHeader = new WSSecHeader();
-		wsSecHeader.insertSecurityHeader(soapPart);
+		WSSecHeader wsSecHeader = new WSSecHeader(soapPart);
+		wsSecHeader.insertSecurityHeader();
 
-		WSSecUsernameToken usernameToken = new WSSecUsernameToken();
+		WSSecUsernameToken usernameToken = new WSSecUsernameToken(wsSecHeader);
 		usernameToken.setUserInfo(this.packageLicenseKey.getUsername(), this.packageLicenseKey.getPassword());
 		usernameToken.setPasswordType(WSConstants.PASSWORD_TEXT);
-		usernameToken.prepare(soapPart);
-		usernameToken.prependToHeader(wsSecHeader);
+		usernameToken.build();
 
-		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
-		wsSecTimeStamp.build(soapPart, wsSecHeader);
+		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp(wsSecHeader);
+		wsSecTimeStamp.build();
 
 		WSSecurityCrypto crypto = new WSSecurityCrypto(this.sessionKey);
-		WSSConfig wssConfig = new WSSConfig();
-		wssConfig.setWsiBSPCompliant(false);
-		WSSecSignature sign = new WSSecSignature(wssConfig);
+		// WSSConfig wssConfig = new WSSConfig();
+		// wssConfig.setWsiBSPCompliant(false);
+		WSSecSignature sign = new WSSecSignature(wsSecHeader);
 		sign.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
-		sign.prepare(soapPart, crypto, wsSecHeader);
-		sign.appendBSTElementToHeader(wsSecHeader);
+		sign.prepare(crypto);
+		sign.appendBSTElementToHeader();
 		Vector<WSEncryptionPart> signParts = new Vector<>();
 		signParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
 		signParts.add(new WSEncryptionPart(usernameToken.getId()));
 		SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(soapPart.getDocumentElement());
 		signParts.add(new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(), soapConstants.getEnvelopeURI(),
 				"Content"));
-		sign.addReferencesToSign(signParts, wsSecHeader);
-		List<Reference> referenceList = sign.addReferencesToSign(signParts, wsSecHeader);
+		List<Reference> referenceList = sign.addReferencesToSign(signParts);
 		sign.computeSignature(referenceList, false, null);
 	}
 
